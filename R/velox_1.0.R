@@ -30,8 +30,9 @@ VeloxRaster <- setRefClass("VeloxRaster",
 #' @param x A RasterLayer, RasterStack, matrix, list of matrices, or text string pointing to a GDAL-readable file.
 #' @param extent An \code{extent} object or a numeric vector of length 4. Required if \code{x} is a matrix or list
 #' of matrices, ignored otherwise.
-#' @param res The x and y resolution of the raster as a numeric vector of length 2.
-#' @param crs A character string describing a projection and datum in the PROJ.4 format.
+#' @param res The x and y resolution of the raster as a numeric vector of length 2. Required if \code{x} is a matrix or list
+#' of matrices, ignored otherwise.
+#' @param crs Optional. A character string describing a projection and datum in the PROJ.4 format.
 #'
 #' @return A VeloxRaster object.
 velox <- function(x, extent=NULL, res=NULL, crs=NULL) {

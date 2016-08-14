@@ -3,7 +3,7 @@
 #include <numeric>
 #include <math.h>
 #include "gdal_priv.h"
-#include "cpl_conv.h" 
+#include "cpl_conv.h"
 #include "cpl_string.h"
 #include "ogr_spatialref.h"
 
@@ -14,7 +14,7 @@ class vRaster {
   public:
     // Constructor
     vRaster();
-    
+
     // Getter
     vector<NumericMatrix> getRasterBands();
     NumericMatrix getRasterBand(int band);
@@ -27,11 +27,11 @@ class vRaster {
 
     // Setter
     void setRasterBands(List x, NumericVector origin, NumericVector res, int nb, string incrs);
-    
+
     // I/O
     void read(string path);
     void write(string path);
-    
+
     // Crop Methods
     bool overlaps(NumericVector bbox);
     void crop(NumericVector bbox);
@@ -46,11 +46,11 @@ class vRaster {
     void medianFocal(int wrow, int wcol, int band);
     void sumFocal(NumericMatrix weights, int wrow, int wcol, int band);
     void meanFocal(NumericMatrix weights, int wrow, int wcol, int band);
-    
+
     // Vector Extraction
     NumericMatrix hittest(NumericVector polyX, NumericVector polyY, int polyCorners);
     NumericMatrix unhit(NumericMatrix cmat, NumericVector polyX, NumericVector polyY, int polyCorners);
-    
+
   private:
     // Class Variables
     vector<NumericMatrix> rasterbands;
@@ -59,7 +59,7 @@ class vRaster {
     double xmin, ymax;
     double xres, yres;
     string crs;
-    
+
     // Math Helper Functions
     double median(vector<double> scores);
 };
@@ -157,7 +157,7 @@ void vRaster::read(string path) {
     GDALDataset  *poDataset;
     GDALAllRegister();
     poDataset = (GDALDataset *) GDALOpen( path.c_str(), GA_ReadOnly );
-    
+
     // Get raster specs
     double adfGeoTransform[6];
     poDataset->GetGeoTransform( adfGeoTransform );
@@ -165,7 +165,7 @@ void vRaster::read(string path) {
     xres = adfGeoTransform[1];
     ymax = adfGeoTransform[3];
     yres = -1*adfGeoTransform[5];
-    
+
     // Get Proj4
     OGRSpatialReference oSRS;
     const char *pszSRS_WKT = NULL;
@@ -178,23 +178,23 @@ void vRaster::read(string path) {
 
     // Read bands
     nbands = poDataset->GetRasterCount();
-    
+
     GDALRasterBand  *poBand;
     poBand = poDataset->GetRasterBand( 1 );
     int   nXSize = poBand->GetXSize();
     int   nYSize = poBand->GetYSize();
     ncol = nXSize;
     nrow = nYSize;
-    
+
     for (int k = 1; k<=nbands; k++) {
       poBand = poDataset->GetRasterBand( k );
       float *pafScanline;
       NumericMatrix newMatrix(Dimension(nYSize, nXSize));
       pafScanline = (float *) CPLMalloc(sizeof(float)*nXSize*nYSize);
-      poBand->RasterIO( GF_Read, 0, 0, nXSize, nYSize, 
-                    pafScanline, nXSize, nYSize, GDT_Float32 , 
+      poBand->RasterIO( GF_Read, 0, 0, nXSize, nYSize,
+                    pafScanline, nXSize, nYSize, GDT_Float32 ,
                     0, 0 );
-  
+
       int counter = 0;
       for (int i = 0; i < nYSize; i++) {
         for (int j = 0; j < nXSize; j++) {
@@ -205,7 +205,7 @@ void vRaster::read(string path) {
       rasterbands.push_back(newMatrix);
       CPLFree(pafScanline);
     }
-    
+
     GDALClose((GDALDatasetH)poDataset);
 }
 
@@ -215,9 +215,9 @@ void vRaster::write(string path) {
   GDALDriver *poDriver;
   char **papszMetadata;
   poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-  GDALDataset *poDstDS;       
+  GDALDataset *poDstDS;
   char **papszOptions = NULL;
-  poDstDS = poDriver->Create(path.c_str(), ncol, nrow, nbands, GDT_Float32, 
+  poDstDS = poDriver->Create(path.c_str(), ncol, nrow, nbands, GDT_Float32,
                               papszOptions);
   double adfGeoTransform[6] = { xmin, xres, 0, ymax, 0, -yres};
   OGRSpatialReference oSRS;
@@ -230,7 +230,7 @@ void vRaster::write(string path) {
   oSRS.exportToWkt( &pszSRS_WKT );
   poDstDS->SetProjection(pszSRS_WKT);
   CPLFree(pszSRS_WKT);
-  
+
   // Write each band to file
   for (int k = 1; k <= nbands; k++) {
     float* rasterData = new float[ncol*nrow];
@@ -242,12 +242,12 @@ void vRaster::write(string path) {
         counter++;
       }
     }
-  
+
     poBand = poDstDS->GetRasterBand(k);
-    poBand->RasterIO( GF_Write, 0, 0, ncol, nrow, 
-                    rasterData, ncol, nrow, GDT_Float32, 0, 0 );    
+    poBand->RasterIO( GF_Write, 0, 0, ncol, nrow,
+                    rasterData, ncol, nrow, GDT_Float32, 0, 0 );
   }
-  
+
   // Clean up
   GDALClose( (GDALDatasetH) poDstDS );
 }
@@ -261,7 +261,7 @@ bool vRaster::overlaps(NumericVector bbox) {
   double xmaxbb = bbox[1];
   double yminbb = bbox[2];
   double ymaxbb = bbox[3];
-  
+
   if (xmaxbb > xmin && xminbb < xmax && ymaxbb > ymin && yminbb < ymax) {
     return true;
   } else {
@@ -273,7 +273,7 @@ void vRaster::crop(NumericVector bbox){
   NumericVector cropbox = getCropBox(bbox);
   NumericVector cropextent = getCropExtent(cropbox);
   rasterbands = getCropBands(cropbox);
-  
+
   nrow = rasterbands[0].nrow();
   ncol = rasterbands[0].ncol();
   xmin = cropextent[0];
@@ -282,15 +282,15 @@ void vRaster::crop(NumericVector bbox){
 
 NumericVector vRaster::getCropBox(NumericVector bbox) {
   double minrow, maxrow, mincol, maxcol;
-  
+
   double xmax = xmin + ncol*xres;
   double ymin = ymax - nrow*yres;
-  
+
   double xminbb = bbox[0];
   double xmaxbb = bbox[1];
   double yminbb = bbox[2];
   double ymaxbb = bbox[3];
-  
+
   // Get crop dimensions
   if (xminbb > xmin) {
     mincol = floor((xminbb - xmin)/xres);
@@ -325,20 +325,19 @@ vector<NumericMatrix> vRaster::getCropBands(NumericVector cropbox) {
   for (int k=0; k < nbands; k++) {
     NumericMatrix thisband = rasterbands[k];
     cropbands.push_back(thisband( Range(cropbox[0], cropbox[1]), Range(cropbox[2], cropbox[3])));
-  } 
+  }
   return cropbands;
 }
-
 
 NumericVector vRaster::getCropExtent(NumericVector cropbox) {
   double xmax = xmin + ncol*xres;
   double ymin = ymax - nrow*yres;
-  
+
   double xminn = xmin + cropbox[2]*xres;
   double xmaxn = xmin + cropbox[3]*xres;
   double yminn = ymax - cropbox[1]*yres;
   double ymaxn = ymax - cropbox[0]*yres;
-  
+
   NumericVector cropextent =NumericVector::create(xminn, xmaxn, yminn, ymaxn);
   return cropextent;
 }
@@ -355,13 +354,13 @@ void vRaster::aggregate(NumericVector factor, int aggtype) {
   int ncoln = (int)floor(ncol/factor[0]);
   int startrow, endrow, startcol, endcol;
   vector<NumericMatrix> newrasterbands;
-  
+
   // Outer raster band loop
   for (int k = 0; k < nbands; k++) {
-  
+
     NumericMatrix thisband = rasterbands[k];
     NumericMatrix newband(nrown, ncoln);
-    
+
     if (aggtype <= 1 || aggtype > 4) { // Sum-type aggregation
       double cusum, counter;
       for (int i = 0; i < nrown; i++) {
@@ -381,7 +380,7 @@ void vRaster::aggregate(NumericVector factor, int aggtype) {
           if (aggtype == 1) {
             newband(i, j) = cusum/counter;
           } else {
-            newband(i, j) = cusum; 
+            newband(i, j) = cusum;
           }
         }
       }
@@ -434,7 +433,7 @@ void vRaster::aggregate(NumericVector factor, int aggtype) {
     // Add aggregated band to new raster band list
     newrasterbands.push_back(newband);
   }
-  
+
   xres = xres*factor[0];
   yres = yres*factor[1];
   nrow = nrown;
@@ -451,10 +450,10 @@ void vRaster::medianFocal(int wrow, int wcol, int band) {
   vector<double> v;
   NumericMatrix thisband = rasterbands[band-1];
   NumericMatrix newband(nrow, ncol);
-  
+
   int idim = (wrow-1)/2;
   int jdim = (wcol-1)/2;
-  
+
   for (i = 0; i < nrow; i++) {
     if (i - idim < 0) {
       mini = 0;
@@ -477,7 +476,7 @@ void vRaster::medianFocal(int wrow, int wcol, int band) {
       } else {
         maxj = j+jdim;
       }
-      
+
       NumericMatrix nb = thisband(Range(mini,maxi), Range(minj,maxj));
       nbsize = (maxi-mini+1)*(maxj-minj+1);
       for (k = 0; k < nbsize; k++) {
@@ -499,10 +498,10 @@ void vRaster::sumFocal(NumericMatrix weights, int wrow, int wcol, int band) {
   double w;
   NumericMatrix thisband = rasterbands[band-1];
   NumericMatrix newband(nrow, ncol);
-  
+
   int idim = (wrow-1)/2;
   int jdim = (wcol-1)/2;
-  
+
   for (i = 0; i < nrow; i++) {
     if (i - idim < 0) {
       mini = 0;
@@ -525,7 +524,7 @@ void vRaster::sumFocal(NumericMatrix weights, int wrow, int wcol, int band) {
       } else {
         maxj = j+jdim;
       }
-      
+
       cusum = 0;
       for (ki = mini; ki < maxi; ki++) {
         for (kj = minj; kj < maxj; kj++) {
@@ -554,7 +553,7 @@ void vRaster::meanFocal(NumericMatrix weights, int wrow, int wcol, int band) {
 
   int idim = (wrow-1)/2;
   int jdim = (wcol-1)/2;
-  
+
   for (i = 0; i < nrow; i++) {
     if (i - idim < 0) {
       mini = 0;
@@ -577,7 +576,7 @@ void vRaster::meanFocal(NumericMatrix weights, int wrow, int wcol, int band) {
       } else {
         maxj = j+jdim;
       }
-      
+
       cusum = 0;
       wsum = 0;
       for (ki = mini; ki < maxi; ki++) {
@@ -616,22 +615,22 @@ NumericMatrix vRaster::hittest(NumericVector polyX, NumericVector polyY, int pol
     vector<double> val;
     hitval.push_back(val);
   }
-  
-  
+
+
   // Prepare polygon data
   for(i=0; i<polyCorners; i++) {
-    
+
     // Polygon structure
     if(polyY[j]==polyY[i]) {
       constant[i]=polyX[i];
-      multiple[i]=0; 
+      multiple[i]=0;
     }
     else {
       constant[i]=polyX[i]-(polyY[i]*polyX[j])/(polyY[j]-polyY[i])+(polyY[i]*polyX[i])/(polyY[j]-polyY[i]);
       multiple[i]=(polyX[j]-polyX[i])/(polyY[j]-polyY[i]);
     }
-    j=i; 
-    
+    j=i;
+
     // Bounding box parameters
     if (polyX[i] < pxmin) {
       pxmin = polyX[i];
@@ -646,7 +645,7 @@ NumericMatrix vRaster::hittest(NumericVector polyX, NumericVector polyY, int pol
       pymax = polyY[i];
     }
   }
-  
+
   // Crop raster (if there is an overlap)
   NumericVector bbox = NumericVector::create(pxmin, pxmax, pymin, pymax);
   bool op = overlaps(bbox);
@@ -662,7 +661,7 @@ NumericMatrix vRaster::hittest(NumericVector polyX, NumericVector polyY, int pol
     NumericMatrix out(0,3);
     return out;
   }
-  
+
   // Iterate through cropped raster points and check whether in polygon
   int counter = 0;
   for (int trow=0; trow < cropbands[0].nrow(); trow++) {
@@ -671,15 +670,15 @@ NumericMatrix vRaster::hittest(NumericVector polyX, NumericVector polyY, int pol
       tx = xminn + tcol*xres + (xres/2);
       oddNodes=false;
     	j=polyCorners-1;
-      
+
       for (i=0; i<polyCorners; i++) {
     		if ((polyY[i]< ty && polyY[j]>=ty
     		||   polyY[j]< ty && polyY[i]>=ty)) {
-      		oddNodes^=(ty*multiple[i]+constant[i]<tx); 
+      		oddNodes^=(ty*multiple[i]+constant[i]<tx);
         }
-        j=i; 
+        j=i;
       }
-      
+
       if (oddNodes) {
         hitx.push_back(tx);
         hity.push_back(ty);
@@ -690,10 +689,10 @@ NumericMatrix vRaster::hittest(NumericVector polyX, NumericVector polyY, int pol
       counter++;
     }
   }
- 
+
   // Create output matrix
   NumericMatrix out (hitx.size(), 2+nbands);
-  out(_,0) = (NumericVector)wrap(hitx); 
+  out(_,0) = (NumericVector)wrap(hitx);
   out(_,1) = (NumericVector)wrap(hity);
   for (int k = 0; k < nbands; k++) {
       out(_,2+k) = (NumericVector)wrap(hitval[k]);
@@ -718,21 +717,21 @@ NumericMatrix vRaster::unhit(NumericMatrix cmat, NumericVector polyX, NumericVec
     vector<double> val;
     hitval.push_back(val);
   }
-  
+
   // Prepare polygon data
   for(i=0; i<polyCorners; i++) {
-    
+
     // Polygon structure
     if(polyY[j]==polyY[i]) {
       constant[i]=polyX[i];
-      multiple[i]=0; 
+      multiple[i]=0;
     }
     else {
       constant[i]=polyX[i]-(polyY[i]*polyX[j])/(polyY[j]-polyY[i])+(polyY[i]*polyX[i])/(polyY[j]-polyY[i]);
       multiple[i]=(polyX[j]-polyX[i])/(polyY[j]-polyY[i]);
     }
-    j=i; 
-    
+    j=i;
+
     // Bounding box parameters
     if (polyX[i] < pxmin) {
       pxmin = polyX[i];
@@ -747,21 +746,21 @@ NumericMatrix vRaster::unhit(NumericMatrix cmat, NumericVector polyX, NumericVec
       pymax = polyY[i];
     }
   }
-  
+
   // Iterate through cropped raster points and check whether in polygon
   for (int p=0; p < cmat.nrow(); p++) {
     ty = cmat(p,1);
     tx = cmat(p,0);
     oddNodes=false;
     j=polyCorners-1;
-    
+
     if (tx >= pxmin && tx <= pxmax && ty >= pymin && ty <= pymax) {
       for (i=0; i<polyCorners; i++) {
     		if ((polyY[i]< ty && polyY[j]>=ty
     		||   polyY[j]< ty && polyY[i]>=ty)) {
-      		oddNodes^=(ty*multiple[i]+constant[i]<tx); 
+      		oddNodes^=(ty*multiple[i]+constant[i]<tx);
         }
-        j=i; 
+        j=i;
       }
     }
     if (!oddNodes) {
@@ -772,9 +771,9 @@ NumericMatrix vRaster::unhit(NumericMatrix cmat, NumericVector polyX, NumericVec
       }
     }
   }
- 
+
   NumericMatrix out (hitx.size(), cmat.ncol());
-  out(_,0) = (NumericVector)wrap(hitx); 
+  out(_,0) = (NumericVector)wrap(hitx);
   out(_,1) = (NumericVector)wrap(hity);
   for (int k = 0; k < cmat.ncol() - 2; k++) {
       out(_,2+k) = (NumericVector)wrap(hitval[k]);
