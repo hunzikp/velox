@@ -1,0 +1,3 @@
+PKG_CPPFLAGS = `gdal-config --cflags`
+PKG_LIBS =  `gdal-config --libs`
+PKG_CXXFLAGS = `gdal-config --libs`
