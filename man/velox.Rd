@@ -12,9 +12,10 @@ velox(x, extent = NULL, res = NULL, crs = NULL)
 \item{extent}{An \code{extent} object or a numeric vector of length 4. Required if \code{x} is a matrix or list
 of matrices, ignored otherwise.}
 
-\item{res}{The x and y resolution of the raster as a numeric vector of length 2.}
+\item{res}{The x and y resolution of the raster as a numeric vector of length 2. Required if \code{x} is a matrix or list
+of matrices, ignored otherwise.}
 
-\item{crs}{A character string describing a projection and datum in the PROJ.4 format.}
+\item{crs}{Optional. A character string describing a projection and datum in the PROJ.4 format.}
 }
 \value{
 A VeloxRaster object.
