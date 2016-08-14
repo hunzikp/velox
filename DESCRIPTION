@@ -7,8 +7,13 @@ Author: Philipp Hunziker
 Maintainer: Philipp Hunziker <hunzikp@gmail.com>
 Description: C++ accelerated raster manipulation and extraction
 License: GPL (>= 2)
-Imports: methods, Rcpp (>= 0.11.6), raster, rgeos
+Imports:
+    methods,
+    Rcpp (>= 0.11.6),
+    raster,
+    rgeos
 LinkingTo: Rcpp
 NeedsCompilation: yes
 Packaged: 2016-01-25 15:17 UTC; hunzikp
 LazyData: TRUE
+RoxygenNote: 5.0.1

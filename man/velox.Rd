@@ -13,6 +13,8 @@ velox(x, extent = NULL, res = NULL, crs = NULL)
 of matrices, ignored otherwise.}
 
 \item{res}{The x and y resolution of the raster as a numeric vector of length 2.}
+
+\item{crs}{A character string describing a projection and datum in the PROJ.4 format.}
 }
 \value{
 A VeloxRaster object.
