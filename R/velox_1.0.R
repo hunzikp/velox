@@ -25,14 +25,19 @@ VeloxRaster <- setRefClass("VeloxRaster",
 #'
 #' @details
 #' Creates a VeloxRaster object. Note that VeloxRaster objects are Reference Class objects and thus mutable.
-#' Thus, the usual R copy on modify semantics do not apply.
+#' Hence, the usual R copy on modify semantics do not apply.
 #'
-#' @param x A RasterLayer, RasterStack, matrix, list of matrices, or text string pointing to a GDAL-readable file.
+#' Note that if \code{x} is a list of VeloxRasters, the \code{extent} and \code{crs} attributes are copied
+#' from the first list element.
+#'
+#' @param x A RasterLayer, RasterStack, matrix, list of matrices, list of VeloxRaster objects,
+#'  or character string pointing to a GDAL-readable file.
 #' @param extent An \code{extent} object or a numeric vector of length 4. Required if \code{x} is a matrix or list
 #' of matrices, ignored otherwise.
 #' @param res The x and y resolution of the raster as a numeric vector of length 2. Required if \code{x} is a matrix or list
 #' of matrices, ignored otherwise.
 #' @param crs Optional. A character string describing a projection and datum in the PROJ.4 format.
+#' Ignored if \code{x} is a Raster* object.
 #'
 #' @return A VeloxRaster object.
 velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
@@ -105,28 +110,64 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
   }
 
   if (is(x, "list")) {
+    if (is(x[[1]], "matrix")) {
+      ## List of matrices
 
-    if (is.null(extent) | is.null(res)) {
-      stop("extent and res arguments needed.")
-    }
-    if (!is(x[[1]], "matrix")) {
-      stop("If x is a list, its elements must be of class 'matrix'.")
-    }
-
-    origin = c(extent[1], extent[4])
-    dim = c(nrow(x[[1]]), ncol(x[[1]]))
-    if (is.null(crs)) {
-      crs <- ""
-    } else {
-      if (is.na(crs)) {
-        crs <- ""
+      if (is.null(extent) | is.null(res)) {
+        stop("extent and res arguments needed.")
       }
+      if (length(unique(lapply(x,dim))) != 1) {
+        stop("All list elements must have the same dimension.")
+      }
+
+      origin = c(extent[1], extent[4])
+      dim = c(nrow(x[[1]]), ncol(x[[1]]))
+      if (is.null(crs)) {
+        crs <- ""
+      } else {
+        if (is.na(crs)) {
+          crs <- ""
+        }
+      }
+      vras$setRasterBands(x, origin, res, length(x), crs)
+
+      obj <- VeloxRaster$new(vRaster=vras, dim=dim, extent=extent, res=res, nbands=length(x), crs=crs)
+
+      return(obj)
+
+    } else if (is(x[[1]], "VeloxRaster")) {
+      ## List of VeloxRasters
+
+      if (length(unique(lapply(x,function(x) x$dim))) != 1) {
+        stop("All list elements must have the same dimension.")
+      }
+
+      dim <- x[[1]]$dim
+      extent <- x[[1]]$extent
+      origin <- c(extent[1], extent[4])
+      res <- x[[1]]$res
+      crs <- x[[1]]$crs
+
+      mat.ls <- list()
+      counter <- 0
+      for (k in 1:length(x)) {
+        this.nbands <- x[[k]]$nbands
+        for (l in 1:this.nbands) {
+          counter <- counter + 1
+          mat.ls[[counter]] <- x[[k]]$vRaster$getRasterBand(l)
+        }
+      }
+      nbands <- counter
+
+      vras$setRasterBands(mat.ls, origin, res, nbands, crs)
+
+      obj <- VeloxRaster$new(vRaster=vras, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs)
+
+      return(obj)
+
+    } else {
+      stop("If x is a list, its elements must be of class 'matrix' or 'VeloxRaster'.")
     }
-    vras$setRasterBands(x, origin, res, length(x), crs)
-
-    obj <- VeloxRaster$new(vRaster=vras, dim=dim, extent=extent, res=res, nbands=length(x), crs=crs)
-
-    return(obj)
   }
 
   if (is(x, "character")) {
@@ -314,7 +355,7 @@ sumFocal.VeloxRaster <- function(obj, weights, bands=1) {
   if (any(!(bands %in% 1:obj$nbands))) {
     stop(paste("VeloxRaster only has", obj$nbands, "bands."))
   }
-  wrow <- dim(weigths)[1]
+  wrow <- dim(weights)[1]
   wcol <- dim(weights)[2]
   if (wrow < 0 | wcol < 0 | (wrow %% 2) == 0 | (wcol %% 2) == 0) {
     stop(paste("The dimensions of the weights matrix must be uneven."))
@@ -344,7 +385,7 @@ meanFocal.VeloxRaster <- function(obj, weights, bands=1) {
   if (any(!(bands %in% 1:obj$nbands))) {
     stop(paste("VeloxRaster only has", obj$nbands, "bands."))
   }
-  wrow <- dim(weigths)[1]
+  wrow <- dim(weights)[1]
   wcol <- dim(weights)[2]
   if (wrow < 0 | wcol < 0 | (wrow %% 2) == 0 | (wcol %% 2) == 0) {
     stop(paste("The dimensions of the weights matrix must be uneven."))
@@ -408,8 +449,6 @@ extract <- function(obj, sp, fun) {
   UseMethod("extract", obj)
 }
 extract.VeloxRaster <- function(obj, sp, fun) {
-  ## obj:    VeloxRaster object
-  ## sp:      SpatialPolygons* object
 
   out <- matrix(NA, length(sp), obj$nbands)
   for (p in 1:length(sp)) {
@@ -431,7 +470,6 @@ extract.VeloxRaster <- function(obj, sp, fun) {
       hitmat.ls[[i]] <- (obj$vRaster)$hittest(ring[,1], ring[,2], nrow(ring))
 
       ## For each hole: remove points that intersect with hole
-
       thishole.ls <- hole.ls[[i]]
       if (length(thishole.ls) > 0) {
         for (j in 1:length(thishole.ls)) {
@@ -441,6 +479,8 @@ extract.VeloxRaster <- function(obj, sp, fun) {
         }
       }
     }
+
+    ## Pass extracted values through 'fun'
     hitmat <- do.call(rbind, hitmat.ls)
     valmat <- hitmat[,3:ncol(hitmat),drop=FALSE]
     for (k in 1:ncol(valmat)) {
@@ -448,6 +488,88 @@ extract.VeloxRaster <- function(obj, sp, fun) {
     }
   }
   return(out)
+}
+
+#' @title Rasterize Polygons
+#'
+#' @description
+#' Rasterizes a SpatialPolygonsDataFrame, i.e., assigns the values in the \code{field} column of the
+#' SPDF to the raster cells intersecting with the respective SpatialPolygon.
+#'
+#' @details
+#' Note that rasterization is performed sequentially. Hence, cells being contained by multiple polygons
+#' are assigned the value of the last polygon in the \code{spdf} object.
+#'
+#'
+#' @param obj A VeloxRaster object.
+#' @param spdf A SpatialPolygonsDataFrame object.
+#' @param field A character string corresponding to the name of a numeric column in \code{spdf}.
+#' @param band The band of \code{obj} where the rasterized values are written.
+#' @param background Optional. A numeric value assigned to all background cells.
+#'
+#' @return Void.
+rasterizePolygons <- function(obj, spdf, field, band=1, background=NULL) {
+  UseMethod("rasterizePolygons", obj)
+}
+rasterizePolygons.VeloxRaster <- function(obj, spdf, field, band=1, background=NULL) {
+
+  ## Some safety checks
+  if (any(!(band %in% 1:obj$nbands))) {
+    stop(paste("VeloxRaster only has", obj$nbands, "bands."))
+  }
+  if (!(field%in%names(spdf))) {
+    stop(paste(field, " is not a column name of spdf."))
+  }
+
+  ## Fill target band with background
+  if (!is.null(background)) {
+    dim <- obj$dim
+    nrow <- dim[1]
+    ncol <- dim[2]
+    new.mat <- matrix(background, nrow, ncol)
+    obj$vRaster$setRasterBand(new.mat, band)
+  }
+
+  ## Iterate through polygons and color
+  sp <- SpatialPolygons(spdf@polygons)
+  values <- spdf@data[,field]
+  for (p in 1:length(sp)) {
+
+    ## Disect SpatialPolygons object
+    sp.ls <- disect(rgeos::createSPComment(sp[p,]))
+    ring.ls <- sp.ls[[1]]
+    hole.ls <- sp.ls[[2]]
+
+    ## Intersections
+    hitmat.ls <- vector("list", length(ring.ls))
+    for (i in 1:length(ring.ls)) {  ## For each outer ring
+
+      ## Get this ring
+      ring <- ring.ls[[i]]
+      ring <- ring[-nrow(ring),]
+
+      ## Get intersection with ring
+      hitmat.ls[[i]] <- (obj$vRaster)$hittest(ring[,1], ring[,2], nrow(ring))
+
+      ## For each hole: remove points that intersect with hole
+      thishole.ls <- hole.ls[[i]]
+      if (length(thishole.ls) > 0) {
+        for (j in 1:length(thishole.ls)) {
+          hole <- thishole.ls[[j]]
+          hole <- hole[-nrow(hole),]
+          hitmat.ls[[i]] <- (obj$vRaster)$unhit(hitmat.ls[[i]], hole[,1], hole[,2], nrow(hole))
+        }
+      }
+    }
+
+    ## Coloring
+    hitmat <- do.call(rbind, hitmat.ls)
+    if (nrow(hitmat) > 0) {
+      value <- values[p]
+      coordvalmat <- cbind(hitmat[,1:2], value)
+      obj$vRaster$color(coordvalmat, band)
+    }
+  }
 }
 
 
@@ -533,3 +655,67 @@ getCoordinates.VeloxRaster <- function(obj) {
   cmat <- (obj$vRaster)$getCoordinates()
   return(cmat)
 }
+
+
+#' @title im2col
+#'
+#' @description
+#' Creates a matrix of flattened image patches from a VeloxRaster band.
+#' Order is left-to-right, top-to-bottom.
+#'
+#' @param obj A VeloxRaster object.
+#' @param wrow Patch size in the y dimension.
+#' @param wcol Patch size in the x dimension.
+#' @param band The band to be flattened.
+#' @param padval A padding value.
+#'
+#' @return A numeric matrix with \code{wrow*wcol} columns.
+im2col <- function(obj, wrow, wcol, band, padval=0) {
+  UseMethod("im2col", obj)
+}
+im2col.VeloxRaster <- function(obj, wrow, wcol, band, padval=0) {
+
+  ## Some safety checks
+  if (any(!(band %in% 1:obj$nbands))) {
+    stop(paste("VeloxRaster only has", obj$nbands, "bands."))
+  }
+  if (any(c(wrow,wcol)<1)) {
+    stop(paste("wrow and wcol must be positive integers."))
+  }
+
+  out <- obj$vRaster$im2col(wrow, wcol, band, padval)
+  return(out)
+}
+
+
+#' @title col2im
+#'
+#' @description
+#' Assigns values to a VeloxRaster band from a matrix of flattened image patches.
+#'
+#' @param obj A VeloxRaster object.
+#' @param mat The matrix of flattened image patches.
+#' @param wrow Patch size in the y dimension.
+#' @param wcol Patch size in the x dimension.
+#' @param band The band to be assigned.
+#'
+#' @return Void.
+col2im <- function(obj, mat, wrow, wcol, band) {
+  UseMethod("col2im", obj)
+}
+col2im.VeloxRaster <- function(obj, mat, wrow, wcol, band) {
+
+  ## Some safety checks
+  if (any(!(band %in% 1:obj$nbands))) {
+    stop(paste("VeloxRaster only has", obj$nbands, "bands."))
+  }
+  if (prod(dim(mat)) < prod(obj$dim)) {
+    stop(paste("mat has wrong dimensions."))
+  }
+  if (wrow*wcol != ncol(mat)) {
+    stop(paste("ncol(mat) != wrow*wcol."))
+  }
+
+  obj$vRaster$col2im(mat, wrow, wcol, band)
+}
+

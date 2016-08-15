@@ -7,7 +7,8 @@
 velox(x, extent = NULL, res = NULL, crs = NULL)
 }
 \arguments{
-\item{x}{A RasterLayer, RasterStack, matrix, list of matrices, or text string pointing to a GDAL-readable file.}
+\item{x}{A RasterLayer, RasterStack, matrix, list of matrices, list of VeloxRaster objects,
+or character string pointing to a GDAL-readable file.}
 
 \item{extent}{An \code{extent} object or a numeric vector of length 4. Required if \code{x} is a matrix or list
 of matrices, ignored otherwise.}
@@ -15,7 +16,8 @@ of matrices, ignored otherwise.}
 \item{res}{The x and y resolution of the raster as a numeric vector of length 2. Required if \code{x} is a matrix or list
 of matrices, ignored otherwise.}
 
-\item{crs}{Optional. A character string describing a projection and datum in the PROJ.4 format.}
+\item{crs}{Optional. A character string describing a projection and datum in the PROJ.4 format.
+Ignored if \code{x} is a Raster* object.}
 }
 \value{
 A VeloxRaster object.
@@ -25,6 +27,9 @@ A VeloxRaster object.
 }
 \details{
 Creates a VeloxRaster object. Note that VeloxRaster objects are Reference Class objects and thus mutable.
-Thus, the usual R copy on modify semantics do not apply.
+Hence, the usual R copy on modify semantics do not apply.
+
+Note that if \code{x} is a list of VeloxRasters, the \code{extent} and \code{crs} attributes are copied
+from the first list element.
 }
 

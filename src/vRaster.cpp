@@ -27,6 +27,7 @@ class vRaster {
 
     // Setter
     void setRasterBands(List x, NumericVector origin, NumericVector res, int nb, string incrs);
+    void setRasterBand(NumericMatrix x, int band);
 
     // I/O
     void read(string path);
@@ -50,6 +51,14 @@ class vRaster {
     // Vector Extraction
     NumericMatrix hittest(NumericVector polyX, NumericVector polyY, int polyCorners);
     NumericMatrix unhit(NumericMatrix cmat, NumericVector polyX, NumericVector polyY, int polyCorners);
+
+    // Coloring (set cell values given matrix of coordinates)
+    NumericMatrix coord2index(NumericMatrix coordmat);
+    void color(NumericMatrix coordvalmat, int band);
+
+    // im2col
+    NumericMatrix im2col(int wrow, int wcol, int band, double padval);
+    void col2im(NumericMatrix colmat, int wrow, int wcol, int band);
 
   private:
     // Class Variables
@@ -121,16 +130,16 @@ string vRaster::getCRS(){
 }
 
 NumericMatrix vRaster::getCoordinates(){
-  NumericMatrix cmat = NumericMatrix(nrow*ncol, 2);
+  NumericMatrix coordmat = NumericMatrix(nrow*ncol, 2);
   int counter = 0;
   for (int i=0; i<nrow; i++) {
     for (int j=0; j<ncol; j++) {
-      cmat(counter, 0) =  xmin + j*xres + (xres/2);
-      cmat(counter, 1) =  ymax - i*yres - (yres/2);
+      coordmat(counter, 0) =  xmin + j*xres + (xres/2);
+      coordmat(counter, 1) =  ymax - i*yres - (yres/2);
       counter++;
     }
   }
-  return cmat;
+  return coordmat;
 }
 
 
@@ -149,6 +158,10 @@ void vRaster::setRasterBands(List x, NumericVector origin, NumericVector res, in
     yres = res[1];
     nbands = nb;
     crs = incrs;
+}
+
+void vRaster::setRasterBand(NumericMatrix x, int band) {
+  rasterbands[band-1] = x;
 }
 
 
@@ -343,7 +356,7 @@ NumericVector vRaster::getCropExtent(NumericVector cropbox) {
 }
 
 
-// Aggregate
+// Aggregate method
 void vRaster::aggregate(NumericVector factor, int aggtype) {
   // aggtype 0: sum <<- default if aggtype outside allowed range
   // aggtype 1: mean
@@ -783,6 +796,96 @@ NumericMatrix vRaster::unhit(NumericMatrix cmat, NumericVector polyX, NumericVec
 }
 
 
+// Coloring
+NumericMatrix vRaster::coord2index(NumericMatrix coordmat) {
+  NumericMatrix indexmat = NumericMatrix(coordmat.nrow(), 2);
+  for (int i = 0; i < coordmat.nrow(); i++) {
+    double x = coordmat(i,0);
+    double y = coordmat(i,1);
+    int col = round((x-xmin-(xres/2))/xres);
+    int row = round((ymax-y-(yres/2))/yres);
+    indexmat(i,0) = row;
+    indexmat(i,1) = col;
+  }
+  return indexmat;
+}
+
+void vRaster::color(NumericMatrix coordvalmat, int band) {
+
+  // Coordinates to index
+  NumericMatrix coordmat = coordvalmat(_, Range(0,1));
+  NumericMatrix indexmat = coord2index(coordmat);
+
+  // Color
+  for (int i = 0; i < coordvalmat.nrow(); i++) {
+    int row = indexmat(i, 0);
+    int col = indexmat(i, 1);
+    double value = coordvalmat(i,2);
+    (rasterbands[band-1])(row,col) = value;
+  }
+}
+
+
+// im2col
+NumericMatrix vRaster::im2col(int wrow, int wcol, int band, double padval) {
+  int rowsteps = (int)ceil((double)nrow/(double)wrow);
+  int colsteps = (int)ceil((double)ncol/(double)wcol);
+
+
+  NumericMatrix out(rowsteps*colsteps, wrow*wcol);
+
+  if (padval != 0) {
+    int xsize = out.nrow() * out.ncol();
+    for (int i = 0; i < xsize; i++) {
+      out[i] = padval;
+    }
+  }
+
+  int counter = 0;
+  for (int i = 0; i < rowsteps; i++) {
+    for (int j = 0; j < colsteps; j++) {
+      int iorigin = i*wrow;
+      int jorigin = j*wcol;
+      int wcounter = 0;
+      for (int iw = iorigin; iw < iorigin+wrow; iw++) {
+        for (int jw = jorigin; jw < jorigin+wcol; jw++) {
+          if (iw<nrow && jw<ncol) {
+            out(counter, wcounter) = (rasterbands[band-1])(iw,jw);
+          }
+          wcounter++;
+        }
+      }
+      counter++;
+    }
+  }
+
+  return(out);
+}
+
+void vRaster::col2im(NumericMatrix colmat, int wrow, int wcol, int band) {
+  int rowsteps = (int)ceil((double)nrow/(double)wrow);
+  int colsteps = (int)ceil((double)ncol/(double)wcol);
+
+  int counter = 0;
+  for (int i = 0; i < rowsteps; i++) {
+    for (int j = 0; j < colsteps; j++) {
+      int iorigin = i*wrow;
+      int jorigin = j*wcol;
+      int wcounter = 0;
+      for (int iw = iorigin; iw < iorigin+wrow; iw++) {
+        for (int jw = jorigin; jw < jorigin+wcol; jw++) {
+          if (iw<nrow && jw<ncol) {
+            (rasterbands[band-1])(iw,jw) = colmat(counter, wcounter);
+          }
+          wcounter++;
+        }
+      }
+      counter++;
+    }
+  }
+}
+
+
 // Math Helper Functions
 double vRaster::median(vector<double> scores) {
   double median;
@@ -818,6 +921,7 @@ RCPP_MODULE(vRaster_module) {
   .method( "getCoordinates", &vRaster::getCoordinates)
   .method( "overlaps", &vRaster::overlaps)
   .method( "setRasterBands", &vRaster::setRasterBands)
+  .method( "setRasterBand", &vRaster::setRasterBand)
   .method( "read", &vRaster::read)
   .method( "write", &vRaster::write)
   .method( "crop", &vRaster::crop)
@@ -827,5 +931,8 @@ RCPP_MODULE(vRaster_module) {
   .method( "meanFocal", &vRaster::meanFocal)
   .method( "hittest", &vRaster::hittest)
   .method( "unhit", &vRaster::unhit)
+  .method( "color", &vRaster::color)
+  .method( "im2col", &vRaster::im2col)
+  .method( "col2im", &vRaster::col2im)
   ;
 }

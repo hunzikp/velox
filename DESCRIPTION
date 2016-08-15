@@ -5,7 +5,7 @@ Version: 1.0
 Date: 2016-08-14
 Author: Philipp Hunziker
 Maintainer: Philipp Hunziker <hunzikp@gmail.com>
-Description: C++ accelerated raster manipulation and extraction
+Description: C++ accelerated raster manipulation and extraction.
 License: GPL (>= 2)
 Imports:
     methods,
