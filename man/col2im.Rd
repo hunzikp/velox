@@ -4,7 +4,8 @@
 \alias{col2im}
 \title{col2im}
 \usage{
-col2im(obj, mat, wrow, wcol, band)
+col2im(obj, mat, wrow, wcol, band, rowframe = 0, colframe = 0,
+  rowstride = 1, colstride = 1)
 }
 \arguments{
 \item{obj}{A VeloxRaster object.}
@@ -16,11 +17,25 @@ col2im(obj, mat, wrow, wcol, band)
 \item{wcol}{Patch size in the x dimension.}
 
 \item{band}{The band to be assigned.}
+
+\item{rowframe}{A non-negative integer specifying the size of the frame around
+the image patches in the y dimension.}
+
+\item{colframe}{A non-negative integer specifying the size of the frame around
+the image patches in the x dimension.}
+
+\item{rowstride}{A positive integer denoting the stride between extracted patches
+in the y dimension.}
+
+\item{colstride}{A positive integer denoting the stride between extracted patches
+in the x dimension.}
 }
 \value{
 Void.
 }
 \description{
 Assigns values to a VeloxRaster band from a matrix of flattened image patches.
+Patch frames, as specified by \code{rowframe} and \code{rowframe}, are not assigned.
+This function is intended to be used with \code{mat} matrices constructed with the \code{im2col} function.
 }
 

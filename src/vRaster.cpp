@@ -18,6 +18,7 @@ class vRaster {
     // Getter
     vector<NumericMatrix> getRasterBands();
     NumericMatrix getRasterBand(int band);
+    vector<NumericMatrix> copyRasterBands();
     NumericVector getResolution();
     NumericVector getExtent();
     NumericVector getDim();
@@ -57,8 +58,10 @@ class vRaster {
     void color(NumericMatrix coordvalmat, int band);
 
     // im2col
-    NumericMatrix im2col(int wrow, int wcol, int band, double padval);
-    void col2im(NumericMatrix colmat, int wrow, int wcol, int band);
+    NumericMatrix im2col(int wrow, int wcol, int band, double padval, int rowframe, int colframe,
+                         int rowstride, int colstride);
+    void col2im(NumericMatrix colmat, int wrow, int wcol, int band, int rowframe, int colframe,
+                int rowstride, int colstride);
 
   private:
     // Class Variables
@@ -94,6 +97,15 @@ vector<NumericMatrix> vRaster::getRasterBands() {
 
 NumericMatrix vRaster::getRasterBand(int band) {
     return rasterbands[band-1];
+}
+
+vector<NumericMatrix> vRaster::copyRasterBands() {
+  vector<NumericMatrix> newrasterbands;
+  for (int k=0; k<nbands; k++) {
+    NumericMatrix thisband = clone(rasterbands[k]);
+    newrasterbands.push_back(thisband);
+  }
+  return newrasterbands;
 }
 
 NumericVector vRaster::getResolution(){
@@ -457,43 +469,26 @@ void vRaster::aggregate(NumericVector factor, int aggtype) {
 
 // Focal Methods
 void vRaster::medianFocal(int wrow, int wcol, int band) {
-  int i, j, mini, maxi, minj, maxj;
-  int nbsize;
-  int k;
-  vector<double> v;
+
   NumericMatrix thisband = rasterbands[band-1];
   NumericMatrix newband(nrow, ncol);
+  vector<double> v;
 
   int idim = (wrow-1)/2;
   int jdim = (wcol-1)/2;
 
-  for (i = 0; i < nrow; i++) {
-    if (i - idim < 0) {
-      mini = 0;
-    } else {
-      mini = i-idim;
-    }
-    if (i + idim >= nrow) {
-      maxi = nrow-1;
-    } else {
-      maxi = i+idim;
-    }
-    for (j=0; j < ncol; j++) {
-      if (j - jdim < 0) {
-        minj = 0;
-      } else {
-        minj = j-jdim;
-      }
-      if (j + jdim >= ncol) {
-        maxj = ncol-1;
-      } else {
-        maxj = j+jdim;
-      }
-
-      NumericMatrix nb = thisband(Range(mini,maxi), Range(minj,maxj));
-      nbsize = (maxi-mini+1)*(maxj-minj+1);
-      for (k = 0; k < nbsize; k++) {
-        v.push_back(nb[k]);
+  for (int i = 0; i < nrow; i++) {
+    int imin = i - idim;
+    int imax = i + idim + 1;
+    for (int j = 0; j < ncol; j++) {
+      int jmin = j - jdim;
+      int jmax = j + jdim + 1;
+      for (int wi = imin; wi < imax; wi++) {
+        for (int wj = jmin; wj < jmax; wj++) {
+          if (wi >= 0 && wi < nrow && wj >= 0 && wj < ncol) {
+            v.push_back(thisband(wi, wj));
+          }
+        }
       }
       newband(i,j) = median(v);
       v.clear();
@@ -503,49 +498,30 @@ void vRaster::medianFocal(int wrow, int wcol, int band) {
 }
 
 void vRaster::sumFocal(NumericMatrix weights, int wrow, int wcol, int band) {
-  int i, j, mini, maxi, minj, maxj, ki, kj, wi, wj;
-  int nbsize;
-  int k;
-  double cusum;
-  int counter;
-  double w;
+
   NumericMatrix thisband = rasterbands[band-1];
   NumericMatrix newband(nrow, ncol);
 
   int idim = (wrow-1)/2;
   int jdim = (wcol-1)/2;
 
-  for (i = 0; i < nrow; i++) {
-    if (i - idim < 0) {
-      mini = 0;
-    } else {
-      mini = i-idim;
-    }
-    if (i + idim >= nrow) {
-      maxi = nrow-1;
-    } else {
-      maxi = i+idim;
-    }
-    for (j=0; j < ncol; j++) {
-      if (j - jdim < 0) {
-        minj = 0;
-      } else {
-        minj = j-jdim;
-      }
-      if (j + jdim >= ncol) {
-        maxj = ncol-1;
-      } else {
-        maxj = j+jdim;
-      }
-
-      cusum = 0;
-      for (ki = mini; ki < maxi; ki++) {
-        for (kj = minj; kj < maxj; kj++) {
-          wi = ((wrow-1)/2) + (ki - i);
-          wj = ((wcol-1)/2) + (kj - j);
-          w = weights(wi, wj);
-          cusum = cusum + thisband(ki, kj)*w;
+  for (int i = 0; i < nrow; i++) {
+    int imin = i - idim;
+    int imax = i + idim + 1;
+    for (int j = 0; j < ncol; j++) {
+      int jmin = j - jdim;
+      int jmax = j + jdim + 1;
+      double cusum = 0;
+      int wicounter = 0;
+      for (int wi = imin; wi < imax; wi++) {
+        int wjcounter = 0;
+        for (int wj = jmin; wj < jmax; wj++) {
+          if (wi >= 0 && wi < nrow && wj >= 0 && wj < ncol) {
+            cusum = cusum + thisband(wi, wj)*weights(wicounter, wjcounter);
+          }
+          wjcounter++;
         }
+        wicounter++;
       }
       newband(i,j) = cusum;
     }
@@ -554,54 +530,34 @@ void vRaster::sumFocal(NumericMatrix weights, int wrow, int wcol, int band) {
 }
 
 void vRaster::meanFocal(NumericMatrix weights, int wrow, int wcol, int band) {
-  int i, j, mini, maxi, minj, maxj, ki, kj, wi, wj;
-  int nbsize;
-  int k;
-  double cusum;
-  double wsum;
-  int counter;
-  double w;
+
   NumericMatrix thisband = rasterbands[band-1];
   NumericMatrix newband(nrow, ncol);
 
   int idim = (wrow-1)/2;
   int jdim = (wcol-1)/2;
 
-  for (i = 0; i < nrow; i++) {
-    if (i - idim < 0) {
-      mini = 0;
-    } else {
-      mini = i-idim;
-    }
-    if (i + idim >= nrow) {
-      maxi = nrow-1;
-    } else {
-      maxi = i+idim;
-    }
-    for (j=0; j < ncol; j++) {
-      if (j - jdim < 0) {
-        minj = 0;
-      } else {
-        minj = j-jdim;
-      }
-      if (j + jdim >= ncol) {
-        maxj = ncol-1;
-      } else {
-        maxj = j+jdim;
-      }
-
-      cusum = 0;
-      wsum = 0;
-      for (ki = mini; ki < maxi; ki++) {
-        for (kj = minj; kj < maxj; kj++) {
-          wi = ((wrow-1)/2) + (ki - i);
-          wj = ((wcol-1)/2) + (kj - j);
-          w = weights(wi, wj);
-          cusum = cusum + thisband(ki, kj)*w;
-          wsum = wsum + w;
+  for (int i = 0; i < nrow; i++) {
+    int imin = i - idim;
+    int imax = i + idim + 1;
+    for (int j = 0; j < ncol; j++) {
+      int jmin = j - jdim;
+      int jmax = j + jdim + 1;
+      double cusum = 0;
+      int cucount = 0;
+      int wicounter = 0;
+      for (int wi = imin; wi < imax; wi++) {
+        int wjcounter = 0;
+        for (int wj = jmin; wj < jmax; wj++) {
+          if (wi >= 0 && wi < nrow && wj >= 0 && wj < ncol) {
+            cusum = cusum + thisband(wi, wj)*weights(wicounter, wjcounter);
+            cucount++;
+          }
+          wjcounter++;
         }
+        wicounter++;
       }
-      newband(i,j) = cusum/wsum;
+      newband(i,j) = cusum/cucount;
     }
   }
   rasterbands[band-1] = newband;
@@ -827,12 +783,12 @@ void vRaster::color(NumericMatrix coordvalmat, int band) {
 
 
 // im2col
-NumericMatrix vRaster::im2col(int wrow, int wcol, int band, double padval) {
-  int rowsteps = (int)ceil((double)nrow/(double)wrow);
-  int colsteps = (int)ceil((double)ncol/(double)wcol);
+NumericMatrix vRaster::im2col(int wrow, int wcol, int band, double padval, int rowframe, int colframe,
+                              int rowstride, int colstride) {
+  int nrowsteps = (int)ceil((double)nrow/(double)(wrow*rowstride));
+  int ncolsteps = (int)ceil((double)ncol/(double)(wcol*colstride));
 
-
-  NumericMatrix out(rowsteps*colsteps, wrow*wcol);
+  NumericMatrix out(nrowsteps*ncolsteps, (wrow + 2*rowframe)*(wcol + 2*colframe));
 
   if (padval != 0) {
     int xsize = out.nrow() * out.ncol();
@@ -842,14 +798,14 @@ NumericMatrix vRaster::im2col(int wrow, int wcol, int band, double padval) {
   }
 
   int counter = 0;
-  for (int i = 0; i < rowsteps; i++) {
-    for (int j = 0; j < colsteps; j++) {
-      int iorigin = i*wrow;
-      int jorigin = j*wcol;
+  for (int i = 0; i < nrowsteps; i++) {
+    for (int j = 0; j < ncolsteps; j++) {
+      int iorigin = i*(wrow*rowstride) - rowframe;
+      int jorigin = j*(wcol*colstride) - colframe;
       int wcounter = 0;
-      for (int iw = iorigin; iw < iorigin+wrow; iw++) {
-        for (int jw = jorigin; jw < jorigin+wcol; jw++) {
-          if (iw<nrow && jw<ncol) {
+      for (int iw = iorigin; iw < iorigin+wrow+(2*rowframe); iw++) {
+        for (int jw = jorigin; jw < jorigin+wcol+(2*colframe); jw++) {
+          if (iw<nrow && iw >= 0 && jw<ncol && jw >= 0) {
             out(counter, wcounter) = (rasterbands[band-1])(iw,jw);
           }
           wcounter++;
@@ -862,20 +818,29 @@ NumericMatrix vRaster::im2col(int wrow, int wcol, int band, double padval) {
   return(out);
 }
 
-void vRaster::col2im(NumericMatrix colmat, int wrow, int wcol, int band) {
-  int rowsteps = (int)ceil((double)nrow/(double)wrow);
-  int colsteps = (int)ceil((double)ncol/(double)wcol);
+void vRaster::col2im(NumericMatrix colmat, int wrow, int wcol, int band, int rowframe, int colframe,
+                     int rowstride, int colstride) {
+  int nrowsteps = (int)ceil((double)nrow/(double)(wrow*rowstride));
+  int ncolsteps = (int)ceil((double)ncol/(double)(wcol*colstride));
 
   int counter = 0;
-  for (int i = 0; i < rowsteps; i++) {
-    for (int j = 0; j < colsteps; j++) {
-      int iorigin = i*wrow;
-      int jorigin = j*wcol;
+  for (int i = 0; i < nrowsteps; i++) {
+    for (int j = 0; j < ncolsteps; j++) {
+      int iorigin = i*(wrow*rowstride) - rowframe;
+      int jorigin = j*(wcol*colstride) - colframe;
+      int iorigin_noframe = i*(wrow*rowstride);
+      int jorigin_noframe = j*(wcol*colstride);
+      int imax_noframe = i*(wrow*rowstride) + wrow;
+      int jmax_noframe = j*(wcol*colstride) + wcol;
       int wcounter = 0;
-      for (int iw = iorigin; iw < iorigin+wrow; iw++) {
-        for (int jw = jorigin; jw < jorigin+wcol; jw++) {
-          if (iw<nrow && jw<ncol) {
-            (rasterbands[band-1])(iw,jw) = colmat(counter, wcounter);
+      for (int iw = iorigin; iw < iorigin+wrow+(2*rowframe); iw++) {
+        for (int jw = jorigin; jw < jorigin+wcol+(2*colframe); jw++) {
+          // Check whether iw-jw in image
+          if (iw<nrow && iw >= 0 && jw<ncol && jw >= 0) {
+            // Check whether iw-jw in patch
+            if (iw >= iorigin_noframe && iw < imax_noframe && jw >= jorigin_noframe && jw < jmax_noframe){
+              (rasterbands[band-1])(iw,jw) = colmat(counter, wcounter);
+            }
           }
           wcounter++;
         }
@@ -910,6 +875,7 @@ RCPP_MODULE(vRaster_module) {
   .constructor()
   .method( "getRasterBands", &vRaster::getRasterBands)
   .method( "getRasterBand", &vRaster::getRasterBand)
+  .method( "cloneRasterBands", &vRaster::copyRasterBands)
   .method( "getResolution", &vRaster::getResolution)
   .method( "getExtent", &vRaster::getExtent)
   .method( "getDim", &vRaster::getDim)

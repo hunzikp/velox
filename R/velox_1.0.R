@@ -138,7 +138,8 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     } else if (is(x[[1]], "VeloxRaster")) {
       ## List of VeloxRasters
 
-      if (length(unique(lapply(x,function(x) x$dim))) != 1) {
+      ndim <- nrow(unique(do.call("rbind", lapply(x, function(x) x$dim))))
+      if (ndim > 1) {
         stop("All list elements must have the same dimension.")
       }
 
@@ -566,7 +567,7 @@ rasterizePolygons.VeloxRaster <- function(obj, spdf, field, band=1, background=N
     hitmat <- do.call(rbind, hitmat.ls)
     if (nrow(hitmat) > 0) {
       value <- values[p]
-      coordvalmat <- cbind(hitmat[,1:2], value)
+      coordvalmat <- cbind(hitmat[,1:2,drop=FALSE], value)
       obj$vRaster$color(coordvalmat, band)
     }
   }
@@ -586,7 +587,7 @@ copy <- function(obj) {
 }
 copy.VeloxRaster <- function(obj) {
   ## obj:    VeloxRaster object
-  out <- velox((obj$vRaster)$getRasterBands(), obj$extent, obj$res, obj$crs)
+  out <- velox((obj$vRaster)$cloneRasterBands(), obj$extent, obj$res, obj$crs)
   return(out)
 }
 
@@ -662,18 +663,29 @@ getCoordinates.VeloxRaster <- function(obj) {
 #' @description
 #' Creates a matrix of flattened image patches from a VeloxRaster band.
 #' Order is left-to-right, top-to-bottom.
+#' Note that if \code{any(c(rowframe, colframe)>0)}, the image patches are (partially) overlapping.
 #'
 #' @param obj A VeloxRaster object.
 #' @param wrow Patch size in the y dimension.
 #' @param wcol Patch size in the x dimension.
 #' @param band The band to be flattened.
 #' @param padval A padding value.
+#' @param rowframe A non-negative integer specifying the size of the frame around
+#' the image patches in the y dimension.
+#' @param colframe A non-negative integer specifying the size of the frame around
+#' the image patches in the x dimension.
+#' @param rowstride A positive integer denoting the stride between extracted patches
+#' in the y dimension. I.e. only every \code{rowstride}th patch is extracted.
+#' @param colstride A positive integer denoting the stride between extracted patches
+#' in the x dimension. I.e. only every \code{colstride}th patch is extracted.
 #'
-#' @return A numeric matrix with \code{wrow*wcol} columns.
-im2col <- function(obj, wrow, wcol, band, padval=0) {
+#' @return A numeric matrix with \code{(wrow+2*rowframe)*(wcol+2*colframe)} columns.
+im2col <- function(obj, wrow, wcol, band, padval=0, rowframe=0, colframe=0,
+                   rowstride=1, colstride=1) {
   UseMethod("im2col", obj)
 }
-im2col.VeloxRaster <- function(obj, wrow, wcol, band, padval=0) {
+im2col.VeloxRaster <- function(obj, wrow, wcol, band, padval=0, rowframe=0, colframe=0,
+                               rowstride=1, colstride=1) {
 
   ## Some safety checks
   if (any(!(band %in% 1:obj$nbands))) {
@@ -682,8 +694,14 @@ im2col.VeloxRaster <- function(obj, wrow, wcol, band, padval=0) {
   if (any(c(wrow,wcol)<1)) {
     stop(paste("wrow and wcol must be positive integers."))
   }
+  if (any(c(rowframe,colframe)<0)) {
+    stop(paste("rowframe and colframe must be non-negative integers."))
+  }
+  if (any(c(rowstride, colstride)<1)) {
+    stop("rowstride and colstride must be positive integers.")
+  }
 
-  out <- obj$vRaster$im2col(wrow, wcol, band, padval)
+  out <- obj$vRaster$im2col(wrow, wcol, band, padval, rowframe, colframe, rowstride, colstride)
   return(out)
 }
 
@@ -692,30 +710,45 @@ im2col.VeloxRaster <- function(obj, wrow, wcol, band, padval=0) {
 #'
 #' @description
 #' Assigns values to a VeloxRaster band from a matrix of flattened image patches.
+#' Patch frames, as specified by \code{rowframe} and \code{rowframe}, are not assigned.
+#' This function is intended to be used with \code{mat} matrices constructed with the \code{im2col} function.
 #'
 #' @param obj A VeloxRaster object.
 #' @param mat The matrix of flattened image patches.
 #' @param wrow Patch size in the y dimension.
 #' @param wcol Patch size in the x dimension.
 #' @param band The band to be assigned.
+#' @param rowframe A non-negative integer specifying the size of the frame around
+#' the image patches in the y dimension.
+#' @param colframe A non-negative integer specifying the size of the frame around
+#' the image patches in the x dimension.
+#' @param rowstride A positive integer denoting the stride between extracted patches
+#' in the y dimension.
+#' @param colstride A positive integer denoting the stride between extracted patches
+#' in the x dimension.
 #'
 #' @return Void.
-col2im <- function(obj, mat, wrow, wcol, band) {
+col2im <- function(obj, mat, wrow, wcol, band, rowframe=0, colframe=0,
+                   rowstride=1, colstride=1) {
   UseMethod("col2im", obj)
 }
-col2im.VeloxRaster <- function(obj, mat, wrow, wcol, band) {
+col2im.VeloxRaster <- function(obj, mat, wrow, wcol, band, rowframe=0, colframe=0,
+                               rowstride=1, colstride=1) {
 
   ## Some safety checks
   if (any(!(band %in% 1:obj$nbands))) {
     stop(paste("VeloxRaster only has", obj$nbands, "bands."))
   }
-  if (prod(dim(mat)) < prod(obj$dim)) {
-    stop(paste("mat has wrong dimensions."))
+  if (prod(dim(mat)) < prod(ceiling(obj$dim/c(rowstride,colstride)))) {
+    stop(paste("mat does not have enough entries."))
   }
-  if (wrow*wcol != ncol(mat)) {
-    stop(paste("ncol(mat) != wrow*wcol."))
+  if ((wrow+2*rowframe)*(wcol+2*colframe) != ncol(mat)) {
+    stop(paste("(wrow+2*rowframe)*(wcol+2*colframe) != ncol(mat)."))
+  }
+  if (any(c(rowstride, colstride)<1)) {
+    stop("rowstride and colstride must be positive integers.")
   }
 
-  obj$vRaster$col2im(mat, wrow, wcol, band)
+  obj$vRaster$col2im(mat, wrow, wcol, band, rowframe, colframe, rowstride, colstride)
 }
 

@@ -4,7 +4,8 @@
 \alias{im2col}
 \title{im2col}
 \usage{
-im2col(obj, wrow, wcol, band, padval = 0)
+im2col(obj, wrow, wcol, band, padval = 0, rowframe = 0, colframe = 0,
+  rowstride = 1, colstride = 1)
 }
 \arguments{
 \item{obj}{A VeloxRaster object.}
@@ -16,12 +17,25 @@ im2col(obj, wrow, wcol, band, padval = 0)
 \item{band}{The band to be flattened.}
 
 \item{padval}{A padding value.}
+
+\item{rowframe}{A non-negative integer specifying the size of the frame around
+the image patches in the y dimension.}
+
+\item{colframe}{A non-negative integer specifying the size of the frame around
+the image patches in the x dimension.}
+
+\item{rowstride}{A positive integer denoting the stride between extracted patches
+in the y dimension. I.e. only every \code{rowstride}th patch is extracted.}
+
+\item{colstride}{A positive integer denoting the stride between extracted patches
+in the x dimension. I.e. only every \code{colstride}th patch is extracted.}
 }
 \value{
-A numeric matrix with \code{wrow*wcol} columns.
+A numeric matrix with \code{(wrow+2*rowframe)*(wcol+2*colframe)} columns.
 }
 \description{
 Creates a matrix of flattened image patches from a VeloxRaster band.
 Order is left-to-right, top-to-bottom.
+Note that if \code{any(c(rowframe, colframe)>0)}, the image patches are (partially) overlapping.
 }
 
