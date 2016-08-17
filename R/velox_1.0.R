@@ -46,7 +46,7 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
 
   if (is(x, "RasterLayer")) {
 
-    extent = raster::as.vector(extent(x))
+    extent = as.vector(extent(x))
     origin = c(extent[1], extent[4])
     dim = c(nrow(x), ncol(x))
     res = res(x)
@@ -65,7 +65,7 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
 
   if (is(x, "RasterStack")) {
 
-    extent = raster::as.vector(extent(x))
+    extent = as.vector(extent(x))
     origin = c(extent[1], extent[4])
     dim = c(nrow(x), ncol(x))
     res = res(x)
@@ -285,7 +285,7 @@ crop <- function(obj, y, copy=FALSE) {
   UseMethod("crop", obj)
 }
 crop.VeloxRaster <- function(obj, y, copy=FALSE) {
-  y.ext <- raster::as.vector(extent(y))
+  y.ext <- as.vector(extent(y))
   overlaps <- (obj$vRaster)$overlaps(y.ext)
   if (!overlaps) {
     stop("No cells within extent of object y.")
