@@ -494,7 +494,7 @@ extract.VeloxRaster <- function(obj, sp, fun) {
 #' @title Rasterize Polygons
 #'
 #' @description
-#' Rasterizes a SpatialPolygonsDataFrame, i.e., assigns the values in the \code{field} column of the
+#' Rasterizes a SpatialPolygonsDataFrame, i.e. assigns the values in the \code{field} column of the
 #' SPDF to the raster cells intersecting with the respective SpatialPolygon.
 #'
 #' @details
