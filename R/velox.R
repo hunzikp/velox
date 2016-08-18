@@ -172,6 +172,11 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
   }
 
   if (is(x, "character")) {
+
+    if (!file.exists(x)) {
+      stop(paste("File", x, "does not exist."))
+    }
+
     vras$read(x)
     dim <- vras$getDim()
     res <- vras$getResolution()
