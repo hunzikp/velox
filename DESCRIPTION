@@ -2,7 +2,7 @@ Package: velox
 Type: Package
 Title: Fast raster manipulation and extraction
 Version: 1.0
-Date: 2016-08-14
+Date: 2016-08-20
 Author: Philipp Hunziker
 Maintainer: Philipp Hunziker <hunzikp@gmail.com>
 Description: C++ accelerated raster manipulation and extraction.

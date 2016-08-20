@@ -12,6 +12,6 @@
 #loadModule("NumEx", TRUE)
 #loadModule("yada", TRUE)
 #loadModule("stdVector", TRUE)
-loadModule("vRaster_module", TRUE)
+#loadModule("vRaster_module", TRUE)
 
 
