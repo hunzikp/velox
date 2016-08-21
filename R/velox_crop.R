@@ -61,7 +61,7 @@ VeloxRaster$methods(crop = function(x) {
       mincol <- 1
       new.xmin <- extent[1]
     } else {
-      mincol <- floor(xmindiff/xres)
+      mincol <- floor(xmindiff/xres + .Machine$double.eps) + 1
       new.xmin <- extent[1] + (mincol-1)*xres
     }
 
@@ -69,23 +69,23 @@ VeloxRaster$methods(crop = function(x) {
       maxcol <- ncol
       new.xmax <- extent[2]
     } else {
-      maxcol <- ncol - floor(xmaxdiff/xres)
-      new.xmax <- extent[1] + (maxcol-1)*xres
+      maxcol <- ncol - floor(xmaxdiff/xres + .Machine$double.eps)
+      new.xmax <- extent[1] + (maxcol)*xres
     }
 
     if (ymindiff < 0) {
       maxrow <- nrow
       new.ymin <- extent[3]
     } else {
-      maxrow <- nrow - floor(ymindiff/yres)
-      new.ymin <- extent[4] - (maxrow-1)*yres
+      maxrow <- nrow - floor(ymindiff/yres + .Machine$double.eps)
+      new.ymin <- extent[4] - (maxrow)*yres
     }
 
     if (ymaxdiff < 0) {
       minrow <- 1
       new.ymax <- extent[4]
     } else {
-      minrow <- floor(ymaxdiff/yres)
+      minrow <- floor(ymaxdiff/yres + .Machine$double.eps) + 1
       new.ymax <- extent[4] - (minrow-1)*yres
     }
 
@@ -93,7 +93,7 @@ VeloxRaster$methods(crop = function(x) {
       rasterbands[[k]] <<- (rasterbands[[k]])[minrow:maxrow, mincol:maxcol]
     }
     new.extent <- c(new.xmin, new.xmax, new.ymin, new.ymax)
-    new.dim <- c(maxrow-minrow, maxcol-mincol)
+    new.dim <- c(maxrow-minrow + 1, maxcol-mincol + 1)
     extent <<- new.extent
     dim <<- new.dim
   } else {
