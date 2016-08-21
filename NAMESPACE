@@ -1,4 +1,3 @@
 useDynLib(velox)
 exportPattern("^[[:alpha:]]+")
-importFrom(Rcpp, evalCpp)
 import(methods, Rcpp, raster, rgeos)
