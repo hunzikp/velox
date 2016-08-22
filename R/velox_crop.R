@@ -46,6 +46,10 @@ VeloxRaster$methods(crop = function(x) {
       cext <- as.vector(extent(x))
     }
 
+    if (cext[2]-cext[1]<=0 | cext[4]-cext[3]<=0) {
+      stop("Extent is non-positive it at least one dimension.")
+    }
+
     nrow <- dim[1]
     ncol <- dim[2]
 
