@@ -94,7 +94,7 @@ VeloxRaster$methods(crop = function(x) {
     }
 
     for (k in 1:nbands) {
-      rasterbands[[k]] <<- (rasterbands[[k]])[minrow:maxrow, mincol:maxcol]
+      rasterbands[[k]] <<- (rasterbands[[k]])[minrow:maxrow, mincol:maxcol, drop=FALSE]
     }
     new.extent <- c(new.xmin, new.xmax, new.ymin, new.ymax)
     new.dim <- c(maxrow-minrow + 1, maxcol-mincol + 1)

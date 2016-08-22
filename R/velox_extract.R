@@ -68,8 +68,10 @@ VeloxRaster$methods(extract = function(sp, fun) {
     ## Pass extracted values through 'fun'
     hitmat <- do.call(rbind, hitmat.ls)
     valmat <- hitmat[,3:ncol(hitmat),drop=FALSE]
-    for (k in 1:ncol(valmat)) {
-      out[p,k] <- fun(valmat[,k])
+    if (nrow(valmat) > 0) {
+      for (k in 1:ncol(valmat)) {
+        out[p,k] <- fun(valmat[,k])
+      }
     }
   }
   return(out)
