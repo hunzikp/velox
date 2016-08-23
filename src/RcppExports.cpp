@@ -162,14 +162,14 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// read
-List read(std::string path);
-RcppExport SEXP velox_read(SEXP pathSEXP) {
+// readVelox
+List readVelox(std::string path);
+RcppExport SEXP velox_readVelox(SEXP pathSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
-    __result = Rcpp::wrap(read(path));
+    __result = Rcpp::wrap(readVelox(path));
     return __result;
 END_RCPP
 }
