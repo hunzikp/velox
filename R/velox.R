@@ -46,6 +46,7 @@ VeloxRaster <- setRefClass("VeloxRaster",
 #' @import Rcpp
 #' @import methods
 #' @import raster
+#' @import rgdal
 #' @useDynLib velox
 #'
 #' @export
@@ -180,19 +181,24 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
       stop(paste("File", x, "does not exist."))
     }
 
-    vx.ls <- readvelox_cpp(x)
-
-    res <- vx.ls[[1]]
-    origin <- vx.ls[[2]]
-    crs <- vx.ls[[3]]
-    nbands <- vx.ls[[4]]
-    dim <- vx.ls[[5]]
-    rasterbands <- vx.ls[[6]]
+    info <- suppressWarnings(GDALinfo(x))
+    crs <- GDALSpatialRef(x)
+    res <- info[6:7]
+    nbands <- info[3]
+    dim <- info[1:2]
+    origin <- info[4:5]
     extent <- rep(NA, 4)
     extent[1] <- origin[1]
     extent[2] <- origin[1] + dim[2]*res[1]
-    extent[4] <- origin[2]
-    extent[3] <- origin[2] - dim[1]*res[2]
+    extent[3] <- origin[2]
+    extent[4] <- origin[2] + dim[1]*res[2]
+
+    rasterbands <- vector("list", nbands)
+    gds <- new("GDALReadOnlyDataset", x)
+    for (i in 1:nbands) {
+      rasterbands[[i]] <- t(getRasterData(gds, band = i, offset = c(0, 0), as.is = TRUE, list_out=FALSE))
+    }
+    GDAL.close(gds)
 
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs)
 
@@ -210,24 +216,74 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
 #' @param overwrite Boolean indicating whether target file should be overwritten.
 #'
 #' @return Void.
+#'
+#' @import rgdal
 NULL
 VeloxRaster$methods(write = function(path, overwrite=FALSE) {
   "See \\code{\\link{VeloxRaster_write}}."
 
+  ## Some safe programming
   dir.path <- dirname(path)
   if (!dir.exists(dir.path)) {
     stop(paste("Directory", dir.path, "does not exists."))
   }
-
   if (file.exists(path) & !overwrite) {
     stop("File already exists. use overwrite=FALSE to overwrite.")
   }
-
   if (overwrite & file.exists(path)) {
     file.remove(path)
   }
 
-  writevelox_cpp(path, rasterbands, dim, extent, res, crs)
+  ## Determine data type
+  chk.vec <- checktype_cpp(.self$rasterbands)
+  isint <- as.logical(chk.vec[1])
+  isneg <- as.logical(chk.vec[2])
+  maxval <- chk.vec[3]
+  if (isint) {
+    for (i in 1:.self$nbands) {
+      storage.mode(.self$rasterbands[[i]]) <- "integer"
+    }
+    if (!isneg) {
+      int16 <- maxval<65534
+      if (int16) {
+        byte <- maxval<=255
+        if (byte) {
+          type <- "Byte"
+        } else {
+          type <- "UInt16"
+        }
+      } else {
+        type <- "UInt32"
+      }
+    } else {
+      int16 <- maxval<32767
+      if (int16) {
+        type <- "Int16"
+      } else {
+        type <- "Int32"
+      }
+    }
+  } else {
+    type <- "Float32"
+  }
+
+  ## Make driver object
+  dr <- new("GDALDriver", "GTiff")
+
+  ## Create GDS and write raster data
+  gtd <- new("GDALTransientDataset", driver=dr, rows=.self$dim[1], cols=.self$dim[2], bands=.self$nbands, type=type)
+  for (i in 1:.self$nbands) {
+    putRasterData(gtd, t(.self$rasterbands[[i]]), band = i, offset = c(0, 0))
+  }
+
+  ## Set Metadata
+  gt = c(.self$extent[1], .self$res[1], 0, .self$extent[4], 0, -.self$res[2])
+  gtd <- .Call("RGDAL_SetGeoTransform", gtd, gt, PACKAGE = "rgdal")
+  gtd <- .Call("RGDAL_SetProject", gtd, .self$crs, PACKAGE = "rgdal")
+
+  ## Save and close
+  saveDataset(gtd, filename=path)
+  GDAL.close(gtd)
 })
 
 
@@ -254,3 +310,9 @@ VeloxRaster$methods(drop = function(bands) {
   nbands <<- length(keep)
   rasterbands <<- rasterbands[keep]
 })
+
+#' @export
+checktype <- function(rasterbands) {
+  checktype_cpp(rasterbands)
+}
+
