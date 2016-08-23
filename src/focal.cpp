@@ -7,7 +7,7 @@ using namespace std;
 
 
 // [[Rcpp::export]]
-NumericMatrix medianfocal(NumericMatrix rasterband, int wrow, int wcol, int band) {
+NumericMatrix medianfocal_cpp(NumericMatrix rasterband, int wrow, int wcol, int band) {
 
   int nrow = rasterband.nrow();
   int ncol = rasterband.ncol();
@@ -39,7 +39,7 @@ NumericMatrix medianfocal(NumericMatrix rasterband, int wrow, int wcol, int band
 }
 
 // [[Rcpp::export]]
-NumericMatrix sumfocal(NumericMatrix rasterband, NumericMatrix weights, int wrow, int wcol, int band) {
+NumericMatrix sumfocal_cpp(NumericMatrix rasterband, NumericMatrix weights, int wrow, int wcol, int band) {
 
   int ncol = rasterband.ncol();
   int nrow = rasterband.nrow();
@@ -73,7 +73,7 @@ NumericMatrix sumfocal(NumericMatrix rasterband, NumericMatrix weights, int wrow
 }
 
 // [[Rcpp::export]]
-NumericMatrix meanfocal(NumericMatrix rasterband, NumericMatrix weights, int wrow, int wcol, int band) {
+NumericMatrix meanfocal_cpp(NumericMatrix rasterband, NumericMatrix weights, int wrow, int wcol, int band) {
 
   int ncol = rasterband.ncol();
   int nrow = rasterband.nrow();

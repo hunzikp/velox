@@ -9,7 +9,7 @@ using namespace Rcpp;
 using namespace std;
 
 // [[Rcpp::export]]
-List readVelox(std::string path) {
+List readvelox_cpp(std::string path) {
 
   Rcpp::List out(6);
 
@@ -84,7 +84,7 @@ List readVelox(std::string path) {
 
 
 // [[Rcpp::export]]
-void writeVelox(std::string path, List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, std::string crs) {
+void writevelox_cpp(std::string path, List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, std::string crs) {
 
   int nrow = dim[0];
   int ncol = dim[1];

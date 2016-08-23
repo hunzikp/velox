@@ -5,7 +5,7 @@ using namespace Rcpp;
 using namespace std;
 
 // [[Rcpp::export]]
-NumericMatrix hittest(List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, NumericVector polyX, NumericVector polyY, int polyCorners) {
+NumericMatrix hittest_cpp(List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, NumericVector polyX, NumericVector polyY, int polyCorners) {
 
   double xmin = extent[0];
   double xmax = extent[1];
@@ -112,7 +112,7 @@ NumericMatrix hittest(List rasterbands, NumericVector dim, NumericVector extent,
 
 
 // [[Rcpp::export]]
-NumericMatrix unhit(NumericMatrix cmat, NumericVector polyX, NumericVector polyY, int polyCorners) {
+NumericMatrix unhit_cpp(NumericMatrix cmat, NumericVector polyX, NumericVector polyY, int polyCorners) {
   double constant[polyCorners];
   double multiple[polyCorners];
   int   i, p, j= polyCorners-1;

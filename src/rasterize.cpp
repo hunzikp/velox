@@ -22,7 +22,7 @@ NumericMatrix coord2index(NumericMatrix coordmat, NumericVector extent, NumericV
 }
 
 // [[Rcpp::export]]
-NumericMatrix color(NumericMatrix rasterband, NumericMatrix coordvalmat, NumericVector extent, NumericVector res) {
+NumericMatrix color_cpp(NumericMatrix rasterband, NumericMatrix coordvalmat, NumericVector extent, NumericVector res) {
 
   NumericMatrix newband = clone(rasterband);
 

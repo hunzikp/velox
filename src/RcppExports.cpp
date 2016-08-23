@@ -20,22 +20,22 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// getcoordinates
-NumericMatrix getcoordinates(NumericVector dim, NumericVector res, NumericVector extent);
-RcppExport SEXP velox_getcoordinates(SEXP dimSEXP, SEXP resSEXP, SEXP extentSEXP) {
+// getcoordinates_cpp
+NumericMatrix getcoordinates_cpp(NumericVector dim, NumericVector res, NumericVector extent);
+RcppExport SEXP velox_getcoordinates_cpp(SEXP dimSEXP, SEXP resSEXP, SEXP extentSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericVector >::type dim(dimSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type res(resSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
-    __result = Rcpp::wrap(getcoordinates(dim, res, extent));
+    __result = Rcpp::wrap(getcoordinates_cpp(dim, res, extent));
     return __result;
 END_RCPP
 }
-// medianfocal
-NumericMatrix medianfocal(NumericMatrix rasterband, int wrow, int wcol, int band);
-RcppExport SEXP velox_medianfocal(SEXP rasterbandSEXP, SEXP wrowSEXP, SEXP wcolSEXP, SEXP bandSEXP) {
+// medianfocal_cpp
+NumericMatrix medianfocal_cpp(NumericMatrix rasterband, int wrow, int wcol, int band);
+RcppExport SEXP velox_medianfocal_cpp(SEXP rasterbandSEXP, SEXP wrowSEXP, SEXP wcolSEXP, SEXP bandSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -43,28 +43,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type wrow(wrowSEXP);
     Rcpp::traits::input_parameter< int >::type wcol(wcolSEXP);
     Rcpp::traits::input_parameter< int >::type band(bandSEXP);
-    __result = Rcpp::wrap(medianfocal(rasterband, wrow, wcol, band));
+    __result = Rcpp::wrap(medianfocal_cpp(rasterband, wrow, wcol, band));
     return __result;
 END_RCPP
 }
-// sumfocal
-NumericMatrix sumfocal(NumericMatrix rasterband, NumericMatrix weights, int wrow, int wcol, int band);
-RcppExport SEXP velox_sumfocal(SEXP rasterbandSEXP, SEXP weightsSEXP, SEXP wrowSEXP, SEXP wcolSEXP, SEXP bandSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericMatrix >::type rasterband(rasterbandSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type weights(weightsSEXP);
-    Rcpp::traits::input_parameter< int >::type wrow(wrowSEXP);
-    Rcpp::traits::input_parameter< int >::type wcol(wcolSEXP);
-    Rcpp::traits::input_parameter< int >::type band(bandSEXP);
-    __result = Rcpp::wrap(sumfocal(rasterband, weights, wrow, wcol, band));
-    return __result;
-END_RCPP
-}
-// meanfocal
-NumericMatrix meanfocal(NumericMatrix rasterband, NumericMatrix weights, int wrow, int wcol, int band);
-RcppExport SEXP velox_meanfocal(SEXP rasterbandSEXP, SEXP weightsSEXP, SEXP wrowSEXP, SEXP wcolSEXP, SEXP bandSEXP) {
+// sumfocal_cpp
+NumericMatrix sumfocal_cpp(NumericMatrix rasterband, NumericMatrix weights, int wrow, int wcol, int band);
+RcppExport SEXP velox_sumfocal_cpp(SEXP rasterbandSEXP, SEXP weightsSEXP, SEXP wrowSEXP, SEXP wcolSEXP, SEXP bandSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -73,13 +58,28 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type wrow(wrowSEXP);
     Rcpp::traits::input_parameter< int >::type wcol(wcolSEXP);
     Rcpp::traits::input_parameter< int >::type band(bandSEXP);
-    __result = Rcpp::wrap(meanfocal(rasterband, weights, wrow, wcol, band));
+    __result = Rcpp::wrap(sumfocal_cpp(rasterband, weights, wrow, wcol, band));
     return __result;
 END_RCPP
 }
-// hittest
-NumericMatrix hittest(List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, NumericVector polyX, NumericVector polyY, int polyCorners);
-RcppExport SEXP velox_hittest(SEXP rasterbandsSEXP, SEXP dimSEXP, SEXP extentSEXP, SEXP resSEXP, SEXP polyXSEXP, SEXP polyYSEXP, SEXP polyCornersSEXP) {
+// meanfocal_cpp
+NumericMatrix meanfocal_cpp(NumericMatrix rasterband, NumericMatrix weights, int wrow, int wcol, int band);
+RcppExport SEXP velox_meanfocal_cpp(SEXP rasterbandSEXP, SEXP weightsSEXP, SEXP wrowSEXP, SEXP wcolSEXP, SEXP bandSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type rasterband(rasterbandSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< int >::type wrow(wrowSEXP);
+    Rcpp::traits::input_parameter< int >::type wcol(wcolSEXP);
+    Rcpp::traits::input_parameter< int >::type band(bandSEXP);
+    __result = Rcpp::wrap(meanfocal_cpp(rasterband, weights, wrow, wcol, band));
+    return __result;
+END_RCPP
+}
+// hittest_cpp
+NumericMatrix hittest_cpp(List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, NumericVector polyX, NumericVector polyY, int polyCorners);
+RcppExport SEXP velox_hittest_cpp(SEXP rasterbandsSEXP, SEXP dimSEXP, SEXP extentSEXP, SEXP resSEXP, SEXP polyXSEXP, SEXP polyYSEXP, SEXP polyCornersSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -90,13 +90,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type polyX(polyXSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type polyY(polyYSEXP);
     Rcpp::traits::input_parameter< int >::type polyCorners(polyCornersSEXP);
-    __result = Rcpp::wrap(hittest(rasterbands, dim, extent, res, polyX, polyY, polyCorners));
+    __result = Rcpp::wrap(hittest_cpp(rasterbands, dim, extent, res, polyX, polyY, polyCorners));
     return __result;
 END_RCPP
 }
-// unhit
-NumericMatrix unhit(NumericMatrix cmat, NumericVector polyX, NumericVector polyY, int polyCorners);
-RcppExport SEXP velox_unhit(SEXP cmatSEXP, SEXP polyXSEXP, SEXP polyYSEXP, SEXP polyCornersSEXP) {
+// unhit_cpp
+NumericMatrix unhit_cpp(NumericMatrix cmat, NumericVector polyX, NumericVector polyY, int polyCorners);
+RcppExport SEXP velox_unhit_cpp(SEXP cmatSEXP, SEXP polyXSEXP, SEXP polyYSEXP, SEXP polyCornersSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -104,7 +104,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type polyX(polyXSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type polyY(polyYSEXP);
     Rcpp::traits::input_parameter< int >::type polyCorners(polyCornersSEXP);
-    __result = Rcpp::wrap(unhit(cmat, polyX, polyY, polyCorners));
+    __result = Rcpp::wrap(unhit_cpp(cmat, polyX, polyY, polyCorners));
     return __result;
 END_RCPP
 }
@@ -148,9 +148,9 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// color
-NumericMatrix color(NumericMatrix rasterband, NumericMatrix coordvalmat, NumericVector extent, NumericVector res);
-RcppExport SEXP velox_color(SEXP rasterbandSEXP, SEXP coordvalmatSEXP, SEXP extentSEXP, SEXP resSEXP) {
+// color_cpp
+NumericMatrix color_cpp(NumericMatrix rasterband, NumericMatrix coordvalmat, NumericVector extent, NumericVector res);
+RcppExport SEXP velox_color_cpp(SEXP rasterbandSEXP, SEXP coordvalmatSEXP, SEXP extentSEXP, SEXP resSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -158,24 +158,24 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericMatrix >::type coordvalmat(coordvalmatSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type res(resSEXP);
-    __result = Rcpp::wrap(color(rasterband, coordvalmat, extent, res));
+    __result = Rcpp::wrap(color_cpp(rasterband, coordvalmat, extent, res));
     return __result;
 END_RCPP
 }
-// readVelox
-List readVelox(std::string path);
-RcppExport SEXP velox_readVelox(SEXP pathSEXP) {
+// readvelox_cpp
+List readvelox_cpp(std::string path);
+RcppExport SEXP velox_readvelox_cpp(SEXP pathSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
-    __result = Rcpp::wrap(readVelox(path));
+    __result = Rcpp::wrap(readvelox_cpp(path));
     return __result;
 END_RCPP
 }
-// writeVelox
-void writeVelox(std::string path, List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, std::string crs);
-RcppExport SEXP velox_writeVelox(SEXP pathSEXP, SEXP rasterbandsSEXP, SEXP dimSEXP, SEXP extentSEXP, SEXP resSEXP, SEXP crsSEXP) {
+// writevelox_cpp
+void writevelox_cpp(std::string path, List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, std::string crs);
+RcppExport SEXP velox_writevelox_cpp(SEXP pathSEXP, SEXP rasterbandsSEXP, SEXP dimSEXP, SEXP extentSEXP, SEXP resSEXP, SEXP crsSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
@@ -184,7 +184,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type res(resSEXP);
     Rcpp::traits::input_parameter< std::string >::type crs(crsSEXP);
-    writeVelox(path, rasterbands, dim, extent, res, crs);
+    writevelox_cpp(path, rasterbands, dim, extent, res, crs);
     return R_NilValue;
 END_RCPP
 }

@@ -3,7 +3,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-NumericMatrix getcoordinates(NumericVector dim, NumericVector res, NumericVector extent){
+NumericMatrix getcoordinates_cpp(NumericVector dim, NumericVector res, NumericVector extent){
 
   int nrow = dim[0];
   int ncol = dim[1];
