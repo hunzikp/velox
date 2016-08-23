@@ -23,7 +23,7 @@ library(rgdal)
 drv <- dbDriver("PostgreSQL")
 con <- dbConnect(drv, dbname = "gisdb",
                  host = "localhost", port = 5432,
-                 user = "hunzikp", password = "Boeing777")
+                 user = "hunzikp", password = "XXXXX")
 
 ####################################################
 ### Make testing data
