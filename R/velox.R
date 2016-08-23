@@ -171,7 +171,7 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
       stop(paste("File", x, "does not exist."))
     }
 
-    vx.ls <- read(x)
+    vx.ls <- readVelox(x)
 
     res <- vx.ls[[1]]
     origin <- vx.ls[[2]]
@@ -204,9 +204,16 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
 NULL
 VeloxRaster$methods(write = function(path, overwrite=FALSE) {
   "See \\code{\\link{VeloxRaster_write}}."
+
+  dir.path <- dirname(path)
+  if (!dir.exists(dir.path)) {
+    stop(paste("Directory", dir.path, "does not exists."))
+  }
+
   if (file.exists(path) & !overwrite) {
     stop("File already exists. use overwrite=FALSE to overwrite.")
   }
+
   if (overwrite & file.exists(path)) {
     file.remove(path)
   }
