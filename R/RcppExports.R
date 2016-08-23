@@ -41,11 +41,7 @@ color_cpp <- function(rasterband, coordvalmat, extent, res) {
     .Call('velox_color_cpp', PACKAGE = 'velox', rasterband, coordvalmat, extent, res)
 }
 
-readvelox_cpp <- function(path) {
-    .Call('velox_readvelox_cpp', PACKAGE = 'velox', path)
-}
-
-writevelox_cpp <- function(path, rasterbands, dim, extent, res, crs) {
-    invisible(.Call('velox_writevelox_cpp', PACKAGE = 'velox', path, rasterbands, dim, extent, res, crs))
+checktype_cpp <- function(rasterbands) {
+    .Call('velox_checktype_cpp', PACKAGE = 'velox', rasterbands)
 }
 

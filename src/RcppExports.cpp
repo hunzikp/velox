@@ -162,29 +162,14 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// readvelox_cpp
-List readvelox_cpp(std::string path);
-RcppExport SEXP velox_readvelox_cpp(SEXP pathSEXP) {
+// checktype_cpp
+NumericVector checktype_cpp(List rasterbands);
+RcppExport SEXP velox_checktype_cpp(SEXP rasterbandsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
-    __result = Rcpp::wrap(readvelox_cpp(path));
-    return __result;
-END_RCPP
-}
-// writevelox_cpp
-void writevelox_cpp(std::string path, List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, std::string crs);
-RcppExport SEXP velox_writevelox_cpp(SEXP pathSEXP, SEXP rasterbandsSEXP, SEXP dimSEXP, SEXP extentSEXP, SEXP resSEXP, SEXP crsSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
     Rcpp::traits::input_parameter< List >::type rasterbands(rasterbandsSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type dim(dimSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type res(resSEXP);
-    Rcpp::traits::input_parameter< std::string >::type crs(crsSEXP);
-    writevelox_cpp(path, rasterbands, dim, extent, res, crs);
-    return R_NilValue;
+    __result = Rcpp::wrap(checktype_cpp(rasterbands));
+    return __result;
 END_RCPP
 }
