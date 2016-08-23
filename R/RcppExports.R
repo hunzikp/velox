@@ -41,8 +41,8 @@ color <- function(rasterband, coordvalmat, extent, res) {
     .Call('velox_color', PACKAGE = 'velox', rasterband, coordvalmat, extent, res)
 }
 
-read <- function(path) {
-    .Call('velox_read', PACKAGE = 'velox', path)
+readVelox <- function(path) {
+    .Call('velox_readVelox', PACKAGE = 'velox', path)
 }
 
 writeVelox <- function(path, rasterbands, dim, extent, res, crs) {
