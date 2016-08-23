@@ -40,7 +40,10 @@ install_github("hunzikp/velox")
 
 ## Benchmarking
 
-![velox vs raster performance for various operations](vignettes/benchmark.png "velox benchmark")
+The following performance tests were peformed on a i7-4810MQ CPU at 2.80GHz, using `raster` v.2.5-8, PostgreSQL 9.5 and PostGIS 2.2.
+See [here](vignettes/benchmarking.R) for the underlying R script.
+
+![](vignettes/benchmark.png "velox benchmark")
 
 
 ## Getting Started
