@@ -65,7 +65,7 @@ VeloxRaster$methods(rasterize = function(spdf, field, band=1, background=NULL) {
         crop.vx <- .self$copy()
         crop.vx$crop(ext)
         ## Get intersection with ring
-        hitmat.ls[[i]] <- hittest(crop.vx$rasterbands, crop.vx$dim, crop.vx$extent, crop.vx$res, ring[,1], ring[,2], nrow(ring))
+        hitmat.ls[[i]] <- hittest_cpp(crop.vx$rasterbands, crop.vx$dim, crop.vx$extent, crop.vx$res, ring[,1], ring[,2], nrow(ring))
       } else {
         hitmat.ls[[i]] <- matrix(NA, 0, 2+nbands)
       }
@@ -76,7 +76,7 @@ VeloxRaster$methods(rasterize = function(spdf, field, band=1, background=NULL) {
         for (j in 1:length(thishole.ls)) {
           hole <- thishole.ls[[j]]
           hole <- hole[-nrow(hole),]
-          hitmat.ls[[i]] <- unhit(hitmat.ls[[i]], hole[,1], hole[,2], nrow(hole))
+          hitmat.ls[[i]] <- unhit_cpp(hitmat.ls[[i]], hole[,1], hole[,2], nrow(hole))
         }
       }
     }
@@ -86,7 +86,7 @@ VeloxRaster$methods(rasterize = function(spdf, field, band=1, background=NULL) {
     if (nrow(hitmat) > 0) {
       value <- values[p]
       coordvalmat <- cbind(hitmat[,1:2,drop=FALSE], value)
-      rasterbands[[band]] <<- color(rasterbands[[band]], coordvalmat, extent, res)
+      rasterbands[[band]] <<- color_cpp(rasterbands[[band]], coordvalmat, extent, res)
     }
   }
 })

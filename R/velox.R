@@ -8,6 +8,8 @@
 #' @field res Raster resolution
 #' @field nbands Number of raster bands
 #' @field crs Coordinate reference system (Proj4 string)
+#'
+#' @export
 VeloxRaster <- setRefClass("VeloxRaster",
                            fields = c("rasterbands",
                                       "dim",
@@ -40,6 +42,13 @@ VeloxRaster <- setRefClass("VeloxRaster",
 #' Ignored if \code{x} is a Raster* object.
 #'
 #' @return A VeloxRaster object.
+#'
+#' @import Rcpp
+#' @import methods
+#' @import raster
+#' @useDynLib velox
+#'
+#' @export
 velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
 
   if (is(x, "RasterLayer")) {
@@ -171,7 +180,7 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
       stop(paste("File", x, "does not exist."))
     }
 
-    vx.ls <- readVelox(x)
+    vx.ls <- readvelox_cpp(x)
 
     res <- vx.ls[[1]]
     origin <- vx.ls[[2]]
@@ -218,7 +227,7 @@ VeloxRaster$methods(write = function(path, overwrite=FALSE) {
     file.remove(path)
   }
 
-  writeVelox(path, rasterbands, dim, extent, res, crs)
+  writevelox_cpp(path, rasterbands, dim, extent, res, crs)
 })
 
 

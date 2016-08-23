@@ -13,6 +13,8 @@
 #' @param fun An R function. See Details.
 #'
 #' @return A numeric matrix. One row per element in \code{sp}, one column per band in the VeloxRaster.
+#'
+#' @import rgeos
 NULL
 VeloxRaster$methods(extract = function(sp, fun) {
   "See \\code{\\link{VeloxRaster_extract}}."
@@ -48,8 +50,7 @@ VeloxRaster$methods(extract = function(sp, fun) {
         crop.vx <- .self$copy()
         crop.vx$crop(ext)
         ## Get intersection with ring
-        hitmat.ls[[i]] <- hittest(crop.vx$rasterbands, crop.vx$dim, crop.vx$extent, crop.vx$res, ring[,1], ring[,2], nrow(ring))
-        #hitmat.ls[[i]] <- hittest(rasterbands, dim, extent, res, ring[,1], ring[,2], nrow(ring))
+        hitmat.ls[[i]] <- hittest_cpp(crop.vx$rasterbands, crop.vx$dim, crop.vx$extent, crop.vx$res, ring[,1], ring[,2], nrow(ring))
       } else {
         hitmat.ls[[i]] <- matrix(NA, 0, 2+nbands)
       }
@@ -60,7 +61,7 @@ VeloxRaster$methods(extract = function(sp, fun) {
         for (j in 1:length(thishole.ls)) {
           hole <- thishole.ls[[j]]
           hole <- hole[-nrow(hole),]
-          hitmat.ls[[i]] <- unhit(hitmat.ls[[i]], hole[,1], hole[,2], nrow(hole))
+          hitmat.ls[[i]] <- unhit_cpp(hitmat.ls[[i]], hole[,1], hole[,2], nrow(hole))
         }
       }
     }

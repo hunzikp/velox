@@ -23,7 +23,7 @@ VeloxRaster$methods(medianFocal = function(wrow, wcol, bands=1) {
     stop(paste("wrow and wcol must be positive uneven integers."))
   }
   for (i in bands) {
-    rasterbands[[i]] <<- medianfocal(rasterband=rasterbands[[i]], wrow=wrow, wcol=wcol, band=i)
+    rasterbands[[i]] <<- medianfocal_cpp(rasterband=rasterbands[[i]], wrow=wrow, wcol=wcol, band=i)
   }
 })
 
@@ -55,7 +55,7 @@ VeloxRaster$methods(sumFocal = function(weights, bands=1) {
     stop(paste("The dimensions of the weights matrix must be uneven."))
   }
   for (i in bands) {
-    rasterbands[[i]] <<- sumfocal(rasterband=rasterbands[[i]], weights=weights, wrow=nrow(weights), wcol=ncol(weights), band=i)
+    rasterbands[[i]] <<- sumfocal_cpp(rasterband=rasterbands[[i]], weights=weights, wrow=nrow(weights), wcol=ncol(weights), band=i)
   }
 })
 
@@ -87,6 +87,6 @@ VeloxRaster$methods(meanFocal = function(weights, bands=1) {
     stop(paste("The dimensions of the weights matrix must be uneven."))
   }
   for (i in bands) {
-    rasterbands[[i]] <<- meanfocal(rasterbands[[i]], weights=weights, wrow=nrow(weights), wcol=ncol(weights), band=i)
+    rasterbands[[i]] <<- meanfocal_cpp(rasterbands[[i]], weights=weights, wrow=nrow(weights), wcol=ncol(weights), band=i)
   }
 })

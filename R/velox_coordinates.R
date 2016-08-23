@@ -10,6 +10,6 @@
 NULL
 VeloxRaster$methods(getCoordinates = function() {
   "See \\code{\\link{VeloxRaster_getCoordinates}}."
-  cmat <- getcoordinates(dim, res, extent)
+  cmat <- getcoordinates_cpp(dim, res, extent)
   return(cmat)
 })
