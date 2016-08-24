@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 vignettes/benchmark
 ^NEWS\.md$
+^cran-comments\.md$
+^\.travis\.yml$
