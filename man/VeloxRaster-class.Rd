@@ -28,11 +28,11 @@ A Reference Class for velox rasters
 \describe{
 \item{\code{aggregate(factor, aggtype = "sum")}}{See \code{\link{VeloxRaster_aggregate}}.}
 
+\item{\code{as.matrix(band = 1)}}{See \code{\link{VeloxRaster_as.matrix}}.}
+
 \item{\code{as.RasterLayer(band = 1)}}{See \code{\link{VeloxRaster_as.RasterLayer}}.}
 
 \item{\code{as.RasterStack()}}{See \code{\link{VeloxRaster_as.RasterStack}}.}
-
-\item{\code{as.matrix(band = 1)}}{See \code{\link{VeloxRaster_as.matrix}}.}
 
 \item{\code{col2im(mat, wrow, wcol, band, rowframe = 0, colframe = 0, rowstride = 1,
   colstride = 1)}}{See \code{\link{VeloxRaster_col2im}}.}
@@ -58,4 +58,11 @@ A Reference Class for velox rasters
 
 \item{\code{write(path, overwrite = FALSE)}}{See \code{\link{VeloxRaster_write}}.}
 }}
+\examples{
+## Make VeloxRaster objects using the 'velox' function
+mat <- matrix(1:100, 10, 10)
+vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+class(vx)
+
+}
 

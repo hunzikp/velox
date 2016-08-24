@@ -32,4 +32,12 @@ Hence, the usual R copy on modify semantics do not apply.
 Note that if \code{x} is a list of VeloxRasters, the \code{extent} and \code{crs} attributes are copied
 from the first list element.
 }
+\examples{
+## Create VeloxRaster from list of matrices
+mat1 <- matrix(1:100, 10, 10)
+mat2 <- matrix(100:1, 10, 10)
+mat.ls <- list(mat1, mat2)
+vx <- velox(mat.ls, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+
+}
 

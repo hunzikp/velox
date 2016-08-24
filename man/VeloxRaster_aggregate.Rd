@@ -18,4 +18,11 @@ Aggregates a VeloxRaster object to a lower resolution.
 \details{
 \code{aggtype} must be one of the following: "sum", "mean", "min", "max", "median".
 }
+\examples{
+## Make VeloxRaster
+mat <- matrix(1:100, 10, 10)
+vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+## Aggregate
+vx$aggregate(factor=c(2,2), aggtype='sum')
+}
 

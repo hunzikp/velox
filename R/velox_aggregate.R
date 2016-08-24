@@ -13,6 +13,13 @@
 #' @param aggtype A character string indicating the aggregation type. See Details.
 #'
 #' @return Void.
+#'
+#' @examples
+#' ## Make VeloxRaster
+#' mat <- matrix(1:100, 10, 10)
+#' vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Aggregate
+#' vx$aggregate(factor=c(2,2), aggtype='sum')
 NULL
 VeloxRaster$methods(aggregate = function(factor, aggtype="sum") {
   "See \\code{\\link{VeloxRaster_aggregate}}."

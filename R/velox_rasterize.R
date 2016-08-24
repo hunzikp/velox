@@ -17,6 +17,23 @@
 #' @param background Optional. A numeric value assigned to all background cells.
 #'
 #' @return Void.
+#'
+#' @examples
+#' ## Make VeloxRaster
+#' mat <- matrix(0, 10, 10)
+#' vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Make SpatialPolygonsDataFrame
+#' library(sp)
+#' library(rgeos)
+#' coord <- cbind(0.5, 0.5)
+#' spoint <- SpatialPoints(coords=coord)
+#' spols <- gBuffer(spgeom=spoint, width=0.25)
+#' spdf <- SpatialPolygonsDataFrame(Sr=spols, data=data.frame(value=1), match.ID=FALSE)
+#' ## Rasterize, set background to -1
+#' vx$rasterize(spdf=spdf, field="value", background=-1)
+#'
+#'@import rgeos
+#'@import sp
 NULL
 VeloxRaster$methods(rasterize = function(spdf, field, band=1, background=NULL) {
   "See \\code{\\link{VeloxRaster_rasterize}}."

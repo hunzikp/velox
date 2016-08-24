@@ -32,4 +32,14 @@ Creates a matrix of flattened image patches from a VeloxRaster band.
 Order is left-to-right, top-to-bottom.
 Note that if \code{any(c(rowframe, colframe)>0)}, the image patches are (partially) overlapping.
 }
+\examples{
+## Make VeloxRaster
+mat <- matrix(1:100, 10, 10)
+vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+## Apply im2col
+patch.mat <- vx$im2col(wrow=2, wcol=2, band=1, padval=0,
+                       rowframe=1, colframe=1, rowstride=2, colstride=2)
+dim(patch.mat)
+
+}
 

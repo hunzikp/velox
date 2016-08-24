@@ -32,4 +32,16 @@ Assigns values to a VeloxRaster band from a matrix of flattened image patches.
 Patch frames, as specified by \code{rowframe} and \code{rowframe}, are not assigned.
 This function is intended to be used with \code{mat} matrices constructed with the \code{im2col} function.
 }
+\examples{
+## Make VeloxRaster
+mat <- matrix(1:100, 10, 10)
+vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+## Apply im2col
+patch.mat <- vx$im2col(wrow=2, wcol=2, band=1, padval=0,
+                       rowframe=1, colframe=1, rowstride=2, colstride=2)
+## Apply col2im
+vx$col2im(mat=patch.mat, wrow=2, wcol=2, band=1, rowframe=1, colframe=1, rowstride=2, colstride=2)
+isTRUE(all.equal(mat, vx$as.matrix()))
+
+}
 

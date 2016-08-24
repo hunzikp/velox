@@ -9,6 +9,12 @@
 #' @field nbands Number of raster bands
 #' @field crs Coordinate reference system (Proj4 string)
 #'
+#' @examples
+#' ## Make VeloxRaster objects using the 'velox' function
+#' mat <- matrix(1:100, 10, 10)
+#' vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+#' class(vx)
+#'
 #' @export
 VeloxRaster <- setRefClass("VeloxRaster",
                            fields = c("rasterbands",
@@ -42,6 +48,13 @@ VeloxRaster <- setRefClass("VeloxRaster",
 #' Ignored if \code{x} is a Raster* object.
 #'
 #' @return A VeloxRaster object.
+#'
+#' @examples
+#' ## Create VeloxRaster from list of matrices
+#' mat1 <- matrix(1:100, 10, 10)
+#' mat2 <- matrix(100:1, 10, 10)
+#' mat.ls <- list(mat1, mat2)
+#' vx <- velox(mat.ls, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
 #'
 #' @import Rcpp
 #' @import methods
@@ -294,6 +307,16 @@ VeloxRaster$methods(write = function(path, overwrite=FALSE) {
 #' @param bands Numeric vector containing IDs of bands to be dropped.
 #'
 #' @return Void.
+#'
+#' @examples
+#' ## Make VeloxRaster with 2 bands
+#' mat1 <- matrix(1:100, 10, 10)
+#' mat2 <- matrix(100:1, 10, 10)
+#' vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+#'       crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Delete band 2
+#' vx$drop(bands=2)
+#'
 NULL
 VeloxRaster$methods(drop = function(bands) {
   "See \\code{\\link{VeloxRaster_drop}}."

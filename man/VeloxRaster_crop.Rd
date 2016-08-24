@@ -16,4 +16,13 @@ Void.
 Crops a VeloxRaster object to the extent of y. Note that currently the
 extent of y must overlap with the extent of x, otherwise an error is thrown.
 }
+\examples{
+## Make VeloxRaster
+mat <- matrix(1:100, 10, 10)
+vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+## Crop
+vx$crop(c(0.3,0.7,0.3,0.7))
+vx$extent
+
+}
 

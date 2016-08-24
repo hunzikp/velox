@@ -17,4 +17,15 @@ Applies a focal sum with weights matrix \code{weights} to a VeloxRaster.
 \details{
 Padding is currently not implemented.
 }
+\examples{
+## Make VeloxRaster with two bands
+mat1 <- matrix(1:100, 10, 10)
+mat2 <- matrix(100:1, 10, 10)
+vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+            crs="+proj=longlat +datum=WGS84 +no_defs")
+## Sum focal
+weights <- matrix(1, 5, 5)
+vx$sumFocal(weights=weights, bands=c(1,2))
+
+}
 

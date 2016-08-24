@@ -18,4 +18,21 @@ Extracts the values of all cells whose centerpoint is in \code{SpatialPolygons*}
 \details{
 \code{fun} must be an R function accepting a numeric vector as its sole input.
 }
+\examples{
+## Make VeloxRaster with two bands
+set.seed(0)
+mat1 <- matrix(rnorm(100), 10, 10)
+mat2 <- matrix(rnorm(100), 10, 10)
+vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+            crs="+proj=longlat +datum=WGS84 +no_defs")
+## Make SpatialPolygons
+library(sp)
+library(rgeos)
+coord <- cbind(0.5, 0.5)
+spoint <- SpatialPoints(coords=coord)
+spols <- gBuffer(spgeom=spoint, width=0.5)
+## Extract
+vx$extract(sp=spols, fun=mean)
+
+}
 

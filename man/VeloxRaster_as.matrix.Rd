@@ -12,4 +12,13 @@ A matrix.
 \description{
 \code{as.matrix} creates a matrix from a VeloxRaster band.
 }
+\examples{
+## Make VeloxRaster
+mat <- matrix(1:100, 10, 10)
+vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+## Cast to matrix
+vx.mat <- vx$as.matrix(band=1)
+identical(mat, vx.mat)
+
+}
 

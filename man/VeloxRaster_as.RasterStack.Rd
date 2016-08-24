@@ -9,4 +9,15 @@ A RasterStack object.
 \description{
 \code{as.RasterStack} creates a RasterStack object from a VeloxRaster.
 }
+\examples{
+## Make VeloxRaster with two bands
+mat1 <- matrix(1:100, 10, 10)
+mat2 <- matrix(100:1, 10, 10)
+vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+      crs="+proj=longlat +datum=WGS84 +no_defs")
+## Cast to RasterStack
+library(raster)
+rs <- vx$as.RasterStack()
+
+}
 

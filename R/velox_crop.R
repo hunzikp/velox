@@ -30,6 +30,15 @@ VeloxRaster$methods(overlapsExtent = function(x) {
 #' @param y An object from which an \code{extent} object can be extracted. Usually a Spatial* or Raster* object.
 #'
 #' @return Void.
+#'
+#' @examples
+#' ## Make VeloxRaster
+#' mat <- matrix(1:100, 10, 10)
+#' vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Crop
+#' vx$crop(c(0.3,0.7,0.3,0.7))
+#' vx$extent
+#'
 NULL
 VeloxRaster$methods(crop = function(x) {
   "See \\code{\\link{VeloxRaster_crop}}."

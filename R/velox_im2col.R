@@ -21,6 +21,16 @@
 #' in the x dimension. I.e. only every \code{colstride}th patch is extracted.
 #'
 #' @return A numeric matrix with \code{(wrow+2*rowframe)*(wcol+2*colframe)} columns.
+#'
+#' @examples
+#' ## Make VeloxRaster
+#' mat <- matrix(1:100, 10, 10)
+#' vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Apply im2col
+#' patch.mat <- vx$im2col(wrow=2, wcol=2, band=1, padval=0,
+#'                        rowframe=1, colframe=1, rowstride=2, colstride=2)
+#' dim(patch.mat)
+#'
 NULL
 VeloxRaster$methods(im2col = function(wrow, wcol, band, padval=0, rowframe=0, colframe=0,
                                       rowstride=1, colstride=1) {
@@ -71,6 +81,18 @@ VeloxRaster$methods(im2col = function(wrow, wcol, band, padval=0, rowframe=0, co
 #' in the x dimension.
 #'
 #' @return Void.
+#'
+#' @examples
+#' ## Make VeloxRaster
+#' mat <- matrix(1:100, 10, 10)
+#' vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Apply im2col
+#' patch.mat <- vx$im2col(wrow=2, wcol=2, band=1, padval=0,
+#'                        rowframe=1, colframe=1, rowstride=2, colstride=2)
+#' ## Apply col2im
+#' vx$col2im(mat=patch.mat, wrow=2, wcol=2, band=1, rowframe=1, colframe=1, rowstride=2, colstride=2)
+#' isTRUE(all.equal(mat, vx$as.matrix()))
+#'
 NULL
 VeloxRaster$methods(col2im = function(mat, wrow, wcol, band, rowframe=0, colframe=0,
                                       rowstride=1, colstride=1) {

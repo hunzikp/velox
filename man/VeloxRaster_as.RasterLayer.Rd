@@ -12,4 +12,13 @@ A RasterLayer object.
 \description{
 \code{as.RasterLayer} creates a RasterLayer object from a VeloxRaster band.
 }
+\examples{
+## Make VeloxRaster
+mat <- matrix(1:100, 10, 10)
+vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+## Cast to RasterLayer
+library(raster)
+rl <- vx$as.RasterLayer(band=1)
+
+}
 

@@ -13,6 +13,16 @@
 #' @param bands Numeric vector indicating bands where filter is applied.
 #'
 #' @return Void.
+#'
+#' @examples
+#' ## Make VeloxRaster with two bands
+#' mat1 <- matrix(1:100, 10, 10)
+#' mat2 <- matrix(100:1, 10, 10)
+#' vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+#'             crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Median focal
+#' vx$medianFocal(wrow=5, wcol=5, bands=c(1,2))
+#'
 NULL
 VeloxRaster$methods(medianFocal = function(wrow, wcol, bands=1) {
   "See \\code{\\link{VeloxRaster_medianFocal}}."
@@ -43,6 +53,17 @@ VeloxRaster$methods(medianFocal = function(wrow, wcol, bands=1) {
 #' @param bands Numeric vector indicating bands where filter is applied.
 #'
 #' @return Void.
+#'
+#' @examples
+#' ## Make VeloxRaster with two bands
+#' mat1 <- matrix(1:100, 10, 10)
+#' mat2 <- matrix(100:1, 10, 10)
+#' vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+#'             crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Sum focal
+#' weights <- matrix(1, 5, 5)
+#' vx$sumFocal(weights=weights, bands=c(1,2))
+#'
 NULL
 VeloxRaster$methods(sumFocal = function(weights, bands=1) {
   "See \\code{\\link{VeloxRaster_sumFocal}}."
@@ -75,6 +96,17 @@ VeloxRaster$methods(sumFocal = function(weights, bands=1) {
 #' @param bands Numeric vector indicating bands where filter is applied.
 #'
 #' @return Void.
+#'
+#' @examples
+#' ## Make VeloxRaster with two bands
+#' mat1 <- matrix(1:100, 10, 10)
+#' mat2 <- matrix(100:1, 10, 10)
+#' vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+#'             crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Mean focal
+#' weights <- matrix(1, 5, 5)
+#' vx$meanFocal(weights=weights, bands=c(1,2))
+#'
 NULL
 VeloxRaster$methods(meanFocal = function(weights, bands=1) {
   "See \\code{\\link{VeloxRaster_meanFocal}}."
