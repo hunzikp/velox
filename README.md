@@ -1,6 +1,6 @@
 # velox
 
-Velox is an R package for performing fast extraction and manipulation operations on geographic raster data. velox is fast because all raster computations are performed in C++ (using the excellent [Rcpp API](http://www.rcpp.org/)), and all data is held in memory. velox is intended to be used together with the [raster](https://cran.r-project.org/web/packages/raster/index.html) package, to which it provides a straightforward interface.
+Velox is an R package for performing fast extraction and manipulation operations on geographic raster data. velox is fast because all raster computations are performed in C++ (using the excellent [Rcpp API](http://www.rcpp.org/)), and all data is held in memory. velox is intended to be used together with the [raster](https://cran.r-project.org/package=raster) package, to which it provides a straightforward interface.
 
 Currently, the following operations are implemented in velox:
 + Focal value calculation (i.e. moving window filters)
@@ -13,25 +13,30 @@ Currently, the following operations are implemented in velox:
 
 ## Installation
 
-velox is currently only available for Unix machines (tested on CentOS 6, Ubuntu 14.04/15.10/16.04).
+Velox should work on all major operating systems (Linux, Mac OS, Windows).
 
 ### Dependencies
 
-For its read and write methods, velox requires the external GDAL library (>= 1.6.3). 
-On Debian/Ubuntu, enter
+For its read and write methods, velox requires the [rgdal](https://cran.r-project.org/package=rgdal) package, which relies on the external
+GDAL (>= 1.6.3) and PROJ.4 (>= 4.4.9) libraries. 
+On Debian/Ubuntu (>= 12.04), GDAL and PROJ.4 can be installbed by entering
 ```shell
-sudo apt-get install libgdal-dev
+sudo apt-get install libgdal-dev libproj-dev
 ```
 in a terminal.
-Further, velox depends on the [rgeos](https://cran.r-project.org/web/packages/rgeos/index.html) package, which in turn requires the external GEOS library (>= 3.2.0).
-To install GEOS on Debian/Ubuntu, enter
+Further, velox depends on the [rgeos](https://cran.r-project.org/package=rgeos) package, which in turn requires the external GEOS library (>= 3.2.0).
+To install GEOS on Debian/Ubuntu (>= 12.04), enter
 ```shell
 sudo apt-get install libgeos-dev
 ```
 in a terminal.
 
 ### R Package
-Once the system dependencies are available, you can install velox from within R using the `install_github` function from the [devtools](https://cran.r-project.org/web/packages/devtools/index.html) package:
+Once the system dependencies are available, you can either install velox from CRAN
+```R
+install.packages("velox")
+```
+or you can install the development version using the `install_github` function from the [devtools](https://cran.r-project.org/package=devtools) package:
 ```R
 library(devtools)
 install_github("hunzikp/velox")
