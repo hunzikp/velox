@@ -8,10 +8,10 @@ There were no ERRORs or WARNINGs.
 
 There was 1 NOTE:
 
-* checking dependencies in R code ... NOTE
-  Namespace in Imports field not imported from: 'R6'
+* Maintainer: 'Philipp Hunziker <hunzikp@gmail.com>'
+  New submission
 
-  R6 is a build-time dependency.
+  This is, indeed, my first submission.
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package.
