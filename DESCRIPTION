@@ -1,6 +1,6 @@
 Package: velox
 Type: Package
-Title: Fast raster manipulation and extraction
+Title: Fast Raster Manipulation and Extraction
 Version: 0.1.0
 Date: 2016-08-23
 Author: Philipp Hunziker
@@ -11,10 +11,10 @@ Imports:
     methods,
     Rcpp (>= 0.11.6),
     raster,
-    rgeos
+    rgeos,
+    rgdal
 LinkingTo: Rcpp
 NeedsCompilation: yes
 Packaged: 2016-01-25 15:17 UTC; hunzikp
 LazyData: TRUE
 RoxygenNote: 5.0.1
-SystemRequirements: GDAL (>= 1.6.3)
