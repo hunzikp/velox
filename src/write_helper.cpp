@@ -23,7 +23,7 @@ NumericVector checktype_cpp(List rasterbands) {
       if (fmod(val, 1) != 0) {
         out[0] = 0;
       }
-      if ((counter == 0) | (abs(val) > maxval)) {
+      if ((counter == 0) || (abs(val) > maxval)) {
         maxval = val;
       }
       if (val < 0) {
