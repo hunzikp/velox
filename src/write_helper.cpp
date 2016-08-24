@@ -12,7 +12,7 @@ NumericVector checktype_cpp(List rasterbands) {
   // out[2]: max abs value
   NumericVector out(3);
   out[0] = 1;
-  double maxval;
+  double maxval = 0;
   int counter = 0;
   int nbands = rasterbands.size();
   for (int i = 0; i < nbands; i++) {
@@ -23,7 +23,7 @@ NumericVector checktype_cpp(List rasterbands) {
       if (fmod(val, 1) != 0) {
         out[0] = 0;
       }
-      if (counter == 0 | abs(val) > maxval) {
+      if ((counter == 0) | (abs(val) > maxval)) {
         maxval = val;
       }
       if (val < 0) {
