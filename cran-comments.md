@@ -1,3 +1,7 @@
+## Resubmission
+This is a resubmission. In this version I have:
+* Replaced all variable-length arrays in the C++ code with std vectors (which conform to the C++ ISO standard).
+
 ## Test environments
 * local Ubuntu 14.04 install, R 3.3.1
 * ubuntu 14.04 server (on travis-ci), R 3.3.1
