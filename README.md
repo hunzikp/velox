@@ -10,6 +10,8 @@ Currently, the following operations are implemented in velox:
 + Cropping
 + Image patch flattening (similar to Matlab's im2col) and reconstruction
 
+The development of velox was funded in part by the Swiss National Science Foundation under COST action IS1107, SERI project C12.0087.
+
 ## Status
 [![Travis-CI Build Status](https://travis-ci.org/hunzikp/velox.svg?branch=master)](https://travis-ci.org/hunzikp/velox)
 
@@ -21,7 +23,7 @@ Velox should work on all major operating systems (Linux, Mac OS, Windows).
 
 For its read and write methods, velox requires the [rgdal](https://cran.r-project.org/package=rgdal) package, which relies on the external
 GDAL (>= 1.6.3) and PROJ.4 (>= 4.4.9) libraries. 
-On Debian/Ubuntu (>= 12.04), GDAL and PROJ.4 can be installbed by entering
+On Debian/Ubuntu (>= 12.04), GDAL and PROJ.4 can be installed by entering
 ```shell
 sudo apt-get install libgdal-dev libproj-dev
 ```
@@ -48,9 +50,9 @@ install_github("hunzikp/velox")
 ## Benchmarking
 
 The following performance tests were peformed on a i7-4810MQ CPU at 2.80GHz, using `raster` 2.5-8, PostgreSQL 9.5 and PostGIS 2.2.
-See [here](vignettes/benchmarking.R) for the underlying R script.
+See [here](https://raw.githubusercontent.com/hunzikp/velox/master/vignettes/benchmarking.R) for the underlying R script.
 
-![](vignettes/benchmark.png "velox benchmark")
+![](https://raw.githubusercontent.com/hunzikp/velox/master/vignettes/benchmark.png "velox benchmark")
 
 
 ## Getting Started
