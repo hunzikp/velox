@@ -8,8 +8,6 @@ using namespace std;
 NumericMatrix hittest_cpp(List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, NumericVector polyX, NumericVector polyY, int polyCorners) {
 
   double xmin = extent[0];
-  double xmax = extent[1];
-  double ymin = extent[2];
   double ymax = extent[3];
 
   int nrow = dim[0];
@@ -26,10 +24,12 @@ NumericMatrix hittest_cpp(List rasterbands, NumericVector dim, NumericVector ext
     rbvec.push_back(thisband);
   }
 
-  double constant[polyCorners];
-  double multiple[polyCorners];
-  int   i, p, j = polyCorners-1;
-  bool  oddNodes;
+  vector<double> constant;
+  constant.reserve(polyCorners);
+  vector<double> multiple;
+  multiple.reserve(polyCorners);
+  int i, j = polyCorners-1;
+  bool oddNodes;
   double pxmin = polyX[0];
   double pxmax = polyX[0];
   double pymin = polyY[0];
@@ -113,10 +113,12 @@ NumericMatrix hittest_cpp(List rasterbands, NumericVector dim, NumericVector ext
 
 // [[Rcpp::export]]
 NumericMatrix unhit_cpp(NumericMatrix cmat, NumericVector polyX, NumericVector polyY, int polyCorners) {
-  double constant[polyCorners];
-  double multiple[polyCorners];
-  int   i, p, j= polyCorners-1;
-  bool  oddNodes;
+  vector<double> constant;
+  constant.reserve(polyCorners);
+  vector<double> multiple;
+  multiple.reserve(polyCorners);
+  int i, j = polyCorners-1;
+  bool oddNodes;
   double pxmin = polyX[0];
   double pxmax = polyX[0];
   double pymin = polyY[0];
