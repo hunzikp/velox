@@ -82,8 +82,8 @@ NumericMatrix hittest_cpp(List rasterbands, NumericVector dim, NumericVector ext
       j=polyCorners-1;
 
       for (i=0; i<polyCorners; i++) {
-        if ((polyY[i]< ty && polyY[j]>=ty
-               ||   polyY[j]< ty && polyY[i]>=ty)) {
+        if (((polyY[i]< ty && polyY[j]>=ty)
+               ||   (polyY[j]< ty && polyY[i]>=ty))) {
           oddNodes^=(ty*multiple[i]+constant[i]<tx);
         }
         j=i;
@@ -170,8 +170,8 @@ NumericMatrix unhit_cpp(NumericMatrix cmat, NumericVector polyX, NumericVector p
 
     if (tx >= pxmin && tx <= pxmax && ty >= pymin && ty <= pymax) {
       for (i=0; i<polyCorners; i++) {
-        if ((polyY[i]< ty && polyY[j]>=ty
-               ||   polyY[j]< ty && polyY[i]>=ty)) {
+        if (((polyY[i]< ty && polyY[j]>=ty)
+               ||   (polyY[j]< ty && polyY[i]>=ty))) {
           oddNodes^=(ty*multiple[i]+constant[i]<tx);
         }
         j=i;
