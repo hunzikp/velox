@@ -12,7 +12,8 @@ Imports:
     Rcpp (>= 0.11.6),
     raster,
     rgeos,
-    rgdal
+    rgdal,
+    sp
 LinkingTo: Rcpp
 NeedsCompilation: yes
 Packaged: 2016-01-25 15:17 UTC; hunzikp
