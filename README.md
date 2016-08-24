@@ -10,6 +10,8 @@ Currently, the following operations are implemented in velox:
 + Cropping
 + Image patch flattening (similar to Matlab's im2col) and reconstruction
 
+## Status
+[![Travis-CI Build Status](https://travis-ci.org/hunzikp/velox.svg?branch=master)](https://travis-ci.org/hunzikp/velox)
 
 ## Installation
 
