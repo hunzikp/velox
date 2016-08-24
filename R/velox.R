@@ -278,8 +278,8 @@ VeloxRaster$methods(write = function(path, overwrite=FALSE) {
 
   ## Set Metadata
   gt = c(.self$extent[1], .self$res[1], 0, .self$extent[4], 0, -.self$res[2])
-  gtd <- .Call("RGDAL_SetGeoTransform", gtd, gt, PACKAGE = "rgdal")
-  gtd <- .Call("RGDAL_SetProject", gtd, .self$crs, PACKAGE = "rgdal")
+  GDALcall(gtd, "SetGeoTransform", gt)
+  GDALcall(gtd, "SetProject", .self$crs)
 
   ## Save and close
   saveDataset(gtd, filename=path)
@@ -310,9 +310,3 @@ VeloxRaster$methods(drop = function(bands) {
   nbands <<- length(keep)
   rasterbands <<- rasterbands[keep]
 })
-
-#' @export
-checktype <- function(rasterbands) {
-  checktype_cpp(rasterbands)
-}
-
