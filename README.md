@@ -49,7 +49,7 @@ install_github("hunzikp/velox")
 
 ## Benchmarking
 
-The following performance tests were peformed on a i7-4810MQ CPU at 2.80GHz, using `raster` 2.5-8, PostgreSQL 9.5 and PostGIS 2.2.
+The following performance tests were peformed on a i7-6920HQ CPU @ 2.90GHz, using `raster` 2.5-8, PostgreSQL 9.5 and PostGIS 2.2.
 See [here](https://raw.githubusercontent.com/hunzikp/velox/master/vignettes/benchmarking.R) for the underlying R script.
 
 ![](https://raw.githubusercontent.com/hunzikp/velox/master/vignettes/benchmark.png "velox benchmark")
