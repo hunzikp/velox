@@ -16,9 +16,9 @@ library(rbenchmark)
 library(RPostgreSQL)
 library(rgdal)
 
-TEST_PGIS <- FALSE  # Switch off if no PostGIS DB available
-PGIS_USER <- "hunzikp" # Adjust accordingly
-PGIS_PW <- "gotthard"
+TEST_PGIS <- TRUE  # Switch off if no PostGIS DB available
+PGIS_USER <- "hunzikp"  # Adjust accordingly
+PGIS_PW <- "xxxxx"      # Adjust accordingly
 
 ####################################################
 ### Setup PGSQL connection

@@ -220,6 +220,79 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
 }
 
 
+#' Get data type of a VeloxRaster
+#'
+#' @details Note that this method returns the data type of the raster, not the storage mode.
+#' Except in special cases, velox stores all raster data as double precision matrices.
+#'
+#' @name VeloxRaster_get_data_type
+#'
+#' @return A character string denoting a GDAL data type.
+#'
+NULL
+VeloxRaster$methods(get_data_type = function() {
+  "See \\code{\\link{VeloxRaster_get_data_type}}."
+
+  chk.vec <- checktype_cpp(.self$rasterbands)
+  isint <- as.logical(chk.vec[1])
+  isneg <- as.logical(chk.vec[2])
+  maxval <- chk.vec[3]
+  if (isint) {
+    if (!isneg) {
+      # Positive integers
+      is_uint16 <- maxval<=65534
+      if (is_uint16) {
+        is_byte <- maxval<=255
+        if (is_byte) {
+          type <- "Byte"
+        } else {
+          type <- "UInt16"
+        }
+      } else {
+        is_uint32 <- maxval<=4294967296
+        if (is_uint32) {
+          type <- "UInt32"
+        } else {
+          is_float32 <- maxval<=3.4e+38
+          if (is_float32) {
+            type <- "Float32"
+          } else {
+            type <- "Float64"
+          }
+        }
+      }
+    } else {
+      # Negative integers
+      is_int16 <- maxval<=32767
+      if (is_int16) {
+        type <- "Int16"
+      } else {
+        is_int32 <- maxval<=2147483647
+        if (is_int32) {
+          type <- "Int32"
+        } else {
+          is_float32 <- maxval<=3.4e+38
+          if (is_float32) {
+            type <- "Float32"
+          } else {
+            type <- "Float64"
+          }
+        }
+      }
+    }
+  } else {
+    is_float32 <- maxval<=3.4e+38
+    if (is_float32) {
+      type <- "Float32"
+    } else {
+      type <- "Float64"
+    }
+  }
+
+  return(type)
+})
+
+
 
 #' Write a VeloxRaster to disk as a GeoTiff file
 #'
@@ -241,43 +314,18 @@ VeloxRaster$methods(write = function(path, overwrite=FALSE) {
     stop(paste("Directory", dir.path, "does not exists."))
   }
   if (file.exists(path) & !overwrite) {
-    stop("File already exists. use overwrite=FALSE to overwrite.")
+    stop("File already exists. use overwrite=TRUE to overwrite.")
   }
   if (overwrite & file.exists(path)) {
     file.remove(path)
   }
 
-  ## Determine data type
-  chk.vec <- checktype_cpp(.self$rasterbands)
-  isint <- as.logical(chk.vec[1])
-  isneg <- as.logical(chk.vec[2])
-  maxval <- chk.vec[3]
-  if (isint) {
+  ## Determine data type & change storage mode to integer (if appropriate)
+  type <- .self$get_data_type()
+  if (grepl('int|byte', tolower(type))) {
     for (i in 1:.self$nbands) {
       storage.mode(.self$rasterbands[[i]]) <- "integer"
     }
-    if (!isneg) {
-      int16 <- maxval<65534
-      if (int16) {
-        byte <- maxval<=255
-        if (byte) {
-          type <- "Byte"
-        } else {
-          type <- "UInt16"
-        }
-      } else {
-        type <- "UInt32"
-      }
-    } else {
-      int16 <- maxval<32767
-      if (int16) {
-        type <- "Int16"
-      } else {
-        type <- "Int32"
-      }
-    }
-  } else {
-    type <- "Float32"
   }
 
   ## Make driver object

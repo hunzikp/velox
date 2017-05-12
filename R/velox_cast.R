@@ -41,6 +41,8 @@ VeloxRaster$methods(as.matrix = function(band=1) {
 #' \code{as.RasterLayer} creates a RasterLayer object from a VeloxRaster band.
 #'
 #' @param band Integer indicating the VeloxRaster band to be transformed.
+#' @param assign_data_type Boolean indicating whether the dataType attribute of the returned RasterLayer should be set.
+#' If TRUE, the dataType attribute is set to the smallest possible data type.
 #'
 #' @return A RasterLayer object.
 #'
@@ -53,13 +55,34 @@ VeloxRaster$methods(as.matrix = function(band=1) {
 #' rl <- vx$as.RasterLayer(band=1)
 #'
 NULL
-VeloxRaster$methods(as.RasterLayer = function(band=1) {
+VeloxRaster$methods(as.RasterLayer = function(band=1, assign_data_type=FALSE) {
   "See \\code{\\link{VeloxRaster_as.RasterLayer}}."
   if (band > nbands) {
     stop(paste("VeloxRaster only has", nbands, "bands."))
   }
 
   ras <- raster(rasterbands[[band]], xmn=extent[1], xmx=extent[2], ymn=extent[3], ymx=extent[4], crs=crs)
+
+  if (assign_data_type) {
+    type <- .self$get_data_type()
+    if (type == "Byte") {
+      rtype <- 'INT1U'
+    } else if (type == "UInt16") {
+      rtype <- 'INT2U'
+    } else if (type == 'UInt32') {
+      rtype <- 'FLT4S'  # Avoid as per ?dataType
+    } else if (type == 'Int16') {
+      rtype <- 'INT2S'
+    } else if (type == 'Int32') {
+      rtype <- 'INT4S'
+    } else if (type == 'Float32') {
+      rtype <- 'FLT4S'
+    } else if (type == 'Float64') {
+      rtype <- 'FLT8S'
+    }
+    dataType(ras) <- rtype
+  }
+
   return(ras)
 })
 
@@ -72,6 +95,8 @@ VeloxRaster$methods(as.RasterLayer = function(band=1) {
 #' @description
 #' \code{as.RasterStack} creates a RasterStack object from a VeloxRaster.
 #'
+#' @param assign_data_type Boolean indicating whether the dataType attribute of the returned RasterStack should be set.
+#' If TRUE, the dataType attribute is set to the smallest possible data type.
 #'
 #' @return A RasterStack object.
 #'
@@ -86,12 +111,33 @@ VeloxRaster$methods(as.RasterLayer = function(band=1) {
 #' rs <- vx$as.RasterStack()
 #'
 NULL
-VeloxRaster$methods(as.RasterStack = function() {
+VeloxRaster$methods(as.RasterStack = function(assign_data_type=FALSE) {
   "See \\code{\\link{VeloxRaster_as.RasterStack}}."
   stk.ls <- vector("list", nbands)
   for (k in 1:nbands) {
     stk.ls[[k]] <- raster(rasterbands[[k]], xmn=extent[1], xmx=extent[2], ymn=extent[3], ymx=extent[4], crs=crs)
   }
   stk <- stack(stk.ls)
+
+  if (assign_data_type) {
+    type <- .self$get_data_type()
+    if (type == "Byte") {
+      rtype <- 'INT1U'
+    } else if (type == "UInt16") {
+      rtype <- 'INT2U'
+    } else if (type == 'UInt32') {
+      rtype <- 'FLT4S'  # Avoid as per ?dataType
+    } else if (type == 'Int16') {
+      rtype <- 'INT2S'
+    } else if (type == 'Int32') {
+      rtype <- 'INT4S'
+    } else if (type == 'Float32') {
+      rtype <- 'FLT4S'
+    } else if (type == 'Float64') {
+      rtype <- 'FLT8S'
+    }
+    dataType(stk) <- rtype
+  }
+
   return(stk)
 })

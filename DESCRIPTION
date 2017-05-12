@@ -19,3 +19,4 @@ NeedsCompilation: yes
 Packaged: 2016-08-24 12:15 UTC; hunzikp
 LazyData: TRUE
 RoxygenNote: 5.0.1
+Suggests: testthat

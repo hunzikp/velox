@@ -24,7 +24,7 @@ NumericVector checktype_cpp(List rasterbands) {
         out[0] = 0;
       }
       if ((counter == 0) || (abs(val) > maxval)) {
-        maxval = val;
+        maxval = abs(val);
       }
       if (val < 0) {
         out[1] = 1;
