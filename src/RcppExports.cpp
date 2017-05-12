@@ -148,6 +148,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pointextract_cpp
+NumericMatrix pointextract_cpp(List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, NumericMatrix pcoords);
+RcppExport SEXP velox_pointextract_cpp(SEXP rasterbandsSEXP, SEXP dimSEXP, SEXP extentSEXP, SEXP resSEXP, SEXP pcoordsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type rasterbands(rasterbandsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type dim(dimSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type extent(extentSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type res(resSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type pcoords(pcoordsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pointextract_cpp(rasterbands, dim, extent, res, pcoords));
+    return rcpp_result_gen;
+END_RCPP
+}
 // color_cpp
 NumericMatrix color_cpp(NumericMatrix rasterband, NumericMatrix coordvalmat, NumericVector extent, NumericVector res);
 RcppExport SEXP velox_color_cpp(SEXP rasterbandSEXP, SEXP coordvalmatSEXP, SEXP extentSEXP, SEXP resSEXP) {

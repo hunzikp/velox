@@ -43,6 +43,8 @@ A Reference Class for velox rasters
 
 \item{\code{extract(sp, fun)}}{See \code{\link{VeloxRaster_extract}}.}
 
+\item{\code{extract_points(sp)}}{See \code{\link{VeloxRaster_extract_points}}.}
+
 \item{\code{getCoordinates()}}{See \code{\link{VeloxRaster_getCoordinates}}.}
 
 \item{\code{get_data_type()}}{See \code{\link{VeloxRaster_get_data_type}}.}

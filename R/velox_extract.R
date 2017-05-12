@@ -1,4 +1,4 @@
-#' @title Extract
+#' @title Extract Values Given Polygons
 #'
 #' @name VeloxRaster_extract
 #'
@@ -7,7 +7,7 @@
 #' \code{sp} and applies R function \code{fun}.
 #'
 #' @details
-#' \code{fun} must be an R function accepting a numeric vector as its sole input.
+#' \code{fun} must be an R function accepting a numeric vector as its first (and only mandatory) argument.
 #'
 #' @param sp A SpatialPolygons* object.
 #' @param fun An R function. See Details.
@@ -129,3 +129,45 @@ disect <- function(sp) {
   }
   return(list(ring.ls, hole.ls))
 }
+
+#' @title Extract Values Given Points
+#'
+#' @name VeloxRaster_extract_points
+#'
+#' @description
+#' Given a set of points, returns all raster values of the cells with which they intersect.
+#'
+#' @param sp A SpatialPoints* object.
+#'
+#' @return A numeric matrix. One row per element in \code{sp}, one column per band in the VeloxRaster.
+#'
+#' @examples
+#' ## Make VeloxRaster with two bands
+#' set.seed(0)
+#' mat1 <- matrix(rnorm(100), 10, 10)
+#' mat2 <- matrix(rnorm(100), 10, 10)
+#' vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+#'             crs="+proj=longlat +datum=WGS84 +no_defs")
+#' ## Make SpatialPoints
+#' library(sp)
+#' library(rgeos)
+#' coord <- cbind(runif(10), runif(10))
+#' spoint <- SpatialPoints(coords=coord)
+#' ## Extract
+#' vx$extract_points(sp=spoint)
+#'
+#' @import rgeos
+#' @import sp
+NULL
+VeloxRaster$methods(extract_points = function(sp) {
+  "See \\code{\\link{VeloxRaster_extract_points}}."
+
+  if (!inherits(sp, 'SpatialPoints')) {
+    stop('sp must be of class SpatialPoints*.')
+  }
+
+  coords <- sp@coords
+  out.mat <- pointextract_cpp(.self$rasterbands, .self$dim, .self$extent, .self$res, coords)
+
+  return(out.mat)
+})

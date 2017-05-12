@@ -37,6 +37,10 @@ col2im_cpp <- function(rasterband, dim, colmat, wrow, wcol, band, rowframe, colf
     .Call('velox_col2im_cpp', PACKAGE = 'velox', rasterband, dim, colmat, wrow, wcol, band, rowframe, colframe, rowstride, colstride)
 }
 
+pointextract_cpp <- function(rasterbands, dim, extent, res, pcoords) {
+    .Call('velox_pointextract_cpp', PACKAGE = 'velox', rasterbands, dim, extent, res, pcoords)
+}
+
 color_cpp <- function(rasterband, coordvalmat, extent, res) {
     .Call('velox_color_cpp', PACKAGE = 'velox', rasterband, coordvalmat, extent, res)
 }
