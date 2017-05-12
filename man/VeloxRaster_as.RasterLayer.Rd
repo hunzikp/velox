@@ -5,6 +5,9 @@
 \title{Cast a VeloxRaster band as a RasterLayer object}
 \arguments{
 \item{band}{Integer indicating the VeloxRaster band to be transformed.}
+
+\item{assign_data_type}{Boolean indicating whether the dataType attribute of the returned RasterLayer should be set.
+If TRUE, the dataType attribute is set to the smallest possible data type.}
 }
 \value{
 A RasterLayer object.

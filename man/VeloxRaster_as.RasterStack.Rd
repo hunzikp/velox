@@ -3,6 +3,10 @@
 \name{VeloxRaster_as.RasterStack}
 \alias{VeloxRaster_as.RasterStack}
 \title{Cast a VeloxRaster as a RasterStack object}
+\arguments{
+\item{assign_data_type}{Boolean indicating whether the dataType attribute of the returned RasterStack should be set.
+If TRUE, the dataType attribute is set to the smallest possible data type.}
+}
 \value{
 A RasterStack object.
 }

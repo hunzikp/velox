@@ -28,11 +28,11 @@ A Reference Class for velox rasters
 \describe{
 \item{\code{aggregate(factor, aggtype = "sum")}}{See \code{\link{VeloxRaster_aggregate}}.}
 
+\item{\code{as.RasterLayer(band = 1, assign_data_type = FALSE)}}{See \code{\link{VeloxRaster_as.RasterLayer}}.}
+
+\item{\code{as.RasterStack(assign_data_type = FALSE)}}{See \code{\link{VeloxRaster_as.RasterStack}}.}
+
 \item{\code{as.matrix(band = 1)}}{See \code{\link{VeloxRaster_as.matrix}}.}
-
-\item{\code{as.RasterLayer(band = 1)}}{See \code{\link{VeloxRaster_as.RasterLayer}}.}
-
-\item{\code{as.RasterStack()}}{See \code{\link{VeloxRaster_as.RasterStack}}.}
 
 \item{\code{col2im(mat, wrow, wcol, band, rowframe = 0, colframe = 0, rowstride = 1,
   colstride = 1)}}{See \code{\link{VeloxRaster_col2im}}.}
@@ -44,6 +44,8 @@ A Reference Class for velox rasters
 \item{\code{extract(sp, fun)}}{See \code{\link{VeloxRaster_extract}}.}
 
 \item{\code{getCoordinates()}}{See \code{\link{VeloxRaster_getCoordinates}}.}
+
+\item{\code{get_data_type()}}{See \code{\link{VeloxRaster_get_data_type}}.}
 
 \item{\code{im2col(wrow, wcol, band, padval = 0, rowframe = 0, colframe = 0,
   rowstride = 1, colstride = 1)}}{See \code{\link{VeloxRaster_im2col}}.}
