@@ -163,7 +163,7 @@ VeloxRaster$methods(as.RasterStack = function(assign_data_type=FALSE) {
 #'       crs="+proj=longlat +datum=WGS84 +no_defs")
 #' ## Cast to RasterBrick
 #' library(raster)
-#' rs <- vx$RasterBrick()
+#' rs <- vx$as.RasterBrick()
 #'
 NULL
 VeloxRaster$methods(as.RasterBrick = function(assign_data_type=FALSE) {
