@@ -2,50 +2,50 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 aggregate_cpp <- function(rasterbands, dim, res, factor, aggtype) {
-    .Call('velox_aggregate_cpp', PACKAGE = 'velox', rasterbands, dim, res, factor, aggtype)
+    .Call('_velox_aggregate_cpp', PACKAGE = 'velox', rasterbands, dim, res, factor, aggtype)
 }
 
 getcoordinates_cpp <- function(dim, res, extent) {
-    .Call('velox_getcoordinates_cpp', PACKAGE = 'velox', dim, res, extent)
+    .Call('_velox_getcoordinates_cpp', PACKAGE = 'velox', dim, res, extent)
 }
 
 medianfocal_cpp <- function(rasterband, wrow, wcol, band) {
-    .Call('velox_medianfocal_cpp', PACKAGE = 'velox', rasterband, wrow, wcol, band)
+    .Call('_velox_medianfocal_cpp', PACKAGE = 'velox', rasterband, wrow, wcol, band)
 }
 
 sumfocal_cpp <- function(rasterband, weights, wrow, wcol, band) {
-    .Call('velox_sumfocal_cpp', PACKAGE = 'velox', rasterband, weights, wrow, wcol, band)
+    .Call('_velox_sumfocal_cpp', PACKAGE = 'velox', rasterband, weights, wrow, wcol, band)
 }
 
 meanfocal_cpp <- function(rasterband, weights, wrow, wcol, band) {
-    .Call('velox_meanfocal_cpp', PACKAGE = 'velox', rasterband, weights, wrow, wcol, band)
+    .Call('_velox_meanfocal_cpp', PACKAGE = 'velox', rasterband, weights, wrow, wcol, band)
 }
 
 hittest_cpp <- function(rasterbands, dim, extent, res, polyX, polyY, polyCorners) {
-    .Call('velox_hittest_cpp', PACKAGE = 'velox', rasterbands, dim, extent, res, polyX, polyY, polyCorners)
+    .Call('_velox_hittest_cpp', PACKAGE = 'velox', rasterbands, dim, extent, res, polyX, polyY, polyCorners)
 }
 
 unhit_cpp <- function(cmat, polyX, polyY, polyCorners) {
-    .Call('velox_unhit_cpp', PACKAGE = 'velox', cmat, polyX, polyY, polyCorners)
+    .Call('_velox_unhit_cpp', PACKAGE = 'velox', cmat, polyX, polyY, polyCorners)
 }
 
 im2col_cpp <- function(rasterband, dim, wrow, wcol, band, padval, rowframe, colframe, rowstride, colstride) {
-    .Call('velox_im2col_cpp', PACKAGE = 'velox', rasterband, dim, wrow, wcol, band, padval, rowframe, colframe, rowstride, colstride)
+    .Call('_velox_im2col_cpp', PACKAGE = 'velox', rasterband, dim, wrow, wcol, band, padval, rowframe, colframe, rowstride, colstride)
 }
 
 col2im_cpp <- function(rasterband, dim, colmat, wrow, wcol, band, rowframe, colframe, rowstride, colstride) {
-    .Call('velox_col2im_cpp', PACKAGE = 'velox', rasterband, dim, colmat, wrow, wcol, band, rowframe, colframe, rowstride, colstride)
+    .Call('_velox_col2im_cpp', PACKAGE = 'velox', rasterband, dim, colmat, wrow, wcol, band, rowframe, colframe, rowstride, colstride)
 }
 
 pointextract_cpp <- function(rasterbands, dim, extent, res, pcoords) {
-    .Call('velox_pointextract_cpp', PACKAGE = 'velox', rasterbands, dim, extent, res, pcoords)
+    .Call('_velox_pointextract_cpp', PACKAGE = 'velox', rasterbands, dim, extent, res, pcoords)
 }
 
 color_cpp <- function(rasterband, coordvalmat, extent, res) {
-    .Call('velox_color_cpp', PACKAGE = 'velox', rasterband, coordvalmat, extent, res)
+    .Call('_velox_color_cpp', PACKAGE = 'velox', rasterband, coordvalmat, extent, res)
 }
 
 checktype_cpp <- function(rasterbands) {
-    .Call('velox_checktype_cpp', PACKAGE = 'velox', rasterbands)
+    .Call('_velox_checktype_cpp', PACKAGE = 'velox', rasterbands)
 }
 

@@ -81,9 +81,7 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=1, crs=crs)
 
     return(obj)
-  }
-
-  if (is(x, "RasterStack")) {
+  } else if (is(x, "RasterStack")) {
 
     extent = as.vector(extent(x))
     origin = c(extent[1], extent[4])
@@ -103,9 +101,27 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs)
 
     return(obj)
-  }
+  } else if (is(x, "RasterBrick")) {
 
-  if (is(x, "matrix")) {
+    extent = as.vector(extent(x))
+    origin = c(extent[1], extent[4])
+    dim = c(nrow(x), ncol(x))
+    res = res(x)
+    if (is.na(crs(x))) {
+      crs = ""
+    } else {
+      crs = crs(x, asText=TRUE)
+    }
+    nbands = raster::nlayers(x)
+    rasterbands <- vector("list", nbands)
+    for (k in 1:length(rasterbands)) {
+      rasterbands[[k]] <- as.matrix(x[[k]])
+    }
+
+    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs)
+
+    return(obj)
+  } else if (is(x, "matrix")) {
 
     if (is.null(extent) | is.null(res)) {
       stop("extent and res arguments needed.")
@@ -125,9 +141,7 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=1, crs=crs)
 
     return(obj)
-  }
-
-  if (is(x, "list")) {
+  } else if (is(x, "list")) {
     if (is(x[[1]], "matrix")) {
       ## List of matrices
 
@@ -186,9 +200,7 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     } else {
       stop("If x is a list, its elements must be of class 'matrix' or 'VeloxRaster'.")
     }
-  }
-
-  if (is(x, "character")) {
+  } else if (is(x, "character")) {
 
     if (!file.exists(x)) {
       stop(paste("File", x, "does not exist."))
@@ -216,6 +228,8 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs)
 
     return(obj)
+  } else {
+    stop("x is not of a supported class.")
   }
 }
 

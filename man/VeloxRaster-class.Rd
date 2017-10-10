@@ -28,6 +28,8 @@ A Reference Class for velox rasters
 \describe{
 \item{\code{aggregate(factor, aggtype = "sum")}}{See \code{\link{VeloxRaster_aggregate}}.}
 
+\item{\code{as.RasterBrick(assign_data_type = FALSE)}}{See \code{\link{VeloxRaster_as.RasterBrick}}.}
+
 \item{\code{as.RasterLayer(band = 1, assign_data_type = FALSE)}}{See \code{\link{VeloxRaster_as.RasterLayer}}.}
 
 \item{\code{as.RasterStack(assign_data_type = FALSE)}}{See \code{\link{VeloxRaster_as.RasterStack}}.}
