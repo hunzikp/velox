@@ -23,6 +23,7 @@ test_that("summary extract works", {
   vx.emat <- vx$extract(sp=spols, fun = mean)
   rs.emat <- extract(x = brk, y = spols, fun = mean)
   colnames(vx.emat) <- colnames(rs.emat)
+  rownames(vx.emat) <- rownames(rs.emat)
 
   ## Comparison
   expect_equal(vx.emat, rs.emat)
@@ -48,7 +49,7 @@ test_that("raw extract works", {
   rs.elist <- extract(x = brk, y = spols, fun = NULL)
 
   ## Comparison
-  expect_true(all(vx.elist[[1]][,1] %in% rs.elist[[1]][,1]))
+    expect_true(all(vx.elist[[1]][,1] %in% rs.elist[[1]][,1]))
   expect_true(all(vx.elist[[1]][,2] %in% rs.elist[[1]][,2]))
   expect_true(all(vx.elist[[2]][,1] %in% rs.elist[[2]][,1]))
   expect_true(all(vx.elist[[2]][,2] %in% rs.elist[[2]][,2]))
