@@ -47,11 +47,15 @@ VeloxRaster$methods(extract = function(sp, fun = NULL) {
     return(out)
   }
 
+  sp_IDs <- sapply(sp@polygons, function(x) slot(x, "ID"))
   if (!is.null(fun)) {
     out <- matrix(NA, length(sp), nbands)
+    rownames(out) <- sp_IDs
   } else {
     out <- vector("list", length(sp))
+    names(out) <- sp_IDs
   }
+  
 
 
   for (p in 1:length(sp)) {
