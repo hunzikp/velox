@@ -4,15 +4,20 @@
 #'
 #' @description
 #' Extracts the values of all cells whose centerpoint is in \code{SpatialPolygons*} object
-#' \code{sp} and applies R function \code{fun}.
+#' \code{sp} and optionally applies R function \code{fun}.
 #'
 #' @details
-#' \code{fun} must be an R function accepting a numeric vector as its first (and only mandatory) argument.
+#' If passed, \code{fun} must be an R function accepting a numeric vector as its first (and only mandatory) argument, and returning a scalar.
+#' If \code{fun} is \code{NULL}, \code{extract} returns a list of matrices, each matrix containing the raster values intersecting with the respective polygon.
 #'
 #' @param sp A SpatialPolygons* object.
 #' @param fun An R function. See Details.
 #'
-#' @return A numeric matrix. One row per element in \code{sp}, one column per band in the VeloxRaster.
+#' @return
+#' If \code{fun} is passed: A numeric matrix with one row per element in \code{sp}, one column per band in the VeloxRaster.
+#'
+#' Otherwise: A list of numeric matrices, with one list element per element in \code{sp}.
+#' Each matrix consists of one column per band in the VeloxRaster, one row per raster cell intersecting with the polygon.
 #'
 #' @examples
 #' ## Make VeloxRaster with two bands
@@ -33,14 +38,21 @@
 #' @import rgeos
 #' @import sp
 NULL
-VeloxRaster$methods(extract = function(sp, fun) {
+VeloxRaster$methods(extract = function(sp, fun = NULL) {
   "See \\code{\\link{VeloxRaster_extract}}."
-  out <- matrix(NA, length(sp), nbands)
 
   overlaps <- .self$overlapsExtent(sp)
   if (!overlaps) {
+    out <- matrix(NA, length(sp), nbands)
     return(out)
   }
+
+  if (!is.null(fun)) {
+    out <- matrix(NA, length(sp), nbands)
+  } else {
+    out <- vector("list", length(sp))
+  }
+
 
   for (p in 1:length(sp)) {
 
@@ -83,14 +95,24 @@ VeloxRaster$methods(extract = function(sp, fun) {
       }
     }
 
-    ## Pass extracted values through 'fun'
-    hitmat <- do.call(rbind, hitmat.ls)
-    valmat <- hitmat[,3:ncol(hitmat),drop=FALSE]
-    if (nrow(valmat) > 0) {
-      for (k in 1:ncol(valmat)) {
-        out[p,k] <- fun(valmat[,k])
+    if (!is.null(fun)) {
+      ## Pass extracted values through 'fun'
+      hitmat <- do.call(rbind, hitmat.ls)
+      valmat <- hitmat[,3:ncol(hitmat),drop=FALSE]
+      if (nrow(valmat) > 0) {
+        for (k in 1:ncol(valmat)) {
+          out[p,k] <- fun(valmat[,k])
+        }
+      }
+    } else {
+      ## Return 'raw' raster values for each polygon
+      hitmat <- do.call(rbind, hitmat.ls)
+      valmat <- hitmat[,3:ncol(hitmat),drop=FALSE]
+      if (nrow(valmat) > 0) {
+        out[[p]] <- valmat
       }
     }
+
   }
   return(out)
 })

@@ -9,14 +9,18 @@
 \item{fun}{An R function. See Details.}
 }
 \value{
-A numeric matrix. One row per element in \code{sp}, one column per band in the VeloxRaster.
+If \code{fun} is passed: A numeric matrix with one row per element in \code{sp}, one column per band in the VeloxRaster.
+
+Otherwise: A list of numeric matrices, with one list element per element in \code{sp}.
+Each matrix consists of one column per band in the VeloxRaster, one row per raster cell intersecting with the polygon.
 }
 \description{
 Extracts the values of all cells whose centerpoint is in \code{SpatialPolygons*} object
-\code{sp} and applies R function \code{fun}.
+\code{sp} and optionally applies R function \code{fun}.
 }
 \details{
-\code{fun} must be an R function accepting a numeric vector as its first (and only mandatory) argument.
+If passed, \code{fun} must be an R function accepting a numeric vector as its first (and only mandatory) argument, and returning a scalar.
+If \code{fun} is \code{NULL}, \code{extract} returns a list of matrices, each matrix containing the raster values intersecting with the respective polygon.
 }
 \examples{
 ## Make VeloxRaster with two bands

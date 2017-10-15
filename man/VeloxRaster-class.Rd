@@ -43,7 +43,7 @@ A Reference Class for velox rasters
 
 \item{\code{drop(bands)}}{See \code{\link{VeloxRaster_drop}}.}
 
-\item{\code{extract(sp, fun)}}{See \code{\link{VeloxRaster_extract}}.}
+\item{\code{extract(sp, fun = NULL)}}{See \code{\link{VeloxRaster_extract}}.}
 
 \item{\code{extract_points(sp)}}{See \code{\link{VeloxRaster_extract_points}}.}
 
