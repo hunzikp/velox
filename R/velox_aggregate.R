@@ -21,26 +21,13 @@
 #' ## Aggregate
 #' vx$aggregate(factor=c(2,2), aggtype='sum')
 NULL
-VeloxRaster$methods(aggregate = function(factor, aggtype="sum") {
+VeloxRaster$methods(aggregate = function(factor, aggtype = c("sum", "mean", "min", "max", "median")) {
   "See \\code{\\link{VeloxRaster_aggregate}}."
 
   if (any(factor <= 1 | factor%%1!=0)) {
     stop("factor must be a numeric vector of positive integers > 1.")
   }
-
-  if (aggtype=="sum") {
-    aggint = 0
-  } else if (aggtype == "mean") {
-    aggint = 1
-  } else if (aggtype == "min") {
-    aggint = 2
-  } else if (aggtype == "max") {
-    aggint = 3
-  } else if (aggtype == "median") {
-    aggint = 4
-  } else {
-    stop("Only 'sum', 'mean', 'min', 'max', 'median' are allowed in argument aggtype.")
-  }
+  aggint <- switch(match.arg(aggtype), "sum"=0, "mean"=1, "min"=2, "max"=3, "median"=4)
 
   if (length(factor) == 1) {
     factor <- c(factor, factor)
