@@ -67,23 +67,23 @@ test_that("both extract work with df=TRUE", {
               crs="+proj=longlat +datum=WGS84 +no_defs")
   
   ## Make SpatialPolygons
-  coord <- matrix(c(0,0,1,1), 2, 2, byrow = TRUE)
+  coord <- matrix(c(0,0,1,1, 0.5, 0.55), nrow=3, 2, byrow = TRUE)
   spoint <- SpatialPoints(coords=coord)
-  spols <- gBuffer(spgeom=spoint, width=0.5, byid = TRUE)
+  spols <- gBuffer(spgeom=spoint, width=c(0.5, 0.5, 0.04), byid = TRUE)
   
   ## Extract raw values as data-frame
   vx.raw.df <- vx$extract(sp=spols, fun = NULL, df=TRUE)
-  rs.raw.df <- extract(x = brk, y = spols, fun = NULL, df=TRUE)
+  rs.raw.df <- extract(x = brk, y = spols, fun = NULL, df=TRUE, small=FALSE)
   dimnames(rs.raw.df) <- dimnames(vx.raw.df)
 
   ## Extract aggregated values as data-frame
   vx.foo.df <- vx$extract(sp=spols, fun = mean, df=TRUE)
-  rs.foo.df <- extract(x = brk, y = spols, fun = mean, df=TRUE)
+  rs.foo.df <- extract(x = brk, y = spols, fun = mean, df=TRUE, small=FALSE)
   dimnames(rs.foo.df) <- dimnames(vx.foo.df)
   
   ## Comparison
   expect_true(all(vx.raw.df == rs.raw.df))
-  expect_true(all(vx.foo.df == rs.foo.df))
+  expect_true(all(vx.foo.df == rs.foo.df| is.na(vx.foo.df)==is.na(rs.foo.df)))
 })
 
 test_that("raw extract works if polygon too small to intersect", {
