@@ -12,6 +12,8 @@
 #'
 #' @param sp A SpatialPolygons* object.
 #' @param fun An R function. See Details.
+#' @param df Wether result should be passed as a data-frame (df=TRUE) or matrix (default: FALSE). If true, will return a 
+#' column \code{ID_sp} containing the ID of the sp object. 
 #'
 #' @return
 #' If \code{fun} is passed: A numeric matrix with one row per element in \code{sp}, one column per band in the VeloxRaster.
@@ -38,7 +40,7 @@
 #' @import rgeos
 #' @import sp
 NULL
-VeloxRaster$methods(extract = function(sp, fun = NULL) {
+VeloxRaster$methods(extract = function(sp, fun = NULL, df=FALSE) {
   "See \\code{\\link{VeloxRaster_extract}}."
 
   overlaps <- .self$overlapsExtent(sp)
@@ -117,6 +119,16 @@ VeloxRaster$methods(extract = function(sp, fun = NULL) {
       }
     }
 
+  }
+  
+  if(df){
+    if(!is.null(fun)) {
+      out <- data.frame(ID_sp=sp_IDs, out)
+    } else {
+      nrow_each <- sapply(out, function(x) {nr <- nrow(x); if(is.null(nr)) 0 else nr})
+      sp_IDs_rep <- unlist(Map(rep, sp_IDs, nrow_each))
+      out <- data.frame(ID_sp=sp_IDs_rep, do.call("rbind", out))
+    }
   }
   return(out)
 })
