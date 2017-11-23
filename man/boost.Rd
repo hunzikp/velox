@@ -17,7 +17,7 @@ A BoostGeometries object.
 }
 \examples{
 ## Make sfc_POINT
-sfc <- st_sfc(st_point(c(0,1)))
+sfc <- sf::st_sfc(st_point(c(0,1)))
 ## Cast to BoostPoints
 boostPoints <- boost(sfc)
 

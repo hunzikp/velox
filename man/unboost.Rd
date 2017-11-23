@@ -18,7 +18,7 @@ created by unboost are of type MULTI.
 }
 \examples{
 ## Make sfc_MULTIPOINT
-sfc <- st_sfc(st_multipoint(cbind(0,1)))
+sfc <- sf::st_sfc(st_multipoint(cbind(0,1)))
 ## Cast to BoostPoints
 boostPoints <- boost(sfc)
 ## Unboost
