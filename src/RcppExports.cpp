@@ -189,6 +189,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP _rcpp_module_boot_BOOSTGEOM();
+
 static const R_CallMethodDef CallEntries[] = {
     {"_velox_aggregate_cpp", (DL_FUNC) &_velox_aggregate_cpp, 5},
     {"_velox_getcoordinates_cpp", (DL_FUNC) &_velox_getcoordinates_cpp, 3},
@@ -202,6 +204,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_velox_pointextract_cpp", (DL_FUNC) &_velox_pointextract_cpp, 5},
     {"_velox_color_cpp", (DL_FUNC) &_velox_color_cpp, 4},
     {"_velox_checktype_cpp", (DL_FUNC) &_velox_checktype_cpp, 1},
+    {"_rcpp_module_boot_BOOSTGEOM", (DL_FUNC) &_rcpp_module_boot_BOOSTGEOM, 0},
     {NULL, NULL, 0}
 };
 

@@ -2,9 +2,9 @@
 % Please edit documentation in R/velox_rasterize.R
 \name{VeloxRaster_rasterize}
 \alias{VeloxRaster_rasterize}
-\title{Rasterize Polygons}
+\title{Rasterize Polygons or Lines}
 \arguments{
-\item{spdf}{A SpatialPolygonsDataFrame object.}
+\item{spdf}{A sf POLYGON or MULTIPOLYGON object, a sf LINE or MULTILINE object, a SpatialPolygonsDataFrame object, or a SpatialLinesDataFrame object.}
 
 \item{field}{A character string corresponding to the name of a numeric column in \code{spdf}.}
 
@@ -16,8 +16,8 @@
 Void.
 }
 \description{
-Rasterizes a SpatialPolygonsDataFrame, i.e. assigns the values in the \code{field} column of the
-SPDF to the raster cells intersecting with the respective SpatialPolygon.
+Rasterizes a collection of polygons or lines, i.e. assigns the values in the \code{field} column of the
+SPDF to the raster cells intersecting with the respective geometry.
 }
 \details{
 Note that rasterization is performed sequentially. Hence, cells being contained by multiple polygons

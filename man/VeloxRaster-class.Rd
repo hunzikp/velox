@@ -26,7 +26,7 @@ A Reference Class for velox rasters
 \section{Methods}{
 
 \describe{
-\item{\code{aggregate(factor, aggtype = "sum")}}{See \code{\link{VeloxRaster_aggregate}}.}
+\item{\code{aggregate(factor, aggtype = c("sum", "mean", "min", "max", "median"))}}{See \code{\link{VeloxRaster_aggregate}}.}
 
 \item{\code{as.RasterBrick(assign_data_type = FALSE)}}{See \code{\link{VeloxRaster_as.RasterBrick}}.}
 
@@ -43,7 +43,7 @@ A Reference Class for velox rasters
 
 \item{\code{drop(bands)}}{See \code{\link{VeloxRaster_drop}}.}
 
-\item{\code{extract(sp, fun = NULL)}}{See \code{\link{VeloxRaster_extract}}.}
+\item{\code{extract(sp, fun = NULL, df = FALSE, small = FALSE, legacy = FALSE)}}{See \code{\link{VeloxRaster_extract}}.}
 
 \item{\code{extract_points(sp)}}{See \code{\link{VeloxRaster_extract_points}}.}
 

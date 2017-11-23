@@ -4,7 +4,7 @@
 \alias{VeloxRaster_crop}
 \title{Crop a VeloxRaster object}
 \arguments{
-\item{y}{An object from which an \code{extent} object can be extracted. Usually a Spatial* or Raster* object.}
+\item{y}{An object from which an \code{extent} object can be extracted. Usually a sf, Spatial* or Raster* object.}
 }
 \value{
 Void.

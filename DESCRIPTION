@@ -1,8 +1,8 @@
 Package: velox
 Type: Package
 Title: Fast Raster Manipulation and Extraction
-Version: 0.1.0.9005
-Date: 2017-10-10
+Version: 0.1.0.9007
+Date: 2017-11-23
 Author: Philipp Hunziker
 Maintainer: Philipp Hunziker <hunzikp@gmail.com>
 Description: C++ accelerated raster manipulation and extraction.
@@ -13,8 +13,10 @@ Imports:
     raster,
     rgeos,
     rgdal,
-    sp
-LinkingTo: Rcpp
+    sp, 
+    sf, 
+    BH
+LinkingTo: Rcpp, BH
 NeedsCompilation: yes
 Packaged: 2016-08-24 12:15 UTC; hunzikp
 LazyData: TRUE

@@ -4,7 +4,7 @@
 \alias{VeloxRaster_extract_points}
 \title{Extract Values Given Points}
 \arguments{
-\item{sp}{A SpatialPoints* object.}
+\item{sp}{A SpatialPoints* object or a sf* POINT object.}
 }
 \value{
 A numeric matrix. One row per element in \code{sp}, one column per band in the VeloxRaster.

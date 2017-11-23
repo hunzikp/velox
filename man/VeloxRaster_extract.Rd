@@ -4,9 +4,17 @@
 \alias{VeloxRaster_extract}
 \title{Extract Values Given Polygons}
 \arguments{
-\item{sp}{A SpatialPolygons* object.}
+\item{sp}{A sf* POLYGON or MULTIPOLYGON object, a sf* LINE or MULTILINE object, a SpatialPolygons* object, or a SpatialLines* object.}
 
 \item{fun}{An R function. See Details.}
+
+\item{df}{Whether return value is a data frame (df=TRUE) or matrix (default: FALSE). If true, will return a
+column \code{ID_sp} containing the ID of the sp object.}
+
+\item{small}{Boolean. If TRUE and sp contains polygons, then raster values for small (or oddly shaped) polygons that do not intersect with any cell centroid
+are established by intersecting the small polygon with the entire (boxed) cells.}
+
+\item{legacy}{Boolean. Whether to use legacy code.}
 }
 \value{
 If \code{fun} is passed: A numeric matrix with one row per element in \code{sp}, one column per band in the VeloxRaster.
@@ -15,12 +23,14 @@ Otherwise: A list of numeric matrices, with one list element per element in \cod
 Each matrix consists of one column per band in the VeloxRaster, one row per raster cell intersecting with the polygon.
 }
 \description{
-Extracts the values of all cells whose centerpoint is in \code{SpatialPolygons*} object
+Extracts the values of all cells intersecting with a spatial object (line or polygon)
 \code{sp} and optionally applies R function \code{fun}.
 }
 \details{
 If passed, \code{fun} must be an R function accepting a numeric vector as its first (and only mandatory) argument, and returning a scalar.
 If \code{fun} is \code{NULL}, \code{extract} returns a list of matrices, each matrix containing the raster values intersecting with the respective polygon.
+If sp contains polygons, then cell-polygon intersections are calculated based on cell centroids (but see argument \code{small}).
+If sp contains lines, then regular cell-line intersections are calculated.
 }
 \examples{
 ## Make VeloxRaster with two bands
