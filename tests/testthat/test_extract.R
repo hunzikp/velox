@@ -57,7 +57,7 @@ test_that("raw extract works", {
 })
 
 test_that("both extract work with df=TRUE", {
-  
+
   ## Make VeloxRaster with two bands
   set.seed(0)
   mat1 <- matrix(rnorm(100), 10, 10)
@@ -65,12 +65,12 @@ test_that("both extract work with df=TRUE", {
   brk <- brick(raster(mat1), raster(mat2))
   vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
               crs="+proj=longlat +datum=WGS84 +no_defs")
-  
+
   ## Make SpatialPolygons
   coord <- matrix(c(0,0,1,1, 0.5, 0.55), nrow=3, 2, byrow = TRUE)
   spoint <- SpatialPoints(coords=coord)
   spols <- gBuffer(spgeom=spoint, width=c(0.5, 0.5, 0.04), byid = TRUE)
-  
+
   ## Extract raw values as data-frame
   vx.raw.df <- vx$extract(sp=spols, fun = NULL, df=TRUE)
   rs.raw.df <- extract(x = brk, y = spols, fun = NULL, df=TRUE, small=FALSE)
@@ -80,9 +80,9 @@ test_that("both extract work with df=TRUE", {
   vx.foo.df <- vx$extract(sp=spols, fun = mean, df=TRUE)
   rs.foo.df <- extract(x = brk, y = spols, fun = mean, df=TRUE, small=FALSE)
   dimnames(rs.foo.df) <- dimnames(vx.foo.df)
-  
+
   ## Comparison
-  expect_true(all(vx.raw.df == rs.raw.df))
+  expect_true(all(vx.raw.df$X1 %in% rs.raw.df$X1) & all(vx.raw.df$X2 %in% rs.raw.df$X2))
   expect_true(all(vx.foo.df == rs.foo.df| is.na(vx.foo.df)==is.na(rs.foo.df)))
 })
 

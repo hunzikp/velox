@@ -106,12 +106,12 @@ VeloxRaster$methods(extract = function(sp, fun = NULL, df=FALSE, small = FALSE, 
       if (length(idx) > 0) {
         if (is.null(fun)) {
           valmat <- matrix(NA, length(idx), nbands)
-          for (band in nbands) {
+          for (band in 1:nbands) {
             valmat[,band] <- rasterbands[[band]][idx]
           }
           out[[i]] <- valmat
         } else {
-          for (band in nbands) {
+          for (band in 1:nbands) {
             out[i,band] <- fun(rasterbands[[band]][idx])
           }
         }
@@ -135,12 +135,12 @@ VeloxRaster$methods(extract = function(sp, fun = NULL, df=FALSE, small = FALSE, 
         if (length(idx) > 0) {
           if (is.null(fun)) {
             valmat <- matrix(NA, length(idx), nbands)
-            for (band in nbands) {
+            for (band in 1:nbands) {
               valmat[,band] <- rasterbands[[band]][idx]
             }
             out[[geom.idx]] <- valmat
           } else {
-            for (band in nbands) {
+            for (band in 1:nbands) {
               out[geom.idx,band] <- fun(rasterbands[[band]][idx])
             }
           }

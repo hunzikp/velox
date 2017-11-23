@@ -8,6 +8,8 @@ boost(x, ...)
 }
 \arguments{
 \item{x}{An sfc object.}
+
+\item{...}{Currently not used.}
 }
 \value{
 A BoostGeometries object.
@@ -17,7 +19,7 @@ A BoostGeometries object.
 }
 \examples{
 ## Make sfc_POINT
-sfc <- sf::st_sfc(st_point(c(0,1)))
+sfc <- sf::st_sfc(sf::st_point(c(0,1)))
 ## Cast to BoostPoints
 boostPoints <- boost(sfc)
 

@@ -53,12 +53,13 @@ setClass("BoostPointGrid", contains="BoostGrid")
 #' \code{boost} creates a BoostGeometries object from a sfc object.
 #'
 #' @param x An sfc object.
+#' @param ... Currently not used.
 #'
 #' @return A BoostGeometries object.
 #'
 #' @examples
 #' ## Make sfc_POINT
-#' sfc <- sf::st_sfc(st_point(c(0,1)))
+#' sfc <- sf::st_sfc(sf::st_point(c(0,1)))
 #' ## Cast to BoostPoints
 #' boostPoints <- boost(sfc)
 #'
@@ -141,7 +142,7 @@ boost.sfc_POINT <- function(x, ...) {
 
 #' @method boost VeloxRaster
 #' @export
-boost.VeloxRaster <- function(x, box = FALSE) {
+boost.VeloxRaster <- function(x, box = FALSE, ...) {
 
   origin <- x$extent[c(1,4)]
   dim <- x$dim
@@ -180,6 +181,7 @@ boost.VeloxRaster <- function(x, box = FALSE) {
 #' created by unboost are of type MULTI.
 #'
 #' @param x A BoostGeometries object.
+#' @param ... Currently not used.
 #'
 #' @return A sfc object.
 #'
@@ -187,7 +189,7 @@ boost.VeloxRaster <- function(x, box = FALSE) {
 #'
 #' @examples
 #' ## Make sfc_MULTIPOINT
-#' sfc <- sf::st_sfc(st_multipoint(cbind(0,1)))
+#' sfc <- sf::st_sfc(sf::st_multipoint(cbind(0,1)))
 #' ## Cast to BoostPoints
 #' boostPoints <- boost(sfc)
 #' ## Unboost
@@ -245,8 +247,11 @@ unboost.BoostMultiPoints <- function(x, ...) {
 #' @import sf
 #'
 #' @examples
-#' pts = boost(sf::st_sfc(st_point(c(.5,.5)), st_point(c(1.5, 1.5)), st_point(c(2.5, 2.5))))
-#' pol = boost(sf::st_sfc(st_polygon(list(rbind(c(0,0), c(2,0), c(2,2), c(0,2), c(0,0))))))
+#' pts = boost(sf::st_sfc(sf::st_point(c(.5,.5)),
+#' sf::st_point(c(1.5, 1.5)),
+#' sf::st_point(c(2.5, 2.5))))
+#' pol = boost(sf::st_sfc(sf::st_polygon(
+#' list(rbind(c(0,0), c(2,0), c(2,2), c(0,2), c(0,0))))))
 #' bg_intersects(pol, pts)
 #'
 #' @export
