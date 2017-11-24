@@ -4,13 +4,17 @@ Velox is an R package for performing fast extraction and manipulation operations
 
 Currently, the following operations are implemented in velox:
 + Focal value calculation (i.e. moving window filters)
-+ Raster value extraction given polygons
-+ Rasterization of polygons
++ Raster value extraction given polygons, lines, or points
++ Rasterization of polygons or lines
 + Raster aggregation
 + Cropping
 + Image patch flattening (similar to Matlab's im2col) and reconstruction
 
 The development of velox was funded in part by the Swiss National Science Foundation under COST action IS1107, SERI project C12.0087.
+
+## Update
+
+As of version 0.1.0.9007 velox is interoperable with the [Simple Feature](https://r-spatial.github.io/sf/index.html) package. Other new features include a redesigned C++ backend based on the [Boost Geometry](http://boost.org/libs/geometry) library and extract and rasterize functions for linestring geometries. Please note that these improvements entail new dependencies (see below).
 
 ## Status
 [![Travis-CI Build Status](https://travis-ci.org/hunzikp/velox.svg?branch=master)](https://travis-ci.org/hunzikp/velox)
@@ -21,17 +25,13 @@ Velox should work on all major operating systems (Linux, Mac OS, Windows).
 
 ### Dependencies
 
-For its read and write methods, velox requires the [rgdal](https://cran.r-project.org/package=rgdal) package, which relies on the external
-GDAL (>= 1.6.3) and PROJ.4 (>= 4.4.9) libraries. 
-On Debian/Ubuntu (>= 12.04), GDAL and PROJ.4 can be installed by entering
+Velox requires the [rgdal](https://cran.r-project.org/package=rgdal), [rgeos](https://cran.r-project.org/package=rgeos), and [sf](https://cran.r-project.org/package=sf) packages, which rely on the external
+GDAL (>= 2.0.0), GEOS (>= 3.3.0), PROJ.4 (>= 4.8.0), and UDUNITS libraries.
+On Debian/Ubuntu (>= 14.04), these dependencies can be installed by entering
 ```shell
-sudo apt-get install libgdal-dev libproj-dev
-```
-in a terminal.
-Further, velox depends on the [rgeos](https://cran.r-project.org/package=rgeos) package, which in turn requires the external GEOS library (>= 3.2.0).
-To install GEOS on Debian/Ubuntu (>= 12.04), enter
-```shell
-sudo apt-get install libgeos-dev
+sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+sudo apt-get update
+sudo apt-get install libgdal-dev libproj-dev libgeos-dev libudunits2-dev
 ```
 in a terminal.
 
@@ -45,7 +45,7 @@ or you can install the development version using the `install_github` function f
 library(devtools)
 install_github("hunzikp/velox")
 ```
-
+Please note that this page refers to the development version of the package.
 
 ## Benchmarking
 

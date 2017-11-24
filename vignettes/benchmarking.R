@@ -15,10 +15,11 @@ library(rgeos)
 library(rbenchmark)
 library(RPostgreSQL)
 library(rgdal)
+library(sf)
 
 TEST_PGIS <- TRUE  # Switch off if no PostGIS DB available
 PGIS_USER <- "hunzikp"  # Adjust accordingly
-PGIS_PW <- "xxxxx"      # Adjust accordingly
+PGIS_PW <- "teilchen"      # Adjust accordingly
 
 ####################################################
 ### Setup PGSQL connection
@@ -36,8 +37,8 @@ if (TEST_PGIS) {
 ### Make testing data
 ####################################################
 
-## Make large matrix
-dim <- c(1000, 1000)
+## Make matrix
+dim <- c(250, 250)
 set.seed(0)
 large.mat <- matrix(runif(prod(dim)), dim[1], dim[2])
 extent <- c(0,1,0,1)
@@ -54,7 +55,19 @@ coords <- cbind(runif(n, extent[1], extent[2]), runif(n, extent[3], extent[4]))
 sp <- SpatialPoints(coords)
 spol <- gBuffer(sp, width=0.05, byid=TRUE)
 spdf <- SpatialPolygonsDataFrame(spol, data.frame(id=1:length(spol)), FALSE)
-writeOGR(spdf, "vignettes", "spdf", driver="ESRI Shapefile")
+polygons.sf <- st_as_sf(spdf)
+polygons.sfc <- st_as_sf(spol)
+
+## Create sldf
+n <- 2
+n.lnstr <- 10
+set.seed(0)
+coord.ls <- lapply(1:n, function(x) cbind(runif(n.lnstr, extent[1], extent[2]), runif(n.lnstr, extent[3], extent[4])))
+lines.sfc <- st_sfc(lapply(coord.ls, st_linestring))
+sl <- as(lines.sfc, 'Spatial')
+lines.sf <- st_sf(data.frame(id=1:length(sl), lines.sfc))
+sldf <- SpatialLinesDataFrame(sl, data.frame(id=1:length(sl)), FALSE)
+
 
 ## Load data into PostGIS
 if (TEST_PGIS) {
@@ -69,13 +82,23 @@ if (TEST_PGIS) {
   file.remove("vignettes/large.tif")
 
   ## Import SPDF into PostGIS
+  writeOGR(spdf, "vignettes", "spdf", driver="ESRI Shapefile")
   dbSendQuery(con, "DROP TABLE IF EXISTS vector.spdf;")
+  dbSendQuery(con, "DROP TABLE IF EXISTS vector.sldf;")
   dbSendQuery(con, "DROP SCHEMA IF EXISTS vector;")
   dbSendQuery(con, "CREATE SCHEMA vector;")
   system("shp2pgsql -s 4326 -I  vignettes/spdf.shp vector.spdf > importspdf.sql")
   system(paste0("psql -U ", PGIS_USER, " -d gisdb -f importspdf.sql -h localhost -p 5432 -w"))
   file.remove("importspdf.sql")
   system("rm vignettes/spdf.*")
+
+  ## Import SLDF into PostGIS
+  writeOGR(sldf, "vignettes", "sldf", driver="ESRI Shapefile")
+  dbSendQuery(con, "DROP TABLE IF EXISTS vector.sldf;")
+  system("shp2pgsql -s 4326 -I  vignettes/sldf.shp vector.sldf > importsldf.sql")
+  system(paste0("psql -U ", PGIS_USER, " -d gisdb -f importsldf.sql -h localhost -p 5432 -w"))
+  file.remove("importsldf.sql")
+  system("rm vignettes/sldf.*")
 }
 
 
@@ -84,11 +107,11 @@ if (TEST_PGIS) {
 ####################################################
 
 png("vignettes/benchmark.png", width=800, height=600)
-layout(matrix(1:6, 2, 3, TRUE))
+layout(matrix(1:9, 3, 3, TRUE))
 
 
 ####################################################
-### Benchmark extraction
+### Benchmark polygon extraction
 ####################################################
 
 if (TEST_PGIS) {
@@ -107,7 +130,7 @@ if (TEST_PGIS) {
     dbClearResult(res)
   }
 
-  ex.bm <- benchmark(velox=large.vx$extract(spdf, sum),
+  ex.bm <- benchmark(velox=large.vx$extract(polygons.sfc, sum),
                      raster=extract(large.rl, spdf, fun=sum),
                      postgis=extract.postgis(),
                      replications=10,
@@ -117,13 +140,13 @@ if (TEST_PGIS) {
   par(mar=c(5.1, 4.1, 7.1, 2.1))
   barplot(ex.bm$relative, names.arg=ex.bm$test,
           ylab="Relative Time Elapsed", cex.main=1.5)
-  mtext("extract", line=5, cex=1.5, font=2)
-  mtext(paste("velox ", round(ex.bm$relative[ex.bm$test=="raster"], 1), "x faster than raster", sep=""), line=3, cex=1.25)
-  mtext(paste("velox ", round(ex.bm$relative[ex.bm$test=="postgis"], 1), "x faster than PostGIS", sep=""), line=1, cex=1.25)
+  mtext("polygon extract", line=5, cex=1.5, font=2)
+  mtext(paste("velox ", round(ex.bm$relative[ex.bm$test=="raster"]/ex.bm$relative[ex.bm$test=="velox"], 1), "x faster than raster", sep=""), line=3, cex=1.25)
+  mtext(paste("velox ", round(ex.bm$relative[ex.bm$test=="postgis"]/ex.bm$relative[ex.bm$test=="velox"], 1), "x faster than PostGIS", sep=""), line=1, cex=1.25)
 
 } else {
 
-  ex.bm <- benchmark(velox=large.vx$extract(spdf, sum),
+  ex.bm <- benchmark(velox=large.vx$extract(polygons.sfc, sum),
                      raster=extract(large.rl, spdf, fun=sum),
                      replications=10,
                      columns=c("test", "replications", "elapsed", "relative"))
@@ -132,7 +155,57 @@ if (TEST_PGIS) {
   par(mar=c(5.1, 4.1, 7.1, 2.1))
   barplot(ex.bm$relative, names.arg=ex.bm$test,
           ylab="Relative Time Elapsed", cex.main=1.5)
-  mtext("extract", line=5, cex=1.5, font=2)
+  mtext("polygon extract", line=5, cex=1.5, font=2)
+  mtext(paste("velox ", round(ex.bm$relative[ex.bm$test=="raster"], 1), "x faster than raster", sep=""), line=3, cex=1.25)
+}
+
+
+####################################################
+### Benchmark line extraction
+####################################################
+
+if (TEST_PGIS) {
+
+  extract.postgis <- function() {
+    query <- "SELECT
+    id,
+    SUM((ST_SUMMARYSTATS(ST_CLIP(rast, 1, geom, 0, FALSE))).sum) AS val
+    FROM	raster.large,
+    vector.sldf
+    WHERE	ST_INTERSECTS(rast, geom)
+    GROUP BY id
+    ORDER BY id;"
+    res <- dbSendQuery(con, query)
+    ex.mat <- fetch(res, n = -1)
+    dbClearResult(res)
+  }
+
+  ex.bm <- benchmark(velox=large.vx$extract(lines.sfc, sum),
+                     raster=extract(large.rl, sldf, fun=sum),
+                     postgis=extract.postgis(),
+                     replications=10,
+                     columns=c("test", "replications", "elapsed", "relative"))
+
+  ex.bm <- ex.bm[order(ex.bm$relative),]
+  par(mar=c(5.1, 4.1, 7.1, 2.1))
+  barplot(ex.bm$relative, names.arg=ex.bm$test,
+          ylab="Relative Time Elapsed", cex.main=1.5)
+  mtext("line extract", line=5, cex=1.5, font=2)
+  mtext(paste("velox ", round(ex.bm$relative[ex.bm$test=="raster"]/ex.bm$relative[ex.bm$test=="velox"], 1), "x faster than raster", sep=""), line=3, cex=1.25)
+  mtext(paste("velox ", round(ex.bm$relative[ex.bm$test=="postgis"]/ex.bm$relative[ex.bm$test=="velox"], 1), "x faster than PostGIS", sep=""), line=1, cex=1.25)
+
+} else {
+
+  ex.bm <- benchmark(velox=large.vx$extract(lines.sfc, sum),
+                     raster=extract(large.rl, sldf, fun=sum),
+                     replications=10,
+                     columns=c("test", "replications", "elapsed", "relative"))
+
+  ex.bm <- ex.bm[order(ex.bm$relative),]
+  par(mar=c(5.1, 4.1, 7.1, 2.1))
+  barplot(ex.bm$relative, names.arg=ex.bm$test,
+          ylab="Relative Time Elapsed", cex.main=1.5)
+  mtext("line extract", line=5, cex=1.5, font=2)
   mtext(paste("velox ", round(ex.bm$relative[ex.bm$test=="raster"], 1), "x faster than raster", sep=""), line=3, cex=1.25)
 }
 
@@ -233,11 +306,11 @@ mtext(paste("velox ", round(sf.bm$relative[sf.bm$test=="raster"], 1), "x faster 
 
 
 ####################################################
-### Benchmark rasterize
+### Benchmark polygon rasterize
 ####################################################
 
 
-rs.bm <- benchmark(velox=large.vx$rasterize(spdf, "id", 1, background=0),
+rs.bm <- benchmark(velox=large.vx$rasterize(polygons.sf, "id", 1, background=0),
                    raster=rasterize(spdf, large.rl, "id", background=0),
                    replications=10,
                    columns=c("test", "replications", "elapsed", "relative"))
@@ -247,7 +320,26 @@ rs.bm <- rs.bm[order(rs.bm$relative),]
 par(mar=c(5.1, 4.1, 6.1, 2.1))
 barplot(rs.bm$relative, names.arg=rs.bm$test,
         ylab="Relative Time Elapsed", cex.main=1.5)
-mtext("rasterize", line=4, cex=1.5, font=2)
+mtext("polygon rasterize", line=4, cex=1.5, font=2)
+mtext(paste("velox ", round(rs.bm$relative[rs.bm$test=="raster"], 1), "x faster than raster", sep=""), line=1.5, cex=1.25)
+
+
+####################################################
+### Benchmark line rasterize
+####################################################
+
+
+rs.bm <- benchmark(velox=large.vx$rasterize(lines.sf, "id", 1, background=0),
+                   raster=rasterize(sldf, large.rl, "id", background=0),
+                   replications=10,
+                   columns=c("test", "replications", "elapsed", "relative"))
+rs.bm
+
+rs.bm <- rs.bm[order(rs.bm$relative),]
+par(mar=c(5.1, 4.1, 6.1, 2.1))
+barplot(rs.bm$relative, names.arg=rs.bm$test,
+        ylab="Relative Time Elapsed", cex.main=1.5)
+mtext("line rasterize", line=4, cex=1.5, font=2)
 mtext(paste("velox ", round(rs.bm$relative[rs.bm$test=="raster"], 1), "x faster than raster", sep=""), line=1.5, cex=1.25)
 
 

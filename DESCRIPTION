@@ -14,8 +14,8 @@ Imports:
     rgeos,
     rgdal,
     sp, 
-    sf, 
-    BH
+    sf (>= sf_0.5-5), 
+    BH (>= BH_1.65.0-1)
 LinkingTo: Rcpp, BH
 NeedsCompilation: yes
 Packaged: 2016-08-24 12:15 UTC; hunzikp
