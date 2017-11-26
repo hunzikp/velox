@@ -38,7 +38,7 @@ VeloxRaster <- setRefClass("VeloxRaster",
 #' Note that if \code{x} is a list of VeloxRasters, the \code{extent} and \code{crs} attributes are copied
 #' from the first list element.
 #'
-#' @param x A RasterLayer, RasterStack, matrix, list of matrices, list of VeloxRaster objects,
+#' @param x A Raster* object, matrix, list of matrices, list of VeloxRaster objects,
 #'  or character string pointing to a GDAL-readable file.
 #' @param extent An \code{extent} object or a numeric vector of length 4. Required if \code{x} is a matrix or list
 #' of matrices, ignored otherwise.
