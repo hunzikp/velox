@@ -8,23 +8,23 @@
 #'
 #' @details
 #' If passed, \code{fun} must be an R function accepting a numeric vector as its first (and only mandatory) argument, and returning a scalar.
-#' If \code{fun} is \code{NULL}, \code{extract} returns a list of matrices, each matrix containing the raster values intersecting with the respective polygon.
+#' If \code{fun} is \code{NULL}, \code{extract} returns a list of matrices, each matrix containing the raster values intersecting with the respective polygon (but see argument \code{df}).
 #' If sp contains polygons, then cell-polygon intersections are calculated based on cell centroids (but see argument \code{small}).
 #' If sp contains lines, then regular cell-line intersections are calculated.
 #'
 #' @param sp A sf* POLYGON or MULTIPOLYGON object, a sf* LINE or MULTILINE object, a SpatialPolygons* object, or a SpatialLines* object.
 #' @param fun An R function. See Details.
-#' @param df Whether return value is a data frame (df=TRUE) or matrix (default: FALSE). If true, will return a
-#' column \code{ID_sp} containing the ID of the sp object.
+#' @param df Boolean. If TRUE, the return value will be a data frame (or list of data frames, see Details), otherwise a matrix (or list of matrices, see Details).
+#' If TRUE, a column \code{ID_sp} will be added to each data frame containing the ID of the sp object.
 #' @param small Boolean. If TRUE and sp contains polygons, then raster values for small (or oddly shaped) polygons that do not intersect with any cell centroid
 #' are established by intersecting the small polygon with the entire (boxed) cells.
-#' @param legacy Boolean. Whether to use legacy code.
+#' @param legacy Boolean. Whether to use legacy C++ code (pre velox 0.1.0-9007).
 #'
 #' @return
-#' If \code{fun} is passed: A numeric matrix with one row per element in \code{sp}, one column per band in the VeloxRaster.
+#' If \code{fun} is passed: A numeric matrix or data frame (see argument \code{df}) with one row per element in \code{sp}, one column per band in the VeloxRaster.
 #'
-#' Otherwise: A list of numeric matrices, with one list element per element in \code{sp}.
-#' Each matrix consists of one column per band in the VeloxRaster, one row per raster cell intersecting with the polygon.
+#' Otherwise: A list of numeric matrices or data frames (see argument \code{df}), with one list element per element in \code{sp}.
+#' Each matrix/data frame consists of one column per band in the VeloxRaster, one row per raster cell intersecting with the geometry.
 #'
 #' @examples
 #' ## Make VeloxRaster with two bands
@@ -97,7 +97,7 @@ VeloxRaster$methods(extract = function(sp, fun = NULL, df=FALSE, small = FALSE, 
       boostGrid <- boost(.self)  # If geomc is line, only box intersects make sense
     }
     geomc.boost <- boost(geomc)
-    intrs.ls <- bg_intersects(boostGrid, geomc.boost)
+    intrs.ls <- bg_intersects(geomc.boost, boostGrid)
 
     # Iterate over polygons, bands, apply fun if not null
     missing.idx <- c()
@@ -126,7 +126,7 @@ VeloxRaster$methods(extract = function(sp, fun = NULL, df=FALSE, small = FALSE, 
       # Create box grid, boost geometries, intersect
       boostBoxGrid <- boost(.self, box = TRUE)
       missing.boost <- geomc.boost[missing.idx]
-      intrs.ls <- bg_intersects(boostBoxGrid, missing.boost)
+      intrs.ls <- bg_intersects(missing.boost, boostBoxGrid)
 
       # Iterate over polygons, bands, apply fun if not null
       for (i in 1:length(intrs.ls)) {
