@@ -1,4 +1,4 @@
-VeloxRaster$methods(overlapsExtent = function(x) {
+getExtent <- function(x) {
 
   if (is(x, "Extent")) {
     cext <- as.vector(x)
@@ -12,6 +12,14 @@ VeloxRaster$methods(overlapsExtent = function(x) {
     bbvec <- st_bbox(x)
     cext <- bbvec[c(1,3,2,4)]
   }
+
+  return(cext)
+}
+
+
+VeloxRaster$methods(overlapsExtent = function(x) {
+
+  cext <- getExtent(x)
 
   overlaps <- (cext[1] < extent[2] & cext[2] > extent[1] &
                  cext[3] < extent[4] & cext[4] > extent[3])
@@ -29,8 +37,7 @@ VeloxRaster$methods(overlapsExtent = function(x) {
 #' \code{crop}s a VeloxRaster object
 #'
 #' @details
-#' Crops a VeloxRaster object to the extent of y. Note that currently the
-#' extent of y must overlap with the extent of x, otherwise an error is thrown.
+#' Crops a VeloxRaster object to the extent of y.
 #'
 #' @param y An object from which an \code{extent} object can be extracted. Usually a sf, Spatial* or Raster* object.
 #'
@@ -52,18 +59,7 @@ VeloxRaster$methods(crop = function(x) {
 
   if (overlaps) {
 
-    if (is(x, "Extent")) {
-      cext <- as.vector(x)
-    } else if (is(x, "numeric")) {
-      cext <- x
-    } else if (inherits(x, "SpatialPolygons") | inherits(x, "SpatialPolygonsDataFrame")) {
-      cext <- as.vector(extent(x))
-    } else if (inherits(x, "SpatialLines") | inherits(x, "SpatialLinesDataFrame")) {
-      cext <- as.vector(extent(x))
-    } else if (inherits(x, "sfc") | inherits(x, "sf")) {
-      bbvec <- st_bbox(x)
-      cext <- bbvec[c(1,3,2,4)]
-    }
+    cext <- getExtent(x)
 
     if (cext[2]-cext[1]<=0 | cext[4]-cext[3]<=0) {
       stop("Extent is non-positive in at least one dimension.")
