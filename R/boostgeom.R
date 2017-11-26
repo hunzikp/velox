@@ -2,60 +2,144 @@ Rcpp::loadModule("BOOSTGEOM", TRUE)
 
 ## Class defs
 
-setOldClass("crs")
 setOldClass("Rcpp_MultiPolygonCollection")
 setOldClass("Rcpp_MultiLineCollection")
 setOldClass("Rcpp_MultiPointCollection")
 
+#' @title Rcpp pointer to MultiPolygonCollection
+#'
+#' @name MultiPolygonCollection
+#'
+#' @description
+#' Rcpp pointer to MultiPolygonCollection.
 #' @export MultiPolygonCollection
-#' @export MultiLineCollection
-#' @export MultiPointCollection
-#' @export BoostFactory
-#' @export PointGrid
-#' @export BoxGrid
-#' @exportClass crs
 NULL
 
+#' @title Rcpp pointer to MultiLineCollection
+#'
+#' @name MultiLineCollection
+#'
+#' @description
+#' Rcpp pointer to MultiLineCollection.
+#' @export MultiLineCollection
+NULL
+
+#' @title Rcpp pointer to MultiPointCollection
+#'
+#' @name MultiPointCollection
+#'
+#' @description
+#' Rcpp pointer to MultiPointCollection.
+#' @export MultiPointCollection
+NULL
+
+#' @title Rcpp pointer to BoostFactory
+#'
+#' @name BoostFactory
+#'
+#' @description
+#' Rcpp pointer to BoostFactory.
+#' @export BoostFactory
+NULL
+
+#' @title Rcpp pointer to PointGrid
+#'
+#' @name PointGrid
+#'
+#' @description
+#' Rcpp pointer to PointGrid.
+#' @export PointGrid
+NULL
+
+#' @title Rcpp pointer to BoxGrid
+#'
+#' @name BoxGrid
+#'
+#' @description
+#' Rcpp pointer to BoxGrid.
+#' @export BoxGrid
+NULL
+
+
+
+#' A S4 class for storing Boost objects in C++
+#'
+#' @description This is a virtual class for storing Rcpp pointers to C++ GeometryCollection and GridCollection objects.
+#'
+#' @slot geomcollection Rcpp pointer.
+#' @slot crs An object of class \code{sf::crs}, storing the coordinate reference system info.
+#' @slot precision A numeric scalar.
 #' @export
-setClass("BoostGeometries",
+setClass("BoostObject", contains="VIRTUAL",
          representation(geomcollection =  "ANY",
-                        crs = "crs",
+                        crs = "ANY",
                         precision = "numeric"))
+
+#' An S4 virtual class for storing Boost geometry collections in C++
+#'
+#' @description This is a virtual class for storing Rcpp pointers to C++ GeometryCollection objects.
+#'
+#' @export
+setClass("BoostGeometries", contains= c("BoostObject", 'VIRTUAL'))
+
+
+#' An S4 class for storing Boost multipolygon collections in C++
+#'
+#' @description This is a class for storing Rcpp pointers to C++ MultiPolygonCollection objects.
+#'
 #' @export
 setClass("BoostMultiPolygons", contains="BoostGeometries")
 
+#' An S4 class for storing Boost multiline collections in C++
+#'
+#' @description This is a class for storing Rcpp pointers to C++ MultiLineCollection objects.
+#'
 #' @export
 setClass("BoostMultiLines", contains="BoostGeometries")
 
+#' An S4 class for storing Boost multipoint collections in C++
+#'
+#' @description This is a class for storing Rcpp pointers to C++ MultiPointCollection objects.
+#'
 #' @export
 setClass("BoostMultiPoints", contains="BoostGeometries")
 
+#' An S4 virtual class for storing Boost grids in C++
+#'
+#' @description This is a virtual class for storing Rcpp pointers to C++ grid objects.
+#'
 #' @export
-setClass("BoostGrid",
-         representation(geomcollection =  "ANY",
-                        crs = "crs",
-                        precision = "numeric"))
+setClass("BoostGrid", contains=c("VIRTUAL", "BoostObject"))
 
+#' An S4 class for storing Boost box grids in C++
+#'
+#' @description This is a class for storing Rcpp pointers to C++ BoxGrid objects.
+#'
 #' @export
 setClass("BoostBoxGrid", contains="BoostGrid")
 
+#' An S4 class for storing Boost point grids in C++
+#'
+#' @description This is a class for storing Rcpp pointers to C++ PointGrid objects.
+#'
 #' @export
 setClass("BoostPointGrid", contains="BoostGrid")
 
 
 ## Boost functions
 
-#' @title Cast a sfc object as a BoostGeometries object
+#' @title Cast a sfc object as a BoostObject
 #'
 #' @name boost
 #'
 #' @description
-#' \code{boost} creates a BoostGeometries object from a sfc object.
+#' \code{boost} creates a BoostObject from a sfc or VeloxRaster object.
 #'
 #' @param x An sfc object.
+#' @param box Boolean. If \code{TRUE} and \code{x} is a \code{VeloxRaster} object, returns a BoxGrid instead of a PointGrid.
 #' @param ... Currently not used.
 #'
-#' @return A BoostGeometries object.
+#' @return A BoostObject object.
 #'
 #' @examples
 #' ## Make sfc_POINT
@@ -68,6 +152,7 @@ boost <- function (x, ...) {
   UseMethod("boost", x)
 }
 
+#' @name boost
 #' @method boost sfc_MULTIPOLYGON
 #' @export
 boost.sfc_MULTIPOLYGON <- function(x, ...) {
@@ -80,6 +165,7 @@ boost.sfc_MULTIPOLYGON <- function(x, ...) {
   return(bmp)
 }
 
+#' @name boost
 #' @method boost sfc_POLYGON
 #' @export
 boost.sfc_POLYGON <- function(x, ...) {
@@ -92,6 +178,7 @@ boost.sfc_POLYGON <- function(x, ...) {
   return(bmp)
 }
 
+#' @name boost
 #' @method boost sfc_MULTILINESTRING
 #' @export
 boost.sfc_MULTILINESTRING <- function(x, ...) {
@@ -104,6 +191,7 @@ boost.sfc_MULTILINESTRING <- function(x, ...) {
   return(bmp)
 }
 
+#' @name boost
 #' @method boost sfc_LINESTRING
 #' @export
 boost.sfc_LINESTRING <- function(x, ...) {
@@ -116,6 +204,7 @@ boost.sfc_LINESTRING <- function(x, ...) {
   return(bmp)
 }
 
+#' @name boost
 #' @method boost sfc_MULTIPOINT
 #' @export
 boost.sfc_MULTIPOINT <- function(x, ...) {
@@ -128,6 +217,7 @@ boost.sfc_MULTIPOINT <- function(x, ...) {
   return(bmp)
 }
 
+#' @name boost
 #' @method boost sfc_POINT
 #' @export
 boost.sfc_POINT <- function(x, ...) {
@@ -140,6 +230,7 @@ boost.sfc_POINT <- function(x, ...) {
   return(bmp)
 }
 
+#' @name boost
 #' @method boost VeloxRaster
 #' @export
 boost.VeloxRaster <- function(x, box = FALSE, ...) {
@@ -201,6 +292,7 @@ unboost <- function (x, ...) {
   UseMethod("unboost", x)
 }
 
+#' @name unboost
 #' @method unboost BoostMultiPolygons
 #' @export
 unboost.BoostMultiPolygons <- function(x, ...) {
@@ -211,6 +303,7 @@ unboost.BoostMultiPolygons <- function(x, ...) {
   return(sfc)
 }
 
+#' @name unboost
 #' @method unboost BoostMultiLines
 #' @export
 unboost.BoostMultiLines <- function(x, ...) {
@@ -221,6 +314,7 @@ unboost.BoostMultiLines <- function(x, ...) {
   return(sfc)
 }
 
+#' @name unboost
 #' @method unboost BoostMultiPoints
 #' @export
 unboost.BoostMultiPoints <- function(x, ...) {
@@ -232,15 +326,16 @@ unboost.BoostMultiPoints <- function(x, ...) {
 }
 
 
-#' @title Test whether two BoostGeometries objects intersect
+#' @title Test whether two BoostObjects intersect
 #'
 #' @name bg_intersects
+#' @rdname bg_intersects.generic
 #'
 #' @description
-#' Tests whether two BoostGeometries objects intersect (element-wise).
+#' Tests whether two BoostObjects intersect (element-wise).
 #'
-#' @param obj1 A BoostGeometries object.
-#' @param obj2 A BoostGeometries object;
+#' @param obj1 A BoostObject.
+#' @param obj2 A BoostObject.
 #'
 #' @return A list, with list element i an integer vector with the indices j for which intersects(x[i],y[j]) is TRUE.
 #'
@@ -261,32 +356,47 @@ setGeneric("bg_intersects", function(obj1, obj2) {
 
 ## Grid intersections
 
-#' @export
-setMethod("bg_intersects", signature(obj1 = "BoostBoxGrid", obj2 = "BoostMultiPolygons"),
+#' @title Test whether two BoostObjects intersect
+#'
+#' @rdname bg_intersects.generic
+#'
+setMethod("bg_intersects", signature(obj1 = "BoostMultiPolygons", obj2 = "BoostBoxGrid"),
           function(obj1, obj2) {
-            outList <- obj1@geomcollection$intersectsMultiPolygon(obj2@geomcollection)
+            outList <- obj2@geomcollection$intersectsMultiPolygon(obj1@geomcollection)
             return(outList)
 })
 
+#' @title Test whether two BoostObjects intersect
+#'
+#' @rdname bg_intersects.generic
+#'
 #' @export
-setMethod("bg_intersects", signature(obj1 = "BoostBoxGrid", obj2 = "BoostMultiLines"),
+setMethod("bg_intersects", signature(obj1 = "BoostMultiLines", obj2 = "BoostBoxGrid"),
           function(obj1, obj2) {
-            outList <- obj1@geomcollection$intersectsMultiLine(obj2@geomcollection)
+            outList <- obj2@geomcollection$intersectsMultiLine(obj1@geomcollection)
             return(outList)
           })
 
+#' @title Test whether two BoostObjects intersect
+#'
+#' @rdname bg_intersects.generic
+#'
 #' @export
-setMethod("bg_intersects", signature(obj1 = "BoostPointGrid", obj2 = "BoostMultiPolygons"),
+setMethod("bg_intersects", signature(obj1 = "BoostMultiPolygons", obj2 = "BoostPointGrid"),
           function(obj1, obj2) {
-            outList <- obj1@geomcollection$intersectsMultiPolygon(obj2@geomcollection)
+            outList <- obj2@geomcollection$intersectsMultiPolygon(obj1@geomcollection)
             return(outList)
           })
 
 
 ## Polygon intersections
 
+#' @title Test whether two BoostObjects intersect
+#'
+#' @rdname bg_intersects.generic
+#'
 #' @export
-setMethod("bg_intersects", signature(obj1 = "BoostMultiPolygons"),
+setMethod("bg_intersects", signature(obj1 = "BoostMultiPolygons", obj2 = "BoostGeometries"),
           function(obj1, obj2) {
             outList <- obj2@geomcollection$intersectsMultiPolygon(obj1@geomcollection)
             return(outList)
@@ -294,8 +404,12 @@ setMethod("bg_intersects", signature(obj1 = "BoostMultiPolygons"),
 
 ## Line intersections
 
+#' @title Test whether two BoostObjects intersect
+#'
+#' @rdname bg_intersects.generic
+#'
 #' @export
-setMethod("bg_intersects", signature(obj1 = "BoostMultiLines"),
+setMethod("bg_intersects", signature(obj1 = "BoostMultiLines", obj2 = "BoostGeometries"),
           function(obj1, obj2) {
             outList <- obj2@geomcollection$intersectsMultiLine(obj1@geomcollection)
             return(outList)
@@ -304,15 +418,31 @@ setMethod("bg_intersects", signature(obj1 = "BoostMultiLines"),
 
 ## Point intersections
 
+#' @title Test whether two BoostObjects intersect
+#'
+#' @rdname bg_intersects.generic
+#'
 #' @export
-setMethod("bg_intersects", signature(obj1 = "BoostMultiPoints"),
+setMethod("bg_intersects", signature(obj1 = "BoostMultiPoints", obj2 = "BoostGeometries"),
           function(obj1, obj2) {
             outList <- obj2@geomcollection$intersectsMultiPoint(obj1@geomcollection)
             return(outList)
           })
 
+
 ## Geometry subsections
 
+#' @title Subset a BoostGeometries object
+#'
+#' @rdname subset.BoostGeometries
+#'
+#' @description
+#' Extract a subset of geometries from a BoostGeometries object.
+#'
+#' @param x A BoostGeometries object.
+#' @param i An integer vector index.
+#'
+#' @return A BoostGeometries object.
 #' @export
 setMethod("[", signature(x = "BoostMultiPolygons"),
           function(x, i) {
@@ -324,6 +454,10 @@ setMethod("[", signature(x = "BoostMultiPolygons"),
             return(bmp)
           })
 
+#' @title Subset a BoostGeometries object
+#'
+#' @rdname subset.BoostGeometries
+#'
 #' @export
 setMethod("[", signature(x = "BoostMultiLines"),
           function(x, i) {
@@ -335,6 +469,10 @@ setMethod("[", signature(x = "BoostMultiLines"),
             return(bmp)
           })
 
+#' @title Subset a BoostGeometries object
+#'
+#' @rdname subset.BoostGeometries
+#'
 #' @export
 setMethod("[", signature(x = "BoostMultiPoints"),
           function(x, i) {
@@ -349,19 +487,45 @@ setMethod("[", signature(x = "BoostMultiPoints"),
 
 ## Geometry length
 
+#' @title BoostGeometries Length
+#'
+#' @rdname length.BoostGeometries
+#'
+#' @description
+#' Returns the length (number of Geometries) of a BoostGeometries object.
+#'
+#' @param x A BoostGeometries object.
+#'
+#' @return An integer scalar.
 #' @export
 setMethod("length", signature(x = "BoostGeometries"),
           function(x) {
             return(x@geomcollection$length())
           })
 
+
 ## Geometry plot
 
+#' @title Plot BoostGeometries
+#'
+#' @rdname plot.BoostGeometries
+#'
+#' @description
+#' Plot a BoostGeometries object using the \code{sf} plotting function.
+#'
+#' @param x A BoostGeometries object.
+#' @param y Not used.
+#' @param ... Passed to \code{sf::plot}.
+#'
+#' @return Void.
 #' @export
 setMethod("plot", signature(x = "BoostGeometries"),
           function(x, ...) {
             sfc <- unboost(x)
             plot(sfc, ...)
           })
+
+
+
 
 
