@@ -2,9 +2,18 @@
 % Please edit documentation in R/boostgeom.R
 \name{unboost}
 \alias{unboost}
+\alias{unboost.BoostMultiLines}
+\alias{unboost.BoostMultiPoints}
+\alias{unboost.BoostMultiPolygons}
 \title{Cast a BoostGeometries object as a sfc object}
 \usage{
 unboost(x, ...)
+
+\method{unboost}{BoostMultiPolygons}(x, ...)
+
+\method{unboost}{BoostMultiLines}(x, ...)
+
+\method{unboost}{BoostMultiPoints}(x, ...)
 }
 \arguments{
 \item{x}{A BoostGeometries object.}

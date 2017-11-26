@@ -7,7 +7,7 @@
 velox(x, extent = NULL, res = NULL, crs = NULL)
 }
 \arguments{
-\item{x}{A RasterLayer, RasterStack, matrix, list of matrices, list of VeloxRaster objects,
+\item{x}{A Raster* object, matrix, list of matrices, list of VeloxRaster objects,
 or character string pointing to a GDAL-readable file.}
 
 \item{extent}{An \code{extent} object or a numeric vector of length 4. Required if \code{x} is a matrix or list

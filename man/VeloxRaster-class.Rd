@@ -58,7 +58,7 @@ A Reference Class for velox rasters
 
 \item{\code{medianFocal(wrow, wcol, bands = 1)}}{See \code{\link{VeloxRaster_medianFocal}}.}
 
-\item{\code{rasterize(spdf, field, band = 1, background = NULL)}}{See \code{\link{VeloxRaster_rasterize}}.}
+\item{\code{rasterize(spdf, field, band = 1, background = NULL, small = FALSE)}}{See \code{\link{VeloxRaster_rasterize}}.}
 
 \item{\code{sumFocal(weights, bands = 1)}}{See \code{\link{VeloxRaster_sumFocal}}.}
 

@@ -2,20 +2,43 @@
 % Please edit documentation in R/boostgeom.R
 \name{boost}
 \alias{boost}
-\title{Cast a sfc object as a BoostGeometries object}
+\alias{boost.VeloxRaster}
+\alias{boost.sfc_LINESTRING}
+\alias{boost.sfc_MULTILINESTRING}
+\alias{boost.sfc_MULTIPOINT}
+\alias{boost.sfc_MULTIPOLYGON}
+\alias{boost.sfc_POINT}
+\alias{boost.sfc_POLYGON}
+\title{Cast a sfc object as a BoostObject}
 \usage{
 boost(x, ...)
+
+\method{boost}{sfc_MULTIPOLYGON}(x, ...)
+
+\method{boost}{sfc_POLYGON}(x, ...)
+
+\method{boost}{sfc_MULTILINESTRING}(x, ...)
+
+\method{boost}{sfc_LINESTRING}(x, ...)
+
+\method{boost}{sfc_MULTIPOINT}(x, ...)
+
+\method{boost}{sfc_POINT}(x, ...)
+
+\method{boost}{VeloxRaster}(x, box = FALSE, ...)
 }
 \arguments{
 \item{x}{An sfc object.}
 
 \item{...}{Currently not used.}
+
+\item{box}{Boolean. If \code{TRUE} and \code{x} is a \code{VeloxRaster} object, returns a BoxGrid instead of a PointGrid.}
 }
 \value{
-A BoostGeometries object.
+A BoostObject object.
 }
 \description{
-\code{boost} creates a BoostGeometries object from a sfc object.
+\code{boost} creates a BoostObject from a sfc or VeloxRaster object.
 }
 \examples{
 ## Make sfc_POINT

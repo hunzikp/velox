@@ -13,8 +13,7 @@ Void.
 \code{crop}s a VeloxRaster object
 }
 \details{
-Crops a VeloxRaster object to the extent of y. Note that currently the
-extent of y must overlap with the extent of x, otherwise an error is thrown.
+Crops a VeloxRaster object to the extent of y.
 }
 \examples{
 ## Make VeloxRaster
