@@ -9,12 +9,17 @@
 #' @details
 #' Note that rasterization is performed sequentially. Hence, cells being contained by multiple polygons
 #' are assigned the value of the last polygon in the \code{spdf} object.
+#' If argument \code{small = TRUE}, then the values of small polygons are assigned last.
 #'
+#' If spdf contains polygons, then cell-polygon intersections are calculated based on cell centroids (but see argument \code{small}).
+#' If spdf contains lines, then regular cell-line intersections are calculated.
 #'
 #' @param spdf A sf POLYGON or MULTIPOLYGON object, a sf LINE or MULTILINE object, a SpatialPolygonsDataFrame object, or a SpatialLinesDataFrame object.
 #' @param field A character string corresponding to the name of a numeric column in \code{spdf}.
 #' @param band A positive integer denoting the ID of the band where the rasterized values are written.
 #' @param background Optional. A numeric value assigned to all background cells.
+#' @param small Boolean. If TRUE and spdf contains polygons, then intersections for small (or oddly shaped) polygons that do not intersect with any cell centroid
+#' are established by intersecting the small polygon with the entire (boxed) cells.
 #'
 #' @return Void.
 #'
@@ -34,8 +39,9 @@
 #'
 #'@import rgeos
 #'@import sp
+#'@import sf
 NULL
-VeloxRaster$methods(rasterize = function(spdf, field, band=1, background=NULL) {
+VeloxRaster$methods(rasterize = function(spdf, field, band=1, background=NULL, small=FALSE) {
   "See \\code{\\link{VeloxRaster_rasterize}}."
 
   ## Some safety checks
@@ -86,13 +92,33 @@ VeloxRaster$methods(rasterize = function(spdf, field, band=1, background=NULL) {
     boostGrid <- boost(.self)  # If geomc is line, only box intersects make sense
   }
   geomc.boost <- boost(geomc)
-  intrs.ls <- bg_intersects(boostGrid, geomc.boost)
+  intrs.ls <- bg_intersects(geomc.boost, boostGrid)
 
   # Color raster
+  missing.idx <- c()
   for (i in 1:length(intrs.ls)) {
     idx <- intrs.ls[[i]]
     if (length(idx) > 0) {
       rasterbands[[band]][idx] <<- values[i]
+    } else {
+      missing.idx <- c(missing.idx, i)
+    }
+  }
+
+  # If small activated: Fill missings using box intersect
+  if (small & length(missing.idx) > 0 & !isLine) {
+
+    # Create box grid, boost geometries, intersect
+    boostBoxGrid <- boost(.self, box = TRUE)
+    missing.boost <- geomc.boost[missing.idx]
+    intrs.ls <- bg_intersects(missing.boost, boostBoxGrid)
+
+    # Color missing
+    for (i in 1:length(intrs.ls)) {
+      idx <- intrs.ls[[i]]
+      if (length(idx) > 0) {
+        rasterbands[[band]][idx] <<- values[i]
+      }
     }
   }
 
