@@ -12,9 +12,6 @@ NumericMatrix pointextract_cpp(List rasterbands, NumericVector dim, NumericVecto
   double ymin = extent[2];
   double ymax = extent[3];
 
-  int nrow = dim[0];
-  int ncol = dim[1];
-
   int nbands = rasterbands.size();
 
   double xres = res[0];
