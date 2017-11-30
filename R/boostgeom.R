@@ -1,5 +1,3 @@
-Rcpp::loadModule("BOOSTGEOM", TRUE)
-
 ## Class defs
 
 setOldClass("Rcpp_MultiPolygonCollection")
