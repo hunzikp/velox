@@ -112,7 +112,7 @@ public:
 
   MultiGeometryCollection subset(IntegerVector index) {
     std::vector<MultiGeometry> mgVec;
-    for (unsigned i = 0; i < index.size(); ++i) {
+    for (int i = 0; i < index.size(); ++i) {
       unsigned idx = index[i] - 1;
       if ((idx < this->size()) && (idx >= 0)) {
         MultiGeometry mg = this->at(idx);
@@ -657,13 +657,13 @@ public:
     std::string classType = as<std::string>(classTypes[0]);
 
     if (!classType.compare("sfc_MULTIPOLYGON")) {
-      for (unsigned i = 0; i < x.length(); ++i) {
+      for (int i = 0; i < x.length(); ++i) {
         List mpolyList = x[i];
         MultiPolygon mpoly = makeMultiPolygon(mpolyList);
         mpVec.push_back(mpoly);
       }
     } else if (!classType.compare("sfc_POLYGON")) {
-      for (unsigned i = 0; i < x.length(); ++i) {
+      for (int i = 0; i < x.length(); ++i) {
         List polyList = x[i];
         Polygon poly = makePolygon(polyList);
         MultiPolygon mpoly;
@@ -686,7 +686,7 @@ public:
 
   MultiLine makeMultiLine(List x) {
     MultiLine ml;
-    for (unsigned i = 0; i < x.length(); ++i) {
+    for (int i = 0; i < x.length(); ++i) {
       NumericMatrix mat = x[i];
       Line ln = makeLine(mat);
       ml.push_back(ln);
@@ -701,12 +701,12 @@ public:
     std::string classType = as<std::string>(classTypes[0]);
 
     if (!classType.compare("sfc_MULTILINESTRING")) {
-      for (unsigned i = 0; i < x.length(); ++i) {
+      for (int i = 0; i < x.length(); ++i) {
         MultiLine ml = makeMultiLine(x[i]);
         mlVec.push_back(ml);
       }
     } else if (!classType.compare("sfc_LINESTRING")) {
-      for (unsigned i = 0; i < x.length(); ++i) {
+      for (int i = 0; i < x.length(); ++i) {
         Line ln = makeLine(x[i]);
         MultiLine ml;
         ml.push_back(ln);
@@ -740,12 +740,12 @@ public:
     std::string classType = as<std::string>(classTypes[0]);
 
     if (!classType.compare("sfc_MULTIPOINT")) {
-      for (unsigned i = 0; i < x.length(); ++i) {
+      for (int i = 0; i < x.length(); ++i) {
         MultiPoint mp = makeMultiPoint(x[i]);
         mpVec.push_back(mp);
       }
     } else if (!classType.compare("sfc_POINT")) {
-      for (unsigned i = 0; i < x.length(); ++i) {
+      for (int i = 0; i < x.length(); ++i) {
         Point p = makePoint(x[i]);
         MultiPoint mp;
         mp.push_back(p);
