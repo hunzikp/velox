@@ -22,7 +22,7 @@ NumericMatrix pointextract_cpp(List rasterbands, NumericVector dim, NumericVecto
 
   NumericMatrix out(pcoords.nrow(), nbands);
 
-  for (unsigned int i = 0; i < pcoords.nrow(); i++) {
+  for (int i = 0; i < pcoords.nrow(); i++) {
     double x = pcoords(i,0);
     double y = pcoords(i,1);
     if (x > xmin && xmax > x && y > ymin && ymax > y) {
@@ -30,13 +30,13 @@ NumericMatrix pointextract_cpp(List rasterbands, NumericVector dim, NumericVecto
       int row = floor(rdist/yres);
       double cdist = x - xmin;
       int col = floor(cdist/xres);
-      for (unsigned int k = 0; k < nbands; k++) {
+      for (int k = 0; k < nbands; k++) {
         NumericMatrix this_band;
         this_band = as<NumericMatrix>(rasterbands[k]);
         out(i,k) = this_band(row, col);
       }
     } else {
-      for (unsigned int k = 0; k < nbands; k++) {
+      for (int k = 0; k < nbands; k++) {
         out(i,k) = NA_REAL;
       }
     }

@@ -241,7 +241,7 @@ bool fastIntersects(Point &p, ChargedRing &cr) {
   bool oddNodes = false;
   int j = cr.polyCorners-1;
 
-  for (int i = 0; i < cr.polyCorners; i++) {
+  for (unsigned i = 0; i < cr.polyCorners; i++) {
     if (((cr.polyY[i]< ty && cr.polyY[j]>=ty)
            ||   (cr.polyY[j]< ty && cr.polyY[i]>=ty))) {
       oddNodes^=(ty*cr.multiple[i]+cr.constant[i]<tx);
@@ -570,8 +570,8 @@ public:
 
     std::vector<std::pair<Point, unsigned> > pointValueVec;
     unsigned counter = 1;
-    for (unsigned j = 0; j < dim[1]; ++j) {
-      for (unsigned i = 0; i < dim[0]; ++i) {
+    for (int j = 0; j < dim[1]; ++j) {
+      for (int i = 0; i < dim[0]; ++i) {
         double x = origin[0] + (double)j*res[0] + res[0]/2;
         double y = origin[1] - (double)i*res[1] - res[1]/2;
         PointValue pointValue(Point(x, y), counter);
@@ -591,8 +591,8 @@ public:
 
     std::vector<std::pair<Box, unsigned> > boxValueVec;
     unsigned counter = 1 ;
-    for (unsigned j = 0; j < dim[1]; ++j) {
-      for (unsigned i = 0; i < dim[0]; ++i) {
+    for (int j = 0; j < dim[1]; ++j) {
+      for (int i = 0; i < dim[0]; ++i) {
         NumericVector minc = NumericVector::create(origin[0] + (double)j*res[0],
                                                    origin[1] - (double)(i+1)*res[1]);
         Box b = makeBox(minc, res);
@@ -678,7 +678,7 @@ public:
 
   Line makeLine(NumericMatrix x) {
     Line ln;
-    for (unsigned i = 0; i < x.nrow(); ++i) {
+    for (int i = 0; i < x.nrow(); ++i) {
       bg::append(ln, Point(x(i,0), x(i,1)));
     }
     return ln;
@@ -726,7 +726,7 @@ public:
 
   MultiPoint makeMultiPoint(NumericMatrix x) {
     MultiPoint mp;
-    for (unsigned i = 0; i < x.nrow(); ++i) {
+    for (int i = 0; i < x.nrow(); ++i) {
       Point pnt(x(i,0), x(i,1));
       mp.push_back(pnt);
     }
