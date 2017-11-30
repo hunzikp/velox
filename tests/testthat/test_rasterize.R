@@ -11,7 +11,7 @@ test_that("rasterize works with polygons", {
   set.seed(0)
   mat1 <- matrix(rnorm(100), 10, 10)
   brk <- brick(raster(mat1))
-  vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+  vx <- velox(list(mat1), extent=c(0,1,0,1), res=c(0.1,0.1),
               crs="+proj=longlat +datum=WGS84 +no_defs")
 
   ## Make SpatialPolygons / sfc_MPG
@@ -47,7 +47,7 @@ test_that("rasterize works with lines", {
   set.seed(0)
   mat1 <- matrix(rnorm(100), 10, 10)
   brk <- brick(raster(mat1))
-  vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+  vx <- velox(list(mat1), extent=c(0,1,0,1), res=c(0.1,0.1),
               crs="+proj=longlat +datum=WGS84 +no_defs")
 
   ## Make SpatialLines / sfc_MLS
