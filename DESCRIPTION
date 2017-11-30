@@ -5,7 +5,7 @@ Version: 0.2.0
 Date: 2017-11-30
 Author: Philipp Hunziker
 Maintainer: Philipp Hunziker <hunzikp@gmail.com>
-BugReports:	https://github.com/hunzikp/velox/issues
+BugReports: https://github.com/hunzikp/velox/issues
 Description: C++ accelerated raster manipulation and extraction.
 Depends: R (>= 3.0.2)
 License: GPL (>= 2)
