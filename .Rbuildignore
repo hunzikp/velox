@@ -4,3 +4,4 @@ vignettes/benchmark
 ^cran-comments\.md$
 ^\.travis\.yml$
 ^\.RData
+docs
