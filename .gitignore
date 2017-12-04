@@ -5,6 +5,3 @@
 src/*.o
 src/*.so
 src/*.dll
-docs/_site
-docs/.sass-cache
-docs/.jekyll-metadata
