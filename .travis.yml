@@ -9,3 +9,7 @@ before_install:
 - sudo apt-get update -qq
 - sudo apt-get install -qq libgeos-dev libgdal-dev libproj-dev libudunits2-dev
 warnings_are_errors: true
+r_packages:
+  - covr
+after_success:
+  - Rscript -e 'library(covr); codecov()'
