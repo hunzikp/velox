@@ -19,17 +19,19 @@ NumericVector checktype_cpp(List rasterbands) {
     NumericMatrix thisband = rasterbands[i];
     int size = thisband.nrow()*thisband.ncol();
     for (int j = 0; j < size; j++) {
-      double val = thisband[j];
-      if (fmod(val, 1) != 0) {
-        out[0] = 0;
+      if (!NumericVector::is_na(thisband[j])) {
+        double val = thisband[j];
+        if (fmod(val, 1) != 0) {
+          out[0] = 0;
+        }
+        if ((counter == 0) || (abs(val) > maxval)) {
+          maxval = abs(val);
+        }
+        if (val < 0) {
+          out[1] = 1;
+        }
+        counter++;
       }
-      if ((counter == 0) || (abs(val) > maxval)) {
-        maxval = abs(val);
-      }
-      if (val < 0) {
-        out[1] = 1;
-      }
-      counter++;
     }
   }
   out[2] = maxval;
