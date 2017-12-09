@@ -22,7 +22,8 @@ VeloxRaster <- setRefClass("VeloxRaster",
                                       "extent",
                                       "res",
                                       "nbands",
-                                      "crs")
+                                      "crs",
+                                      "bandnames")
 )
 
 
@@ -77,8 +78,10 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     }
 
     rasterbands <- list(as.matrix(x))
+    names(rasterbands) <- names(x)
 
-    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=1, crs=crs)
+    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=1, crs=crs,
+                           bandnames = names(rasterbands))
 
     return(obj)
   } else if (is(x, "RasterStack")) {
@@ -97,8 +100,10 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     for (k in 1:length(rasterbands)) {
       rasterbands[[k]] <- as.matrix(x[[k]])
     }
+    names(rasterbands) <- names(x)
 
-    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs)
+    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs,
+                           bandnames = names(rasterbands))
 
     return(obj)
   } else if (is(x, "RasterBrick")) {
@@ -117,8 +122,10 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     for (k in 1:length(rasterbands)) {
       rasterbands[[k]] <- as.matrix(x[[k]])
     }
+    names(rasterbands) <- names(x)
 
-    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs)
+    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs,
+                           bandnames = names(rasterbands))
 
     return(obj)
   } else if (is(x, "matrix")) {
@@ -137,8 +144,10 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
       }
     }
     rasterbands <- list(x)
+    names(rasterbands) <- 'layer'
 
-    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=1, crs=crs)
+    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=1, crs=crs,
+                           bandnames = names(rasterbands))
 
     return(obj)
   } else if (is(x, "list")) {
@@ -163,8 +172,12 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
       }
 
       rasterbands <- x
+      if (is.null(names(rasterbands))) {
+        names(rasterbands) <- paste('layer', 1:length(rasterbands), sep = '.')
+      }
 
-      obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=length(rasterbands), crs=crs)
+      obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=length(rasterbands), crs=crs,
+                             bandnames = names(rasterbands))
 
       return(obj)
 
@@ -184,16 +197,20 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
 
       rasterbands <- list()
       counter <- 0
+      layernames <- c()
       for (k in 1:length(x)) {
         this.nbands <- x[[k]]$nbands
+        layernames <- c(layernames, names(x[[k]]$rasterbands))
         for (l in 1:this.nbands) {
           counter <- counter + 1
           rasterbands[[counter]] <- x[[k]]$rasterbands[[l]]
         }
       }
       nbands <- counter
+      names(rasterbands) <- layernames
 
-      obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs)
+      obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs,
+                             bandnames = names(rasterbands))
 
       return(obj)
 
@@ -225,7 +242,10 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     }
     GDAL.close(gds)
 
-    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs)
+    names(rasterbands) <- paste('layer', 1:length(rasterbands), sep = '.')
+
+    obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs,
+                           bandnames = names(rasterbands))
 
     return(obj)
   } else {
@@ -393,5 +413,6 @@ VeloxRaster$methods(drop = function(bands) {
   }
 
   nbands <<- length(keep)
+  bandnames <<- bandnames[keep]
   rasterbands <<- rasterbands[keep]
 })

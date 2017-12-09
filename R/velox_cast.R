@@ -62,6 +62,7 @@ VeloxRaster$methods(as.RasterLayer = function(band=1, assign_data_type=FALSE) {
   }
 
   ras <- raster(rasterbands[[band]], xmn=extent[1], xmx=extent[2], ymn=extent[3], ymx=extent[4], crs=crs)
+  names(ras) <- bandnames[band]
 
   if (assign_data_type) {
     type <- .self$get_data_type()
@@ -118,6 +119,7 @@ VeloxRaster$methods(as.RasterStack = function(assign_data_type=FALSE) {
     stk.ls[[k]] <- raster(rasterbands[[k]], xmn=extent[1], xmx=extent[2], ymn=extent[3], ymx=extent[4], crs=crs)
   }
   stk <- stack(stk.ls)
+  names(stk) <- bandnames
 
   if (assign_data_type) {
     type <- .self$get_data_type()
@@ -173,6 +175,7 @@ VeloxRaster$methods(as.RasterBrick = function(assign_data_type=FALSE) {
     brk.ls[[k]] <- raster(rasterbands[[k]], xmn=extent[1], xmx=extent[2], ymn=extent[3], ymx=extent[4], crs=crs)
   }
   brk <- brick(brk.ls)
+  names(brk) <- bandnames
 
   if (assign_data_type) {
     type <- .self$get_data_type()

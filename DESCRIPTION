@@ -1,7 +1,7 @@
 Package: velox
 Type: Package
 Title: Fast Raster Manipulation and Extraction
-Version: 0.2.0
+Version: 0.2.0.9001
 Date: 2017-11-30
 Author: Philipp Hunziker
 Maintainer: Philipp Hunziker <hunzikp@gmail.com>
