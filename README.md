@@ -1,200 +1,53 @@
-# velox
+<br>
 
-Velox is an R package for performing fast extraction and manipulation operations on geographic raster data. velox is fast because all raster computations are performed in C++ (using the excellent [Rcpp API](http://www.rcpp.org/)), and all data is held in memory. velox is intended to be used together with the [raster](https://cran.r-project.org/package=raster) package, to which it provides a straightforward interface.
+![](docs/logo.svg)
 
-Currently, the following operations are implemented in velox:
-+ Focal value calculation (i.e. moving window filters)
-+ Raster value extraction given polygons, lines, or points
-+ Rasterization of polygons or lines
-+ Raster aggregation
-+ Cropping
-+ Image patch flattening (similar to Matlab's im2col) and reconstruction
+<br>
 
-The development of velox was funded in part by the Swiss National Science Foundation under COST action IS1107, SERI project C12.0087.
+Fast raster extraction and manipulation in R
+============================================
 
-## Update
+velox is an R package for performing fast extraction and manipulation
+operations on geospatial raster data. velox is fast because:
 
-As of version 0.1.0.9007 velox is interoperable with the [Simple Feature](https://r-spatial.github.io/sf/index.html) package. Other new features include a redesigned C++ backend based on the [Boost Geometry](http://boost.org/libs/geometry) library and extract and rasterize functions for linestring geometries. Please note that these improvements entail new dependencies (see below).
+-   All raster operations are performed in C++.
+-   Geometric operations are implemented with the [Boost
+    Geometry](http://www.boost.org/doc/libs/1_65_1/libs/geometry/doc/html/index.html)
+    libraries.
+-   All data is held in memory.
 
-## Status
-[![Travis-CI Build Status](https://travis-ci.org/hunzikp/velox.svg?branch=master)](https://travis-ci.org/hunzikp/velox)
+velox is fully interoperable with the
+[raster](https://cran.r-project.org/package=raster),
+[sp](https://cran.r-project.org/package=raster), and
+[sf](https://cran.r-project.org/package=raster) packages.
 
-## Installation
+<br>
 
-Velox should work on all major operating systems (Linux, Mac OS, Windows).
+Features
+--------
 
-### Dependencies
+velox currently offers the following features:
 
-Velox requires the [rgdal](https://cran.r-project.org/package=rgdal), [rgeos](https://cran.r-project.org/package=rgeos), and [sf](https://cran.r-project.org/package=sf) packages, which rely on the external
-GDAL (>= 2.0.0), GEOS (>= 3.3.0), PROJ.4 (>= 4.8.0), and UDUNITS libraries.
-On Debian/Ubuntu (>= 14.04), these dependencies can be installed by entering
-```shell
-sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
-sudo apt-get update
-sudo apt-get install libgdal-dev libproj-dev libgeos-dev libudunits2-dev
-```
-in a terminal.
+-   Raster value extraction given *polygons*, *lines*, or *points*
+-   Focal value calculation (i.e. moving window filters)
+-   Rasterization of polygons or lines
+-   Raster aggregation
+-   Cropping
+-   Image patch flattening and reconstruction
 
-### R Package
-Once the system dependencies are available, you can either install velox from CRAN
-```R
-install.packages("velox")
-```
-or you can install the development version using the `install_github` function from the [devtools](https://cran.r-project.org/package=devtools) package:
-```R
-library(devtools)
-install_github("hunzikp/velox")
-```
-Please note that this page refers to the development version of the package.
+For more information, see the [velox project
+website](https://hunzikp.github.io/velox/).
 
-## Benchmarking
+<br>
 
-The following performance tests were peformed on a i7-6920HQ CPU @ 2.90GHz, using `raster` 2.5-8, PostgreSQL 9.5 and PostGIS 2.2.
-See [here](https://raw.githubusercontent.com/hunzikp/velox/master/vignettes/benchmarking.R) for the underlying R script.
+Status
+------
 
-![](https://raw.githubusercontent.com/hunzikp/velox/master/vignettes/benchmark.png "velox benchmark")
-
-
-## Getting Started
-
-### Creating `VeloxRaster` Objects
-
-`VeloxRaster` objects are created with the `velox` function:
-```R
-library(velox)
-library(raster)
-
-## From GDAL readable raster file
-vx1 <- velox("myraster.tif")
-
-## From RasterLayer object
-rl <- raster("myraster.tif")
-vx2 <- velox(rl)
-
-## From RasterStack object
-rs <- stack("myraster.tif")
-vx3 <- velox(rs)
-
-## From matrix
-mat <- matrix(1:100, 10, 10)
-vx4 <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
-
-## From list of matrices
-mat.ls <- list(matrix(1:100, 10, 10), matrix(100:1, 10, 10))
-vx5 <- velox(mat.ls, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
-
-## From list of VeloxRasters
-vx.ls <- list(vx4, vx5)
-vx6 <- velox(vx.ls)
-```
-
-### Manipulating `VeloxRaster` Objects
-
-`VeloxRaster` objects are ReferenceClass objects and thus mutable:
-```R
-## Crop VeloxRaster
-mat <- matrix(1:100, 10, 10)
-vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
-cropext <- c(0.3,0.7,0.3,0.7)
-vx$crop(cropext)
-
-> vx$extent
-[1] 0.3 0.7 0.3 0.7
-```
-We can also aggregate a VeloxRaster...
-```R
-## Aggregate VeloxRaster
-mat <- matrix(1:100, 10, 10)
-vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
-vx$aggregate(factor=c(2,2), aggtype="sum")
-```
-... or calculate focal values (i.e. apply a moving window filter):
-```R
-## Apply filter to VeloxRaster
-mat <- matrix(1:100, 10, 10)
-vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
-vx$medianFocal(wrow=3, wcol=3, bands=1)
-```
-
-### Extracting raster values given polygons
-
-```R
-## Make VeloxRaster
-mat <- matrix(1:100, 10, 10)
-extent <- c(0,1,0,1)
-vx <- velox(mat, extent=extent, res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
-
-## Make SpatialPolygonsDataFrame
-library(sp)
-library(rgeos)
-set.seed(0)
-coords <- cbind(runif(10, extent[1], extent[2]), runif(10, extent[3], extent[4]))
-sp <- SpatialPoints(coords)
-spol <- gBuffer(sp, width=0.2, byid=TRUE)
-spdf <- SpatialPolygonsDataFrame(spol, data.frame(id=1:length(spol)), FALSE)
-
-## Extract values and calculate mean
-ex.mat <- vx$extract(spdf, fun=mean)
-```
-
-### Rasterizing polygons
-
-```R
-## Make VeloxRaster
-mat <- matrix(0, 10, 10)
-extent <- c(0,1,0,1)
-vx <- velox(mat, extent=extent, res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
-
-## Make SpatialPolygonsDataFrame
-library(sp)
-library(rgeos)
-set.seed(0)
-coords <- cbind(runif(10, extent[1], extent[2]), runif(10, extent[3], extent[4]))
-sp <- SpatialPoints(coords)
-spol <- gBuffer(sp, width=0.05, byid=TRUE)
-spdf <- SpatialPolygonsDataFrame(spol, data.frame(id=1:length(spol)), FALSE)
-
-## Rasterize polygons using "id" column
-vx$rasterize(spdf, field="id", band=1)
-```
-
-### `raster` interface
-
-```R
-## Make VeloxRaster with two bands
-mat1 <- matrix(1, 10, 10)
-mat2 <- matrix(2, 10, 10)
-extent <- c(0,1,0,1)
-vx <- velox(list(mat1, mat2), extent=extent, res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
-
-## Cast band 1 as RasterLayer
-rl <- vx$as.RasterLayer(band=1)
-
-## Cast both bands as RasterStack
-rs <- vx$as.RasterStack()
-
-## Back to VeloxRaster
-vx2 <- velox(rs)
-```
-
-### Help
-
-Because most of `velox`'s functionality comes in the form of `VeloxRaster` methods, accessing the help pages is performed as follows:
-
-```R
-## See all methods of VeloxRaster
-?VeloxRaster
-
-## See help for method 'extract'
-?VeloxRaster_extract
-
-## See help for method 'crop'
-?VeloxRaster_crop
-
-## etc...
-```
-
-
-
-
-
+[![Travis-CI Build
+Status](https://travis-ci.org/hunzikp/velox.svg?branch=master)](https://travis-ci.org/hunzikp/velox)
+[![codecov](https://codecov.io/gh/hunzikp/velox/branch/master/graph/badge.svg)](https://codecov.io/gh/hunzikp/velox)
+[![CRAN
+Version](http://www.r-pkg.org/badges/version/velox)](https://cran.r-project.org/package=velox)
+[![develVersion](https://img.shields.io/badge/devel%20version-0.2.0.9001-green.svg?style=flat)](https://github.com/hunzikp/velox)
+[![CRAN
+Downloads](http://cranlogs.r-pkg.org/badges/last-week/velox)](https://www.r-pkg.org/pkg/velox)

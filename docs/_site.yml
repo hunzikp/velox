@@ -1,0 +1,25 @@
+name: my-website
+navbar:
+  title: ~
+  left:
+  - text: Home
+    href: index.html
+  - text: Installation
+    href: install.html
+  - text: Quick Start
+    href: quick.html
+  - text: Benchmarking
+    href: benchmark.html
+  - text: Usage
+    menu:
+    - text: VeloxRaster
+      href: cast.html
+    - text: Extract
+      href: extract.html
+output_dir: .
+output:
+  html_document:
+    theme: cosmo
+    lib_dir: site_libs
+    self_contained: no
+

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Extract</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="install.html">Installation</a>
+</li>
+<li>
+  <a href="quick.html">Quick Start</a>
+</li>
+<li>
+  <a href="benchmark.html">Benchmarking</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Usage
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cast.html">VeloxRaster</a>
+    </li>
+    <li>
+      <a href="extract.html">Extract</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Extract</h1>
+
+</div>
+
+
+<p>velox offers fast methods for extracting and summarizing raster data at the locations of spatial objects, that is, polygons, lines, or points.</p>
+<p><br></p>
+<div id="get-raster-data" class="section level2">
+<h2>Get raster data</h2>
+<p>In the following, we demonstrate velox’s extract functionality using some of the nightlight emission data available in the <a href="http://grid.prio.org">PRIO GRID</a> data set. The <a href="https://github.com/hunzikp/pgrid">pgrid R package</a> provides a convenient way to return PRIO GRID data in <code>VeloxRaster</code> format:</p>
+<pre class="r"><code>library(pgrid)
+prio.ls &lt;- getPrioRaster(names = &#39;nlights_calib_mean&#39;, years = c(2010:2012))
+prio.vx &lt;- prio.ls$raster
+priometa.df &lt;- prio.ls$meta</code></pre>
+<p>Let’s plot the 2010 nightlight data:</p>
+<pre class="r"><code>library(raster)
+nl10.ras &lt;- prio.vx$as.RasterLayer(priometa.df$band[priometa.df$year == 2010])
+plot(nl10.ras)</code></pre>
+<p><img src="extract_files/figure-html/ch2-1.png" width="672" /></p>
+<p><br></p>
+</div>
+<div id="polygon-extract" class="section level2">
+<h2>Polygon extract</h2>
+<p>We first illustrate value extraction using polygon data. To this end, we use the territory of souvereign states in 2010, as provided through the <code>cshapes</code> package:</p>
+<pre class="r"><code>library(cshapes)
+world.spdf &lt;- cshp(as.Date(&#39;2010-01-01&#39;))</code></pre>
+<p>Now let’s extract all raster values for a single country, e.g. Syria, using the <code>VeloxRaster_extract</code> method.</p>
+<pre class="r"><code>syria.spdf &lt;- world.spdf[world.spdf$CNTRY_NAME == &#39;Syria&#39;,]
+extr.ls &lt;- prio.vx$extract(sp = syria.spdf)
+head(extr.ls[[1]])</code></pre>
+<pre><code>##           [,1]      [,2]      [,3]
+## [1,] 0.1835138 0.1945672 0.1766599
+## [2,] 0.1624745 0.1517049 0.1036100
+## [3,] 0.1856766 0.1767696 0.1355223
+## [4,] 0.1240347 0.1188611 0.1146748
+## [5,] 0.2964082 0.2870667 0.2427285
+## [6,] 0.3074953 0.3080959 0.2350021</code></pre>
+<p>By default, <code>VeloxRaster_extract</code> returns a list with one element per entry in the input <code>Spatial*</code> data frame, and each element consisting of a matrix of raster values. Here the matrix has three columns because <code>prio.vx</code> consists of three raster bands.</p>
+<p><br></p>
+</div>
+<div id="aggregation-functions" class="section level2">
+<h2>Aggregation functions</h2>
+<p>Often we don’t want ‘raw’ raster values, but summaries thereof. <code>VeloxRaster_extract</code> permits passing an R function for summarizing the raster values before returning them. In the following, we request the arithmetic mean. Note that we set <code>na.rm = TRUE</code> in order to handle <code>NA</code> values in the raster data.</p>
+<pre class="r"><code>nlmean.mat &lt;- prio.vx$extract(sp = syria.spdf, fun = function(x) mean(x, na.rm = TRUE))
+print(nlmean.mat)</code></pre>
+<pre><code>##          [,1]      [,2]      [,3]
+## 224 0.1199454 0.1164759 0.1028327</code></pre>
+<p><br></p>
+</div>
+<div id="the-small-option" class="section level2">
+<h2>The small option</h2>
+<p>By default, <code>VeloxRaster_extract</code> determines whether a raster cell intersects with a polygon by testing whether its center intersects with the polygon. For small or oddly shaped polygons, this may lead to <code>VeloxRaster_extract</code> returning <code>NA</code> values. Consider the case of Monaco for illustration:</p>
+<pre class="r"><code>library(rgeos)
+monaco.spdf &lt;- world.spdf[world.spdf$CNTRY_NAME == &#39;Monaco&#39;,]
+plot(gEnvelope(gBuffer(monaco.spdf, width = 0.25)))  # Set plotting area
+plot(prio.vx$as.RasterLayer(1), add = TRUE)
+plot(monaco.spdf, add = TRUE)</code></pre>
+<p><img src="extract_files/figure-html/ch6-1.png" width="672" /></p>
+<p>Here, running <code>VeloxRaster_extract</code> returns <code>NA</code>:</p>
+<pre class="r"><code>monaco.mat &lt;- prio.vx$extract(sp = monaco.spdf, fun = function(x) mean(x, na.rm = TRUE))
+print(monaco.mat)</code></pre>
+<pre><code>##    [,1] [,2] [,3]
+## 72   NA   NA   NA</code></pre>
+<p>To avoid this problem we set <code>small = TRUE</code> in <code>VeloxRaster_extract</code>. Doing so forces velox to look for full polygon-raster-cell overlaps for those polygons that do not intersect with a raster centroid:</p>
+<pre class="r"><code>monaco.mat &lt;- prio.vx$extract(sp = monaco.spdf, fun = function(x) mean(x, na.rm = TRUE), small = TRUE)
+print(monaco.mat)</code></pre>
+<pre><code>##        [,1]      [,2]      [,3]
+## 72 0.149217 0.1167527 0.1177678</code></pre>
+<p><br></p>
+</div>
+<div id="line-extraction" class="section level2">
+<h2>Line extraction</h2>
+<p>Raster value extraction for lines works equivalently to the polygon case. Note, however, that for line geometries, velox always tests for intersections with the full raster-cells, not just the centroids. As an illustration, consider the following SpatialLinesDataFrame, which consists one line per parallel (i.e. one line at latitude 89.5, one at 88.5, etc).</p>
+<pre class="r"><code>## Make latitude lines
+latVec &lt;- seq(from = 89.5, to = -89.5, by = -1)
+Lns.ls &lt;- list()
+for (lat in latVec)  {
+  coords &lt;- matrix(c(-180, lat, 
+                     180, lat), 2, 2, byrow = TRUE)
+  Lns &lt;- Lines(list(Line(coords)), paste(lat))
+  Lns.ls[[length(Lns.ls)+1]] &lt;- Lns
+}
+lat.sldf &lt;- SpatialLinesDataFrame(SpatialLines(Lns.ls), data.frame(id = 1:length(Lns.ls)), match.ID = F)</code></pre>
+<p>We now extract raster values from a 1x1 decimal degree version of PRIO GRID using these lines.</p>
+<pre class="r"><code>## Aggregate PRIO GRID
+prio.agg.vx &lt;- prio.vx$copy()
+prio.agg.vx$aggregate(factor = 2, aggtype = &#39;sum&#39;)
+
+## Extract raster values
+lineval.ls &lt;- prio.agg.vx$extract(sp = lat.sldf)
+print(dim(lineval.ls[[1]]))</code></pre>
+<pre><code>## [1] 360   3</code></pre>
+<p>The returned matrices have 360 rows because the intersect with all 180*2 raster cells on each parallel. Incidentally, we can use these data to create a neat line map (as inspired by <a href="http://spatial.ly/2014/08/population-lines/">this blog post</a>).</p>
+<pre class="r"><code>## Raster cell x vector
+xVec &lt;- seq(from = -179.5, to = 179.5, by = 1)
+
+## Get a list of only 2010 nightlight data
+nl2010.ls &lt;- lapply(lineval.ls, function(x) x[,1])
+
+## Get the minimal nightlight value observed (so we can normalize)
+nl.min &lt;- min(unlist(lapply(nl2010.ls, function(x) min(x, na.rm = TRUE))))
+
+## Empty plot
+par(mar = c(0,0,0,0), bg = grey(0.25), xaxs = &quot;i&quot;, yaxs = &quot;i&quot;)
+plot(1, type=&quot;n&quot;, xlab=&quot;&quot;, ylab=&quot;&quot;, xlim=c(-180,180), ylim=c(-90, 90), axes=FALSE, bty=&quot;n&quot;)
+
+## Iterate over parallels
+for (i in 1:length(nl2010.ls)) {
+  
+  ## Get nightlights at this parallel
+  val &lt;- nl2010.ls[[i]] - nl.min
+  
+  ## Replace NAs with zero, multiply with constant (to make variance more visible)
+  val[is.na(val)] &lt;- 0
+  val &lt;- val * 5
+  
+  # Mark (non-zero) segments
+  counter &lt;- 1
+  segmentVec &lt;- rep(0, length(val))
+  segmentVec[1] &lt;- ifelse(val[1] == 0, 0, counter)
+  for (j in 2:length(val)) {
+    if (val[j-1] == 0 &amp; val[j] != 0) {
+      counter &lt;- counter+1
+      segmentVec[j] &lt;- counter
+    } else if (val[j] != 0) {
+      segmentVec[j] &lt;- counter
+    }
+  }
+  
+  # Add lat to val
+  val &lt;- val + latVec[i]
+  
+  # Plot full parallel in grey
+  points(xVec, val, type = &#39;l&#39;, lwd = 1, col = grey(0.5))
+  
+  # Plot polygon for each segment
+  segments &lt;- unique(segmentVec[segmentVec != 0])
+  if (length(segments) &gt; 0) {
+    for (s in segments) {
+      thisXVec &lt;- xVec[segmentVec == s]
+      thisYVec &lt;- val[segmentVec == s]
+        
+      # Plot polygon
+      if (length(thisXVec) &gt; 1) {
+        polygon(c(min(thisXVec)-1, thisXVec, max(thisXVec)+1),
+                c(latVec[i], thisYVec, latVec[i]),
+                col=grey(0.25), border = NA)
+      }
+      
+      # Plot polygon contour in white
+      points(c(min(thisXVec)-1, thisXVec, max(thisXVec)+1), 
+             c(latVec[i], thisYVec, latVec[i]), 
+             type = &#39;l&#39;, lwd = 1, col = &#39;white&#39;)
+    }
+  }
+}</code></pre>
+<p><img src="extract_files/figure-html/ch11-1.png" width="1344" /></p>
+<p><br></p>
+</div>
+<div id="point-extraction" class="section level2">
+<h2>Point extraction</h2>
+<p>Extracting raster values at the location of points is possible using the <code>VeloxRaster_extract_points</code> method. As a demonstration, let’s create some random point data:</p>
+<pre class="r"><code>## Some random point data
+set.seed(0)
+points.sp &lt;- SpatialPoints(cbind(runif(100, -180, 180), runif(100, -90, 90)))</code></pre>
+<p>Extracting the respective raster values:</p>
+<pre class="r"><code>## Extract raster values at points
+pval.mat &lt;- prio.vx$extract_points(sp = points.sp)
+print(dim(pval.mat))</code></pre>
+<pre><code>## [1] 100   3</code></pre>
+<p><br></p>
+</div>
+<div id="using-sf-objects" class="section level2">
+<h2>Using sf objects</h2>
+<p>The <code>VeloxRaster_extract</code> method is fully interoperable with the <a href="https://cran.r-project.org/package=raster">sf package</a>:</p>
+<pre class="r"><code>require(sf)
+
+## Cast syria.spdf as sf object
+syria.sf &lt;- st_as_sf(x = syria.spdf)
+
+## Use extract as before
+extr.ls &lt;- prio.vx$extract(sp = syria.sf)
+head(extr.ls[[1]])</code></pre>
+<pre><code>##           [,1]      [,2]      [,3]
+## [1,] 0.1835138 0.1945672 0.1766599
+## [2,] 0.1624745 0.1517049 0.1036100
+## [3,] 0.1856766 0.1767696 0.1355223
+## [4,] 0.1240347 0.1188611 0.1146748
+## [5,] 0.2964082 0.2870667 0.2427285
+## [6,] 0.3074953 0.3080959 0.2350021</code></pre>
+<p>Similarly, the <code>VeloxRaster_extract_points</code> method also works on <code>sf</code> objects storing <code>POINT</code> data:</p>
+<pre class="r"><code>## Cast random points as sf object
+points.sf &lt;- st_as_sf(x = points.sp)
+
+## Use extract_points as before
+pval.mat &lt;- prio.vx$extract_points(sp = points.sf)
+print(dim(pval.mat))</code></pre>
+<pre><code>## [1] 100   3</code></pre>
+<p><code>VeloxRaster_extract_points</code> does not (yet) work with sf data of type <code>MULTIPOINT</code>, however.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

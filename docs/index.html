@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title></title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="install.html">Installation</a>
+</li>
+<li>
+  <a href="quick.html">Quick Start</a>
+</li>
+<li>
+  <a href="benchmark.html">Benchmarking</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Usage
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cast.html">VeloxRaster</a>
+    </li>
+    <li>
+      <a href="extract.html">Extract</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<p><br></p>
+<div class="figure">
+<img src="logo.svg" />
+
+</div>
+<p><br></p>
+<div id="fast-raster-extraction-and-manipulation-in-r" class="section level1">
+<h1>Fast raster extraction and manipulation in R</h1>
+<p>velox is an R package for performing fast extraction and manipulation operations on geospatial raster data. velox is fast because:</p>
+<ul>
+<li>All raster operations are performed in C++.</li>
+<li>Geometric operations are implemented with the <a href="http://www.boost.org/doc/libs/1_65_1/libs/geometry/doc/html/index.html">Boost Geometry</a> libraries.</li>
+<li>All data is held in memory.</li>
+</ul>
+<p>velox is fully interoperable with the <a href="https://cran.r-project.org/package=raster">raster</a>, <a href="https://cran.r-project.org/package=raster">sp</a>, and <a href="https://cran.r-project.org/package=raster">sf</a> packages.</p>
+<p><br></p>
+<div id="features" class="section level2">
+<h2>Features</h2>
+<p>velox currently offers the following features:</p>
+<ul>
+<li>Raster value extraction given <em>polygons</em>, <em>lines</em>, or <em>points</em></li>
+<li>Focal value calculation (i.e. moving window filters)</li>
+<li>Rasterization of polygons or lines</li>
+<li>Raster aggregation</li>
+<li>Cropping</li>
+<li>Image patch flattening and reconstruction</li>
+</ul>
+<p><br></p>
+</div>
+<div id="status" class="section level2">
+<h2>Status</h2>
+<p><a href="https://travis-ci.org/hunzikp/velox"><img src="https://travis-ci.org/hunzikp/velox.svg?branch=master" alt="Travis-CI Build Status" /></a> <a href="https://codecov.io/gh/hunzikp/velox"><img src="https://codecov.io/gh/hunzikp/velox/branch/master/graph/badge.svg" alt="codecov" /></a> <a href="https://cran.r-project.org/package=velox"><img src="http://www.r-pkg.org/badges/version/velox" alt="CRAN Version" /></a> <a href="https://github.com/hunzikp/velox"><img src="https://img.shields.io/badge/devel%20version-0.2.0.9001-green.svg?style=flat" alt="develVersion" /></a> <a href="https://www.r-pkg.org/pkg/velox"><img src="http://cranlogs.r-pkg.org/badges/last-week/velox" alt="CRAN Downloads" /></a></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

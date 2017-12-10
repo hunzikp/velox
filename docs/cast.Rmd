@@ -1,0 +1,150 @@
+---
+title: "VeloxRaster Objects"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+---
+
+<br>
+
+## The `VeloxRaster` Class
+
+Most `velox` functionality is implemented as methods of the `VeloxRaster` class.
+Objects of class `VeloxRaster` are [R5 (Reference Class)](http://adv-r.had.co.nz/R5.html) objects and are thus mutable. 
+Hence, the usual copy on modify semantics do not apply. 
+Rather, calling a raster-modifying `VeloxRaster` method, e.g. the crop method (`vx$crop()`), will modify the object the method is applied to directly. 
+The main advantage of having mutable raster objects is that it saves memory: Unless expressely requested by the user, the raster data will not be copied for modification.
+
+As an example, consider the following code:
+
+```{r message=FALSE} 
+require(velox)
+
+## Create VeloxRaster from matrix
+mat <- matrix(1:100, 10, 10)
+vx <- velox(x = mat, extent = c(0,10,0,10), res = c(1,1))
+
+## Crop VeloxRaster
+vx$crop(c(0,5,0,5))
+print(vx$dim)
+```
+
+Due to mutability, the `vx` object is permanently modified by the crop operation.
+If we wish to keep a copy of the original `vx` object, we have to instruct R to make a copy explicity:
+
+```{r message=FALSE} 
+## Create VeloxRaster from matrix
+mat <- matrix(1:100, 10, 10)
+vx <- velox(x = mat, extent = c(0,10,0,10), res = c(1,1))
+
+## Copy the VeloxRaster
+vx.copy <- vx$copy()
+
+## Crop the copied VeloxRaster
+vx.copy$crop(c(0,5,0,5))
+print(vx.copy$dim)
+print(vx$dim)
+```
+
+
+<br>
+
+## Creating `VeloxRaster` objects
+
+`VeloxRaster` objects are created with the `velox` function.
+
+velox is fully interoperable with the `raster` package; creating `VeloxRaster` objects from `Raster*` is simple:
+```{r message=FALSE} 
+require(raster)
+
+## Create VeloxRaster from RasterLayer
+mat <- matrix(1:100, 10, 10)
+ras <- raster(x = mat)
+ras.vx <- velox(ras)
+
+## Create VeloxRaster from RasterStack
+ras1 <- ras2 <- raster(x = mat)
+stk <- stack(ras1, ras2)
+stk.vx <- velox(stk)
+
+## Create VeloxRaster from RasterBrick
+brk <- brick(ras1, ras2)
+brk.vx <- velox(brk)
+```
+
+We can also create `VeloxRaster` objects from matrices, or lists of matrices:
+```{r message=FALSE} 
+## Create VeloxRaster from a matrix
+mat <- matrix(1:100, 10, 10)
+mat.vx <- velox(mat, extent = c(0,10,0,10), res = c(1,1))
+
+## Create VeloxRaster from a list of matrices
+mat.ls <- list(mat, mat)
+matls.vx <- velox(mat.ls, extent = c(0,10,0,10), res = c(1,1))
+```
+
+Finally, we can read [GDAL-supported](http://www.gdal.org/formats_list.html) raster files from disk:
+```{r message=FALSE} 
+## Create a RasterLayer
+mat <- matrix(1:100, 10, 10)
+ras <- raster(x = mat)
+
+## Write it to disk as a GeoTiff file
+writeRaster(ras, file.path(tempdir(), 'test.tif'))
+
+## Read the GeoTiff as VeloxRaster
+tif.vx <- velox(file.path(tempdir(), 'test.tif'))
+print(tif.vx$dim)
+
+## Clean up
+unlink(file.path(tempdir(), 'test.tif'))
+```
+<br>
+
+## Casting `VeloxRaster` objects
+
+Casting `VeloxRaster` objects as `Raster*` objects is also simple:
+
+```{r message=FALSE} 
+## Create VeloxRaster from a list of matrices
+mat.ls <- list(mat, mat)
+vx <- velox(mat.ls, extent = c(0,10,0,10), res = c(1,1))
+
+## Cast first band as RasterLayer
+ras <- vx$as.RasterLayer(band = 1)
+
+## Cast as RasterStack
+stk <- vx$as.RasterStack()
+
+## Cast as RasterBrick
+brk <- vx$as.RasterBrick()
+```
+
+We can also cast raster bands as matrices:
+```{r message=FALSE} 
+## Cast first raster band as matrix
+mat <- vx$as.matrix(band = 1)
+```
+<br>
+
+## Saving `VeloxRaster` objects
+
+Finally, we can save `VeloxRaster` objects to disk as GeoTiff files:
+```{r message=FALSE} 
+## Create VeloxRaster from a list of matrices
+mat.ls <- list(mat, mat)
+vx <- velox(mat.ls, extent = c(0,10,0,10), res = c(1,1))
+
+## Save to disk
+vx$write(path = file.path(tempdir(), 'test.tif'))
+
+## Clean up
+unlink(file.path(tempdir(), 'test.tif'))
+```
+
+
+
+

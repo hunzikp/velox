@@ -1,0 +1,162 @@
+---
+title: "Quick Start"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+---
+
+No time to read the docs? Here's the basics.
+See the Usage section in the menu for more detailed documentation of velox functionality.
+
+<br>
+
+## Cast as/from `VeloxRaster`
+
+Create a `VeloxRaster` object from a `raster*` object:
+
+```{r message=FALSE} 
+require(raster)
+require(velox)
+
+## Create RasterStack
+set.seed(0)
+ras.ls <- lapply(1:2, function(x) raster(matrix(rnorm(100), 10, 10), xmn=0, xmx=10, ymn=0, ymx=10))
+stk <- stack(ras.ls)
+
+## Cast as VeloxRaster
+vx <- velox(stk)
+```
+
+Or load a `VeloxRaster` object directly from disk:
+
+```{r} 
+
+## Temporary path
+temp.path <- file.path(tempdir(), 'test.tif')
+
+## Save as GeoTiff
+vx$write(path = temp.path)
+
+## Read from disk
+vx <- velox(temp.path)
+
+## Clean up
+unlink(temp.path)
+```
+
+Cast a `VeloxRaster` object as a `RasterStack`:
+```{r} 
+## As RasterStack
+stk <- vx$as.RasterStack()
+```
+
+<br>
+
+## Manipulate `VeloxRaster`
+
+Crop a `VeloxRaster`; note that `VeloxRaster` objects are *mutable*:
+
+```{r} 
+
+## Copy the VeloxRaster and check its extent
+vx_copy <- vx$copy()
+as.vector(vx_copy$extent)
+
+## Crop and check extent again
+vx_copy$crop(c(0,5,0,5)) # Crop by extent; format c(xmin, xmax, ymin, ymax)
+as.vector(vx_copy$extent)
+```
+
+Aggregate a `VeloxRaster`:
+
+```{r} 
+
+## Copy the VeloxRaster and aggregate by factor 2
+vx_copy <- vx$copy()
+vx_copy$aggregate(factor = 2, aggtype = 'sum')
+```
+
+
+Apply a moving window filter:
+
+
+```{r} 
+
+## Copy the VeloxRaster and apply a moving window filter to the first raster band
+vx_copy <- vx$copy()
+vx_copy$meanFocal(weights = matrix(1, 3, 3), bands = 1)
+```
+
+<br>
+
+## Extract raster values
+
+Extract raster values given a set of polygons:
+
+```{r message = FALSE} 
+## Make SpatialPolygonsDataFrame
+library(sp)
+library(rgeos)
+set.seed(0)
+extent <- as.vector(vx$extent)
+coords <- cbind(runif(5, extent[1], extent[2]), runif(10, extent[3], extent[4]))
+sp <- SpatialPoints(coords)
+spol <- gBuffer(sp, width=2, byid=TRUE)
+spdf <- SpatialPolygonsDataFrame(spol, data.frame(id=1:length(spol)), FALSE)
+
+## Extract values and calculate mean
+ex.mat <- vx$extract(spdf, fun=mean)
+print(ex.mat)
+
+## Also works with sf objects
+library(sf)
+poly.sf <- st_as_sf(spdf)
+ex.mat2 <- vx$extract(poly.sf, fun=mean)
+all(ex.mat == ex.mat2)
+```
+
+<br>
+
+## Rasterize polygons
+
+Rasterize some polygons:
+
+```{r message = FALSE} 
+## Copy VeloxRaster
+vx_copy <- vx$copy() 
+
+## Rasterize polygons using "id" column
+vx_copy$rasterize(spdf, field="id", band=1, background = 0)
+```
+
+<br>
+
+## Image patch flattening
+
+Transform the content of a raster into a matrix of 'flat' patches:
+
+```{r message = FALSE} 
+## Get flattened raster image
+flat.mat <- vx$im2col(wrow = 3, wcol = 3, band = 1, rowframe = 0, colframe = 0)
+print(dim(flat.mat))
+
+## Replace 'center' pixels with zeros
+flat.mat[,5] <- 0
+
+## Copy flattened image to 2nd band of raster
+vx$col2im(mat = flat.mat, wrow = 3, wcol = 3, band = 2, rowframe = 0, colframe = 0)
+
+```
+
+<br>
+
+## Help
+
+Get help for e.g. the extract method:
+
+```{r message = FALSE} 
+?VeloxRaster_extract
+```

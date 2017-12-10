@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>VeloxRaster Objects</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="install.html">Installation</a>
+</li>
+<li>
+  <a href="quick.html">Quick Start</a>
+</li>
+<li>
+  <a href="benchmark.html">Benchmarking</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Usage
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cast.html">VeloxRaster</a>
+    </li>
+    <li>
+      <a href="extract.html">Extract</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">VeloxRaster Objects</h1>
+
+</div>
+
+
+<p><br></p>
+<div id="the-veloxraster-class" class="section level2">
+<h2>The <code>VeloxRaster</code> Class</h2>
+<p>Most <code>velox</code> functionality is implemented as methods of the <code>VeloxRaster</code> class. Objects of class <code>VeloxRaster</code> are <a href="http://adv-r.had.co.nz/R5.html">R5 (Reference Class)</a> objects and are thus mutable. Hence, the usual copy on modify semantics do not apply. Rather, calling a raster-modifying <code>VeloxRaster</code> method, e.g. the crop method (<code>vx$crop()</code>), will modify the object the method is applied to directly. The main advantage of having mutable raster objects is that it saves memory: Unless expressely requested by the user, the raster data will not be copied for modification.</p>
+<p>As an example, consider the following code:</p>
+<pre class="r"><code>require(velox)
+
+## Create VeloxRaster from matrix
+mat &lt;- matrix(1:100, 10, 10)
+vx &lt;- velox(x = mat, extent = c(0,10,0,10), res = c(1,1))
+
+## Crop VeloxRaster
+vx$crop(c(0,5,0,5))
+print(vx$dim)</code></pre>
+<pre><code>## [1] 5 5</code></pre>
+<p>Due to mutability, the <code>vx</code> object is permanently modified by the crop operation. If we wish to keep a copy of the original <code>vx</code> object, we have to instruct R to make a copy explicity:</p>
+<pre class="r"><code>## Create VeloxRaster from matrix
+mat &lt;- matrix(1:100, 10, 10)
+vx &lt;- velox(x = mat, extent = c(0,10,0,10), res = c(1,1))
+
+## Copy the VeloxRaster
+vx.copy &lt;- vx$copy()
+
+## Crop the copied VeloxRaster
+vx.copy$crop(c(0,5,0,5))
+print(vx.copy$dim)</code></pre>
+<pre><code>## [1] 5 5</code></pre>
+<pre class="r"><code>print(vx$dim)</code></pre>
+<pre><code>## [1] 10 10</code></pre>
+<p><br></p>
+</div>
+<div id="creating-veloxraster-objects" class="section level2">
+<h2>Creating <code>VeloxRaster</code> objects</h2>
+<p><code>VeloxRaster</code> objects are created with the <code>velox</code> function.</p>
+<p>velox is fully interoperable with the <code>raster</code> package; creating <code>VeloxRaster</code> objects from <code>Raster*</code> is simple:</p>
+<pre class="r"><code>require(raster)
+
+## Create VeloxRaster from RasterLayer
+mat &lt;- matrix(1:100, 10, 10)
+ras &lt;- raster(x = mat)
+ras.vx &lt;- velox(ras)
+
+## Create VeloxRaster from RasterStack
+ras1 &lt;- ras2 &lt;- raster(x = mat)
+stk &lt;- stack(ras1, ras2)
+stk.vx &lt;- velox(stk)
+
+## Create VeloxRaster from RasterBrick
+brk &lt;- brick(ras1, ras2)
+brk.vx &lt;- velox(brk)</code></pre>
+<p>We can also create <code>VeloxRaster</code> objects from matrices, or lists of matrices:</p>
+<pre class="r"><code>## Create VeloxRaster from a matrix
+mat &lt;- matrix(1:100, 10, 10)
+mat.vx &lt;- velox(mat, extent = c(0,10,0,10), res = c(1,1))
+
+## Create VeloxRaster from a list of matrices
+mat.ls &lt;- list(mat, mat)
+matls.vx &lt;- velox(mat.ls, extent = c(0,10,0,10), res = c(1,1))</code></pre>
+<p>Finally, we can read <a href="http://www.gdal.org/formats_list.html">GDAL-supported</a> raster files from disk:</p>
+<pre class="r"><code>## Create a RasterLayer
+mat &lt;- matrix(1:100, 10, 10)
+ras &lt;- raster(x = mat)
+
+## Write it to disk as a GeoTiff file
+writeRaster(ras, file.path(tempdir(), &#39;test.tif&#39;))
+
+## Read the GeoTiff as VeloxRaster
+tif.vx &lt;- velox(file.path(tempdir(), &#39;test.tif&#39;))
+print(tif.vx$dim)</code></pre>
+<pre><code>##    rows columns 
+##      10      10</code></pre>
+<pre class="r"><code>## Clean up
+unlink(file.path(tempdir(), &#39;test.tif&#39;))</code></pre>
+<p><br></p>
+</div>
+<div id="casting-veloxraster-objects" class="section level2">
+<h2>Casting <code>VeloxRaster</code> objects</h2>
+<p>Casting <code>VeloxRaster</code> objects as <code>Raster*</code> objects is also simple:</p>
+<pre class="r"><code>## Create VeloxRaster from a list of matrices
+mat.ls &lt;- list(mat, mat)
+vx &lt;- velox(mat.ls, extent = c(0,10,0,10), res = c(1,1))
+
+## Cast first band as RasterLayer
+ras &lt;- vx$as.RasterLayer(band = 1)
+
+## Cast as RasterStack
+stk &lt;- vx$as.RasterStack()
+
+## Cast as RasterBrick
+brk &lt;- vx$as.RasterBrick()</code></pre>
+<p>We can also cast raster bands as matrices:</p>
+<pre class="r"><code>## Cast first raster band as matrix
+mat &lt;- vx$as.matrix(band = 1)</code></pre>
+<p><br></p>
+</div>
+<div id="saving-veloxraster-objects" class="section level2">
+<h2>Saving <code>VeloxRaster</code> objects</h2>
+<p>Finally, we can save <code>VeloxRaster</code> objects to disk as GeoTiff files:</p>
+<pre class="r"><code>## Create VeloxRaster from a list of matrices
+mat.ls &lt;- list(mat, mat)
+vx &lt;- velox(mat.ls, extent = c(0,10,0,10), res = c(1,1))
+
+## Save to disk
+vx$write(path = file.path(tempdir(), &#39;test.tif&#39;))
+
+## Clean up
+unlink(file.path(tempdir(), &#39;test.tif&#39;))</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

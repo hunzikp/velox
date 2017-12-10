@@ -1,0 +1,43 @@
+---
+title: "Installation"
+output:
+  html_document:
+    toc: false
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+---
+
+<br>
+
+## System dependencies
+
+velox only requires a C++11 capable compiler, which shouldn't be an issue on most contemporary systems.
+However, velox depends on the [rgdal](https://cran.r-project.org/package=rgdal), [rgeos](https://cran.r-project.org/package=rgeos), and [sf](https://cran.r-project.org/package=sf) packages, which require the external GDAL (>= 2.0.0), GEOS (>= 3.3.0), PROJ.4 (>= 4.8.0), and UDUNITS libraries.
+On Ubuntu (>= 14.04), install these dependencies using:
+```shell
+sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+sudo apt-get update
+sudo apt-get install libgdal-dev libproj-dev libgeos-dev libudunits2-dev
+```
+
+See the [sf README](https://r-spatial.github.io/sf/) for information about installation on other platforms.
+
+<br>
+
+## R installation
+
+To install the CRAN version ([![CRAN Version](http://www.r-pkg.org/badges/version/velox)](https://cran.r-project.org/package=velox)), use:
+```{r eval=FALSE} 
+install.packages('velox')
+```
+
+To install the development version (`r require(badger); badge_devel("hunzikp/velox", "green")`) from Github:
+```{r eval=FALSE} 
+require(devtools)
+devtools::install_github('hunzikp/velox')
+```
+
+
+
+

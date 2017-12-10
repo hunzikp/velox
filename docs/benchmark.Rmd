@@ -1,0 +1,20 @@
+---
+title: "Benchmarking"
+output:
+  html_document:
+    toc: false
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+---
+
+<br>
+
+## Comaprison with raster and PostGIS
+
+The following performance tests were peformed on a i7-6920HQ CPU @ 2.90GHz, using `raster` 2.6-7, PostgreSQL 9.5 and PostGIS 2.2.
+See [here](https://raw.githubusercontent.com/hunzikp/velox/master/vignettes/benchmarking.R) for the underlying R script.
+
+<br>
+
+![](https://raw.githubusercontent.com/hunzikp/velox/master/vignettes/benchmark.png "velox benchmark")
