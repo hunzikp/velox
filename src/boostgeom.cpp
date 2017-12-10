@@ -432,6 +432,9 @@ public:
   GridCollection subset(unsigned startrow, unsigned endrow,
                         unsigned startcol, unsigned endcol) {
 
+    endrow = std::min(nrow, endrow);
+    endcol = std::min(ncol, endcol);
+
     std::vector<Gridtype> gVec;
     for (unsigned j = startcol; j < endcol; ++j) {
       for (unsigned i = startrow; i < endrow; ++i) {
@@ -471,7 +474,7 @@ public:
     }
     unsigned endcol = ncol;
     if (crop_xmax < xmax) {
-      endcol = ceil((crop_xmax-xmin)/xres);
+      endcol = floor((crop_xmax-xmin)/xres) + 0;
     }
 
     unsigned startrow = 0;
@@ -480,7 +483,7 @@ public:
     }
     unsigned endrow = nrow;
     if (crop_ymin > ymin) {
-      endrow = ceil((ymax - crop_ymin)/yres);
+      endrow = floor((ymax - crop_ymin)/yres) + 1;
     }
 
     GridCollection newGC = this->subset(startrow, endrow, startcol, endcol);
