@@ -474,7 +474,7 @@ public:
     }
     unsigned endcol = ncol;
     if (crop_xmax < xmax) {
-      endcol = floor((crop_xmax-xmin)/xres) + 0;
+      endcol = floor((crop_xmax-xmin)/xres) + 1;
     }
 
     unsigned startrow = 0;
