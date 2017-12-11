@@ -4,8 +4,8 @@
 
 <br>
 
-Fast raster extraction and manipulation in R
-============================================
+[Fast raster extraction and manipulation in R](https://hunzikp.github.io/velox/)
+================================================================================
 
 velox is an R package for performing fast extraction and manipulation
 operations on geospatial raster data. velox is fast because:
@@ -20,6 +20,15 @@ velox is fully interoperable with the
 [raster](https://cran.r-project.org/package=raster),
 [sp](https://cran.r-project.org/package=raster), and
 [sf](https://cran.r-project.org/package=raster) packages.
+
+[![Travis-CI Build
+Status](https://travis-ci.org/hunzikp/velox.svg?branch=master)](https://travis-ci.org/hunzikp/velox)
+[![codecov](https://codecov.io/gh/hunzikp/velox/branch/master/graph/badge.svg)](https://codecov.io/gh/hunzikp/velox)
+[![CRAN
+Version](http://www.r-pkg.org/badges/version/velox)](https://cran.r-project.org/package=velox)
+[![develVersion](https://img.shields.io/badge/devel%20version-0.2.0.9001-green.svg?style=flat)](https://github.com/hunzikp/velox)
+[![CRAN
+Downloads](http://cranlogs.r-pkg.org/badges/last-week/velox)](https://www.r-pkg.org/pkg/velox)
 
 <br>
 
@@ -37,17 +46,3 @@ velox currently offers the following features:
 
 For more information, see the [velox project
 website](https://hunzikp.github.io/velox/).
-
-<br>
-
-Status
-------
-
-[![Travis-CI Build
-Status](https://travis-ci.org/hunzikp/velox.svg?branch=master)](https://travis-ci.org/hunzikp/velox)
-[![codecov](https://codecov.io/gh/hunzikp/velox/branch/master/graph/badge.svg)](https://codecov.io/gh/hunzikp/velox)
-[![CRAN
-Version](http://www.r-pkg.org/badges/version/velox)](https://cran.r-project.org/package=velox)
-[![develVersion](https://img.shields.io/badge/devel%20version-0.2.0.9001-green.svg?style=flat)](https://github.com/hunzikp/velox)
-[![CRAN
-Downloads](http://cranlogs.r-pkg.org/badges/last-week/velox)](https://www.r-pkg.org/pkg/velox)

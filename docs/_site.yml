@@ -16,6 +16,8 @@ navbar:
       href: cast.html
     - text: Extract
       href: extract.html
+  - text: Github
+    href: https://github.com/hunzikp/velox
 output_dir: .
 output:
   html_document:

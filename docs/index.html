@@ -204,6 +204,9 @@ $(document).ready(function () {
     </li>
   </ul>
 </li>
+<li>
+  <a href="https://github.com/hunzikp/velox">Github</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -235,7 +238,14 @@ $(document).ready(function () {
 <li>All data is held in memory.</li>
 </ul>
 <p>velox is fully interoperable with the <a href="https://cran.r-project.org/package=raster">raster</a>, <a href="https://cran.r-project.org/package=raster">sp</a>, and <a href="https://cran.r-project.org/package=raster">sf</a> packages.</p>
+<p><a href="https://travis-ci.org/hunzikp/velox"><img src="https://travis-ci.org/hunzikp/velox.svg?branch=master" alt="Travis-CI Build Status" /></a> <a href="https://codecov.io/gh/hunzikp/velox"><img src="https://codecov.io/gh/hunzikp/velox/branch/master/graph/badge.svg" alt="codecov" /></a> <a href="https://cran.r-project.org/package=velox"><img src="http://www.r-pkg.org/badges/version/velox" alt="CRAN Version" /></a> <a href="https://github.com/hunzikp/velox"><img src="https://img.shields.io/badge/devel%20version-0.2.0.9001-green.svg?style=flat" alt="develVersion" /></a> <a href="https://www.r-pkg.org/pkg/velox"><img src="http://cranlogs.r-pkg.org/badges/last-week/velox" alt="CRAN Downloads" /></a></p>
 <p><br></p>
+<div id="optimized-for-speed" class="section level2">
+<h2>Optimized for speed</h2>
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="432" /> <img src="index_files/figure-html/unnamed-chunk-3-1.png" width="432" /></p>
+<p>Aggregating September 2017 <a href="https://www.ngdc.noaa.gov/eog/viirs/download_dnb_composites.html">nightlight emissions</a> for 2268 Swiss communes takes <strong>0.84</strong> seconds in velox and <strong>54.76</strong> seconds in <a href="https://cran.r-project.org/package=raster">raster</a>.</p>
+<p><br></p>
+</div>
 <div id="features" class="section level2">
 <h2>Features</h2>
 <p>velox currently offers the following features:</p>
@@ -247,11 +257,6 @@ $(document).ready(function () {
 <li>Cropping</li>
 <li>Image patch flattening and reconstruction</li>
 </ul>
-<p><br></p>
-</div>
-<div id="status" class="section level2">
-<h2>Status</h2>
-<p><a href="https://travis-ci.org/hunzikp/velox"><img src="https://travis-ci.org/hunzikp/velox.svg?branch=master" alt="Travis-CI Build Status" /></a> <a href="https://codecov.io/gh/hunzikp/velox"><img src="https://codecov.io/gh/hunzikp/velox/branch/master/graph/badge.svg" alt="codecov" /></a> <a href="https://cran.r-project.org/package=velox"><img src="http://www.r-pkg.org/badges/version/velox" alt="CRAN Version" /></a> <a href="https://github.com/hunzikp/velox"><img src="https://img.shields.io/badge/devel%20version-0.2.0.9001-green.svg?style=flat" alt="develVersion" /></a> <a href="https://www.r-pkg.org/pkg/velox"><img src="http://cranlogs.r-pkg.org/badges/last-week/velox" alt="CRAN Downloads" /></a></p>
 </div>
 </div>
 
