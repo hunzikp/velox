@@ -24,4 +24,6 @@ output:
     theme: cosmo
     lib_dir: site_libs
     self_contained: no
+    includes:
+       in_header: ga_script.html
 
