@@ -83,7 +83,6 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=1, crs=crs,
                            bandnames = names(rasterbands))
 
-    return(obj)
   } else if (is(x, "RasterStack")) {
 
     extent = as.vector(extent(x))
@@ -105,7 +104,6 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs,
                            bandnames = names(rasterbands))
 
-    return(obj)
   } else if (is(x, "RasterBrick")) {
 
     extent = as.vector(extent(x))
@@ -127,7 +125,6 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs,
                            bandnames = names(rasterbands))
 
-    return(obj)
   } else if (is(x, "matrix")) {
 
     if (is.null(extent) | is.null(res)) {
@@ -149,7 +146,6 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=1, crs=crs,
                            bandnames = names(rasterbands))
 
-    return(obj)
   } else if (is(x, "list")) {
     if (is(x[[1]], "matrix")) {
       ## List of matrices
@@ -178,8 +174,6 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
 
       obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=length(rasterbands), crs=crs,
                              bandnames = names(rasterbands))
-
-      return(obj)
 
     } else if (is(x[[1]], "VeloxRaster")) {
       ## List of VeloxRasters
@@ -211,8 +205,6 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
 
       obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs,
                              bandnames = names(rasterbands))
-
-      return(obj)
 
     } else {
       stop("If x is a list, its elements must be of class 'matrix' or 'VeloxRaster'.")
@@ -247,10 +239,16 @@ velox <- function(x, extent=NULL, res=NULL, crs=NULL) {
     obj <- VeloxRaster$new(rasterbands=rasterbands, dim=dim, extent=extent, res=res, nbands=nbands, crs=crs,
                            bandnames = names(rasterbands))
 
-    return(obj)
   } else {
     stop("x is not of a supported class.")
   }
+
+  ## Set storage mode to double
+  for (i in 1:obj$nbands) {
+    storage.mode(obj$rasterbands[[i]]) <- "double"
+  }
+
+  return(obj)
 }
 
 
