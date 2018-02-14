@@ -377,6 +377,11 @@ VeloxRaster$methods(write = function(path, overwrite=FALSE) {
   ## Save and close
   saveDataset(gtd, filename=path)
   GDAL.close(gtd)
+
+  ## Set storage mode back to double
+  for (i in 1:.self$nbands) {
+    storage.mode(.self$rasterbands[[i]]) <- "double"
+  }
 })
 
 

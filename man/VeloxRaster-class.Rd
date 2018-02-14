@@ -28,13 +28,13 @@ A Reference Class for velox rasters
 \describe{
 \item{\code{aggregate(factor, aggtype = c("sum", "mean", "min", "max", "median"))}}{See \code{\link{VeloxRaster_aggregate}}.}
 
+\item{\code{as.matrix(band = 1)}}{See \code{\link{VeloxRaster_as.matrix}}.}
+
 \item{\code{as.RasterBrick(assign_data_type = FALSE)}}{See \code{\link{VeloxRaster_as.RasterBrick}}.}
 
 \item{\code{as.RasterLayer(band = 1, assign_data_type = FALSE)}}{See \code{\link{VeloxRaster_as.RasterLayer}}.}
 
 \item{\code{as.RasterStack(assign_data_type = FALSE)}}{See \code{\link{VeloxRaster_as.RasterStack}}.}
-
-\item{\code{as.matrix(band = 1)}}{See \code{\link{VeloxRaster_as.matrix}}.}
 
 \item{\code{col2im(mat, wrow, wcol, band, rowframe = 0, colframe = 0, rowstride = 1,
   colstride = 1)}}{See \code{\link{VeloxRaster_col2im}}.}
