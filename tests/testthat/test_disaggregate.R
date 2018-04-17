@@ -58,3 +58,11 @@ test_that("Disaggregate output values are correct", {
                      c(2, 2, 2, 4, 4, 4))
                )
 })
+
+test_that("If only one factor is supplied, it is applied to both x and y dimensions", {
+  v <- velox(matrix(1:12, nrow=3, ncol=4), extent=c(0, 3, 0, 4), res=c(1, 1))
+
+  v$disaggregate(7)
+
+  expect_equal(v$dim, c(21, 28))
+})
