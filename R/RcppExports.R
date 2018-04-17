@@ -9,6 +9,10 @@ getcoordinates_cpp <- function(dim, res, extent) {
     .Call('_velox_getcoordinates_cpp', PACKAGE = 'velox', dim, res, extent)
 }
 
+disaggregate_cpp <- function(band, factor) {
+    .Call('_velox_disaggregate_cpp', PACKAGE = 'velox', band, factor)
+}
+
 medianfocal_cpp <- function(rasterband, wrow, wcol, band) {
     .Call('_velox_medianfocal_cpp', PACKAGE = 'velox', rasterband, wrow, wcol, band)
 }

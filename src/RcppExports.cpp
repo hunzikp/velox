@@ -33,6 +33,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// disaggregate_cpp
+NumericMatrix disaggregate_cpp(NumericMatrix band, IntegerVector factor);
+RcppExport SEXP _velox_disaggregate_cpp(SEXP bandSEXP, SEXP factorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type band(bandSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type factor(factorSEXP);
+    rcpp_result_gen = Rcpp::wrap(disaggregate_cpp(band, factor));
+    return rcpp_result_gen;
+END_RCPP
+}
 // medianfocal_cpp
 NumericMatrix medianfocal_cpp(NumericMatrix rasterband, int wrow, int wcol, int band);
 RcppExport SEXP _velox_medianfocal_cpp(SEXP rasterbandSEXP, SEXP wrowSEXP, SEXP wcolSEXP, SEXP bandSEXP) {
@@ -194,6 +206,7 @@ RcppExport SEXP _rcpp_module_boot_BOOSTGEOM();
 static const R_CallMethodDef CallEntries[] = {
     {"_velox_aggregate_cpp", (DL_FUNC) &_velox_aggregate_cpp, 5},
     {"_velox_getcoordinates_cpp", (DL_FUNC) &_velox_getcoordinates_cpp, 3},
+    {"_velox_disaggregate_cpp", (DL_FUNC) &_velox_disaggregate_cpp, 2},
     {"_velox_medianfocal_cpp", (DL_FUNC) &_velox_medianfocal_cpp, 4},
     {"_velox_sumfocal_cpp", (DL_FUNC) &_velox_sumfocal_cpp, 5},
     {"_velox_meanfocal_cpp", (DL_FUNC) &_velox_meanfocal_cpp, 5},
