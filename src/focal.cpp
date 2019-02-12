@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <vector>
 #include "median.h"
+#include "stddev.h"
 
 using namespace Rcpp;
 using namespace std;
@@ -108,4 +109,34 @@ NumericMatrix meanfocal_cpp(NumericMatrix rasterband, NumericMatrix weights, int
   return(newband);
 }
 
-
+// [[Rcpp::export]]
+NumericMatrix stddevfocal_cpp(NumericMatrix rasterband, int wrow, int wcol, int band) {
+  
+  int nrow = rasterband.nrow();
+  int ncol = rasterband.ncol();
+  
+  NumericMatrix newband(nrow, ncol);
+  vector<double> v;
+  
+  int idim = (wrow-1)/2;
+  int jdim = (wcol-1)/2;
+  
+  for (int i = 0; i < nrow; i++) {
+    int imin = i - idim;
+    int imax = i + idim + 1;
+    for (int j = 0; j < ncol; j++) {
+      int jmin = j - jdim;
+      int jmax = j + jdim + 1;
+      for (int wi = imin; wi < imax; wi++) {
+        for (int wj = jmin; wj < jmax; wj++) {
+          if (wi >= 0 && wi < nrow && wj >= 0 && wj < ncol) {
+            v.push_back(rasterband(wi, wj));
+          }
+        }
+      }
+      newband(i,j) = stddev(v);
+      v.clear();
+    }
+  }
+  return(newband);
+}

@@ -22,4 +22,3 @@ vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
 vx$drop(bands=2)
 
 }
-

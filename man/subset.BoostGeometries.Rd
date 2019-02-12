@@ -2,9 +2,9 @@
 % Please edit documentation in R/boostgeom.R
 \docType{methods}
 \name{[,BoostMultiPolygons,ANY,ANY-method}
+\alias{[,BoostMultiPolygons,ANY,ANY-method}
 \alias{[,BoostMultiLines,ANY,ANY-method}
 \alias{[,BoostMultiPoints,ANY,ANY-method}
-\alias{[,BoostMultiPolygons,ANY,ANY-method}
 \title{Subset a BoostGeometries object}
 \usage{
 \S4method{[}{BoostMultiPolygons,ANY,ANY}(x, i)
@@ -24,4 +24,3 @@ A BoostGeometries object.
 \description{
 Extract a subset of geometries from a BoostGeometries object.
 }
-

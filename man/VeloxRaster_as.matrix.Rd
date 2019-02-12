@@ -21,4 +21,3 @@ vx.mat <- vx$as.matrix(band=1)
 identical(mat, vx.mat)
 
 }
-

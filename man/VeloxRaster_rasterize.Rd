@@ -45,4 +45,3 @@ spdf <- SpatialPolygonsDataFrame(Sr=spols, data=data.frame(value=1), match.ID=FA
 vx$rasterize(spdf=spdf, field="value", background=-1)
 
 }
-

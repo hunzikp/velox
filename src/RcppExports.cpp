@@ -77,6 +77,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// stddevfocal_cpp
+NumericMatrix stddevfocal_cpp(NumericMatrix rasterband, int wrow, int wcol, int band);
+RcppExport SEXP _velox_stddevfocal_cpp(SEXP rasterbandSEXP, SEXP wrowSEXP, SEXP wcolSEXP, SEXP bandSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type rasterband(rasterbandSEXP);
+    Rcpp::traits::input_parameter< int >::type wrow(wrowSEXP);
+    Rcpp::traits::input_parameter< int >::type wcol(wcolSEXP);
+    Rcpp::traits::input_parameter< int >::type band(bandSEXP);
+    rcpp_result_gen = Rcpp::wrap(stddevfocal_cpp(rasterband, wrow, wcol, band));
+    return rcpp_result_gen;
+END_RCPP
+}
 // hittest_cpp
 NumericMatrix hittest_cpp(List rasterbands, NumericVector dim, NumericVector extent, NumericVector res, NumericVector polyX, NumericVector polyY, int polyCorners);
 RcppExport SEXP _velox_hittest_cpp(SEXP rasterbandsSEXP, SEXP dimSEXP, SEXP extentSEXP, SEXP resSEXP, SEXP polyXSEXP, SEXP polyYSEXP, SEXP polyCornersSEXP) {
@@ -197,6 +211,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_velox_medianfocal_cpp", (DL_FUNC) &_velox_medianfocal_cpp, 4},
     {"_velox_sumfocal_cpp", (DL_FUNC) &_velox_sumfocal_cpp, 5},
     {"_velox_meanfocal_cpp", (DL_FUNC) &_velox_meanfocal_cpp, 5},
+    {"_velox_stddevfocal_cpp", (DL_FUNC) &_velox_stddevfocal_cpp, 4},
     {"_velox_hittest_cpp", (DL_FUNC) &_velox_hittest_cpp, 7},
     {"_velox_unhit_cpp", (DL_FUNC) &_velox_unhit_cpp, 4},
     {"_velox_im2col_cpp", (DL_FUNC) &_velox_im2col_cpp, 10},

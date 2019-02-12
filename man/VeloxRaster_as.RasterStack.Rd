@@ -24,4 +24,3 @@ library(raster)
 rs <- vx$as.RasterStack()
 
 }
-

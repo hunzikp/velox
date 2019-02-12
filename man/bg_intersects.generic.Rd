@@ -3,12 +3,12 @@
 \docType{methods}
 \name{bg_intersects}
 \alias{bg_intersects}
+\alias{bg_intersects,BoostMultiPolygons,BoostBoxGrid-method}
 \alias{bg_intersects,BoostMultiLines,BoostBoxGrid-method}
+\alias{bg_intersects,BoostMultiPolygons,BoostPointGrid-method}
+\alias{bg_intersects,BoostMultiPolygons,BoostGeometries-method}
 \alias{bg_intersects,BoostMultiLines,BoostGeometries-method}
 \alias{bg_intersects,BoostMultiPoints,BoostGeometries-method}
-\alias{bg_intersects,BoostMultiPolygons,BoostBoxGrid-method}
-\alias{bg_intersects,BoostMultiPolygons,BoostGeometries-method}
-\alias{bg_intersects,BoostMultiPolygons,BoostPointGrid-method}
 \title{Test whether two BoostObjects intersect}
 \usage{
 bg_intersects(obj1, obj2)
@@ -45,4 +45,3 @@ list(rbind(c(0,0), c(2,0), c(2,2), c(0,2), c(0,0))))))
 bg_intersects(pol, pts)
 
 }
-

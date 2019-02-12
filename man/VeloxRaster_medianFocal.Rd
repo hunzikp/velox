@@ -29,4 +29,3 @@ vx <- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
 vx$medianFocal(wrow=5, wcol=5, bands=c(1,2))
 
 }
-

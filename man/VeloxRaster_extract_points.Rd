@@ -28,4 +28,3 @@ spoint <- SpatialPoints(coords=coord)
 vx$extract_points(sp=spoint)
 
 }
-
