@@ -40,4 +40,3 @@ mat.ls <- list(mat1, mat2)
 vx <- velox(mat.ls, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
 
 }
-

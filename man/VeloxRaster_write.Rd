@@ -14,4 +14,3 @@ Void.
 \description{
 Write a VeloxRaster to disk as a GeoTiff file
 }
-

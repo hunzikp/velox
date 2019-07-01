@@ -20,4 +20,3 @@ Void.
 \description{
 Plot a BoostGeometries object using the \code{sf} plotting function.
 }
-

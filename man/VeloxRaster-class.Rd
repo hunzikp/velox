@@ -2,8 +2,8 @@
 % Please edit documentation in R/velox.R
 \docType{class}
 \name{VeloxRaster-class}
-\alias{VeloxRaster}
 \alias{VeloxRaster-class}
+\alias{VeloxRaster}
 \title{A Reference Class for velox rasters}
 \description{
 A Reference Class for velox rasters
@@ -23,6 +23,7 @@ A Reference Class for velox rasters
 
 \item{\code{crs}}{Coordinate reference system (Proj4 string)}
 }}
+
 \section{Methods}{
 
 \describe{
@@ -47,9 +48,9 @@ A Reference Class for velox rasters
 
 \item{\code{extract_points(sp)}}{See \code{\link{VeloxRaster_extract_points}}.}
 
-\item{\code{getCoordinates()}}{See \code{\link{VeloxRaster_getCoordinates}}.}
-
 \item{\code{get_data_type()}}{See \code{\link{VeloxRaster_get_data_type}}.}
+
+\item{\code{getCoordinates()}}{See \code{\link{VeloxRaster_getCoordinates}}.}
 
 \item{\code{im2col(wrow, wcol, band, padval = 0, rowframe = 0, colframe = 0,
   rowstride = 1, colstride = 1)}}{See \code{\link{VeloxRaster_im2col}}.}
@@ -60,10 +61,13 @@ A Reference Class for velox rasters
 
 \item{\code{rasterize(spdf, field, band = 1, background = NULL, small = FALSE)}}{See \code{\link{VeloxRaster_rasterize}}.}
 
+\item{\code{stddevFocal(wrow, wcol, bands = 1)}}{See \code{\link{VeloxRaster_stddevFocal}}.}
+
 \item{\code{sumFocal(weights, bands = 1)}}{See \code{\link{VeloxRaster_sumFocal}}.}
 
 \item{\code{write(path, overwrite = FALSE)}}{See \code{\link{VeloxRaster_write}}.}
 }}
+
 \examples{
 ## Make VeloxRaster objects using the 'velox' function
 mat <- matrix(1:100, 10, 10)
@@ -71,4 +75,3 @@ vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WG
 class(vx)
 
 }
-

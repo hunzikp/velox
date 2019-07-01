@@ -6,4 +6,3 @@
 \description{
 Rcpp pointer to BoostFactory.
 }
-

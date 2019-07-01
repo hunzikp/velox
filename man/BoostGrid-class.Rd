@@ -7,4 +7,3 @@
 \description{
 This is a virtual class for storing Rcpp pointers to C++ grid objects.
 }
-

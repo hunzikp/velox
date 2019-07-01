@@ -16,4 +16,3 @@ An integer scalar.
 \description{
 Returns the length (number of Geometries) of a BoostGeometries object.
 }
-
