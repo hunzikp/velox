@@ -4,8 +4,7 @@
 
 <br>
 
-[Fast raster extraction and manipulation in R](https://hunzikp.github.io/velox/)
-================================================================================
+# [Fast raster extraction and manipulation in R](https://hunzikp.github.io/velox/)
 
 velox is an R package for performing fast extraction and manipulation
 operations on geospatial raster data. velox is fast because:
@@ -26,19 +25,18 @@ Status](https://travis-ci.org/hunzikp/velox.svg?branch=master)](https://travis-c
 [![codecov](https://codecov.io/gh/hunzikp/velox/branch/master/graph/badge.svg)](https://codecov.io/gh/hunzikp/velox)
 [![CRAN
 Version](http://www.r-pkg.org/badges/version/velox)](https://cran.r-project.org/package=velox)
-[![develVersion](https://img.shields.io/badge/devel%20version-0.2.0.9001-green.svg?style=flat)](https://github.com/hunzikp/velox)
+[![](https://img.shields.io/badge/devel%20version-0.2.1-green.svg)](https://github.com/hunzikp/velox)
 [![CRAN
 Downloads](http://cranlogs.r-pkg.org/badges/last-week/velox)](https://www.r-pkg.org/pkg/velox)
 
 <br>
 
-Features
---------
+## Features
 
 velox currently offers the following features:
 
 -   Raster value extraction given *polygons*, *lines*, or *points*
--   Focal value calculation (i.e. moving window filters)
+-   Focal value calculation (i.e. moving window filters)
 -   Rasterization of polygons or lines
 -   Raster aggregation
 -   Cropping
