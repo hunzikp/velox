@@ -24,4 +24,3 @@ library(raster)
 rl <- vx$as.RasterLayer(band=1)
 
 }
-

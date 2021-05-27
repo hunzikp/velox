@@ -6,3 +6,5 @@ vignettes/benchmark
 ^\.RData
 docs
 ^README\.Rmd$
+^.*\.o$
+^.*\.tmp$

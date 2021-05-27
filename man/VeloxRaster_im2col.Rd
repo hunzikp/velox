@@ -42,4 +42,3 @@ patch.mat <- vx$im2col(wrow=2, wcol=2, band=1, padval=0,
 dim(patch.mat)
 
 }
-

@@ -28,4 +28,3 @@ weights <- matrix(1, 5, 5)
 vx$sumFocal(weights=weights, bands=c(1,2))
 
 }
-

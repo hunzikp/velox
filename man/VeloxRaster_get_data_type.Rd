@@ -13,4 +13,3 @@ Get data type of a VeloxRaster
 Note that this method returns the data type of the raster, not the storage mode.
 Except in special cases, velox stores all raster data as double precision matrices.
 }
-

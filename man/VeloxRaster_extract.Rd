@@ -49,4 +49,3 @@ spols <- gBuffer(spgeom=spoint, width=0.5)
 vx$extract(sp=spols, fun=mean)
 
 }
-
