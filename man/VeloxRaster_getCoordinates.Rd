@@ -17,4 +17,3 @@ vx <- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WG
 cmat <- vx$getCoordinates()
 
 }
-

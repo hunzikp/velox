@@ -5,3 +5,6 @@ vignettes/benchmark
 ^\.travis\.yml$
 ^\.RData
 docs
+^README\.Rmd$
+^.*\.o$
+^.*\.tmp$

@@ -7,4 +7,3 @@
 \description{
 This is a class for storing Rcpp pointers to C++ MultiPolygonCollection objects.
 }
-

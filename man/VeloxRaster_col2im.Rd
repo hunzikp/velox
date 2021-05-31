@@ -44,4 +44,3 @@ vx$col2im(mat=patch.mat, wrow=2, wcol=2, band=1, rowframe=1, colframe=1, rowstri
 isTRUE(all.equal(mat, vx$as.matrix()))
 
 }
-

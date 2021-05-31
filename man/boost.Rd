@@ -2,13 +2,13 @@
 % Please edit documentation in R/boostgeom.R
 \name{boost}
 \alias{boost}
-\alias{boost.VeloxRaster}
-\alias{boost.sfc_LINESTRING}
-\alias{boost.sfc_MULTILINESTRING}
-\alias{boost.sfc_MULTIPOINT}
 \alias{boost.sfc_MULTIPOLYGON}
-\alias{boost.sfc_POINT}
 \alias{boost.sfc_POLYGON}
+\alias{boost.sfc_MULTILINESTRING}
+\alias{boost.sfc_LINESTRING}
+\alias{boost.sfc_MULTIPOINT}
+\alias{boost.sfc_POINT}
+\alias{boost.VeloxRaster}
 \title{Cast a sfc object as a BoostObject}
 \usage{
 boost(x, ...)
@@ -47,4 +47,3 @@ sfc <- sf::st_sfc(sf::st_point(c(0,1)))
 boostPoints <- boost(sfc)
 
 }
-
